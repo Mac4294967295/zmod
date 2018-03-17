@@ -276,22 +276,15 @@ chaz_init()
 		level.enablekillcam = true;
 	setup_dvar("scr_zmod_alpha_count", "0");
 	setup_dvar("scr_zmod_autoadjust", "1");
-	setup_dvar("scr_zmod_alt_rounds", "0");
-	setup_dvar("scr_zmod_alt_rounds_int", "2");
 	setup_dvar("scr_zmod_survival", "1");
-	setup_dvar("scr_zmod_megaboss", "1");
-	setup_dvar("scr_zmod_megaboss_health", "2500");
 	setup_dvar("scr_zmod_randomize_init", "1");
-	setup_dvar("scr_zmod_alt_round_warning_int", "3");
 	setup_dvar("scr_zmod_skip_debugger", "0");
-	setup_dvar("scr_zmod_megaboss_cash", "500");
 	setup_dvar("scr_zmod_max_lives", "4");
 	setup_dvar("scr_zmod_rofl_ammo", "200");
 	setup_dvar("scr_zmod_semtex_ammo", "5");
 	setup_dvar("scr_zmod_frag_ammo", "5");
 	setup_dvar("scr_zmod_claymore_ammo", "5");
 	setup_dvar("scr_zmod_c4_ammo", "5");
-	setup_dvar("scr_zmod_megaboss_time", "300");
 	setup_dvar("scr_zmod_repair_points", "15");
 	setup_dvar("scr_zmod_intermission_time", "50");
 	setup_dvar("scr_zmod_starting_time", "60");
@@ -322,8 +315,6 @@ chaz_init()
 	if (getDvarInt("scr_maxPerPlayerExplosives") != explosivemax)
 		setDvar("scr_maxPerPlayerExplosives", explosivemax);
 	
-	level.alt_time = getDvarInt("scr_zmod_alt_rounds_int");
-	
 	level.round_type = "";
 	level.round_type_next = "";
 	level.cround = 0;
@@ -336,7 +327,6 @@ chaz_init()
 	
 	level.round_msg = [];
 	level.round_msg[0] = "^3Get ready for ^2SURVIVAL^3 Round!";
-	level.round_msg[1] = "^3Prepare for ^2MEGA-BOSS^3 Round!";
 	
 	level.nadetypes = [];
 	level.nadetypes[0] = "frag_grenade_mp";
@@ -353,9 +343,7 @@ chaz_init()
 	level.hchallenge_reward = ::humanChallengeReward;
 	level.zchallenge_reward = ::zombieChallengeReward;
 
-	level.icon_boss = "waypoint_kill";
 	level.icon_trade = "waypoint_targetneutral";
-	precacheShader( level.icon_boss );
 	precacheShader ( level.icon_trade );
 	
 	/*t = OpenFile("blahblah.txt", "write");
@@ -720,7 +708,6 @@ init_player_extra()
 {
 		self.isRepairing = false;
 		self.rp = 0;
-		self.isBoss = false;
 		self.lives = 0;
 		self.credit_kills = 0;
 		self.humancash = false;
@@ -1227,73 +1214,10 @@ first_round_init()
 		return;
 	c = randomInt(level.players.size);
 	for(i = 0; i < c; i++)
-		level.players[i].wasBoss = 1;
-	c = randomInt(level.players.size);
-	for(i = 0; i < c; i++)
 		level.players[i].wasAlpha = 1;
 	c = randomInt(level.players.size);
 	for(i = 0; i < c; i++)
 		level.players[i].wasSurvivor = 1;
-}
-
-alt_round_incr()
-{
-		level.cround++;
-		if (level.cround >= level.rounds.size)
-			level.cround = 0;
-}
-
-alt_round_begin()
-{
-	if (level.alt_time <= 0)
-	{
-		last = level.cround;
-		if (level.players.size > 1 && getDvarInt("scr_zmod_alt_rounds") != 0)
-		{
-			while (1)
-			{
-				if (getDvarInt(level.rounds_dvar[level.cround]) != 0)
-						break;
-				alt_round_incr();
-				if (level.cround == last)
-					break;
-			}
-		}
-		if (getDvarInt(level.rounds_dvar[level.cround]) != 0 && getDvarInt("scr_zmod_alt_rounds") != 0)
-			level.round_type_next = level.rounds[level.cround];
-		clog("landed on: " + level.round_type_next + ", actual: " + level.rounds[level.cround]);
-	}
-}
-
-alt_round_end()
-{
-	if (level.round_type != "")
-	{
-		for (i = 0; i < level.players.size; i++)
-		{
-			level.players[i].isBoss = 0;
-		}
-		if (getDvarInt("scr_zmod_alt_rounds") != 0)
-			alt_round_incr();
-		clog("alt_round_end, on cround: " + level.rounds[level.cround]);
-		level.alt_time = getDvarInt("scr_zmod_alt_rounds_int");
-	}
-	else
-		if (level.alt_time > 0)
-			level.alt_time--;
-	clog("alt_round_time, on alt_time: " + level.alt_time);
-	level.round_type = "";
-	level.round_type_next = "";
-}
-
-alt_round_set()
-{
-	level.round_type = level.round_type_next;
-}
-
-isAltNext()
-{
-	return level.round_type_next != "";
 }
 
 setCreditsPersistent()
@@ -1476,10 +1400,7 @@ doAlphaZombie()
 		self.ck = self.kills;
 		self.cd = self.deaths;
 		self.cs = self.suicides;
-		if (self.isBoss)
-			self.maxhp = getDvarInt("scr_zmod_megaboss_health");
-		else
-			self.maxhp = 200;
+		self.maxhp = 200;
 		self thread doPerksSetup();
 		wait .1;
 		self notify("menuresponse", "changeclass", "class3");
@@ -1522,10 +1443,6 @@ doAlphaZombie()
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
 	//self thread doZombieBounty();
 	self thread doZombieShop();
-	if (self.isBoss) {
-		self thread traceMe();
-		self thread doMegaBossTimer();
-	}
 	self notify("CASH");
 	self notify("HEALTH");
 	self notify("LIVES");
@@ -1668,23 +1585,6 @@ doLastAlive()
 	}
 }
 
-doTracing()
-{
-	self endon ( "disconnect" );
-	self endon ( "death" );
-	clog("doing trace");
-	while(1)
-	{
-		/*point = self.origin + (0, 0, 54);
-		if (self.indc.x != point[0] || self.indc.y != point[1] || self.indc.z != point[2])
-		{
-			self.indc.x = point[0];
-			self.indc.y = point[1];
-			self.indc.z = point[2];
-		}*/
-		wait 2;
-	}
-}
 
 destroyTrace()
 {
@@ -1696,21 +1596,6 @@ destroyTrace()
 	}
 }
 
-traceMe()
-{
-	destroyTrace();
-	
-	self.indc = newTeamHudElem( "allies" );
-	self.indc.alpha = 1;
-	self.indc.isShown = true;
-	self.indc setShader(level.icon_boss, 8, 8);
-	self.indc setwaypoint(true, true);
-	self.indc SetTargetEnt(self);
-	
-	level.bosspoint = self.indc;
-	self doTracing();
-	destroyTrace();
-}
 
 givePossesions()
 {
@@ -3034,7 +2919,7 @@ doZombieShop()
 			self.buttonPressed[ "+smoke" ] = 0;
 			if(self.menu == 0)
 			{
-				if(self.maxhp < 1000 && !self.isBoss)
+				if(self.maxhp < 1000)
 					{
 						if(self.bounty >= level.itemCost["health"])
 							{
@@ -3049,9 +2934,6 @@ doZombieShop()
 					}
 				else
 					{
-						if (self.isBoss)
-							self iPrintlnBold("^1Mega Boss cannot upgrade health!");
-						else
 							self iPrintlnBold("^1Max Health Achieved!");
 					}
 			}
@@ -3301,15 +3183,9 @@ doZombieShop()
 			}
 			if (self.menu == 2)
 			{
-					if(!self.isBoss)
-					{
-						clog(self.name + " suicided.");
-						self suicide();
-					}
-					else
-						{
-							self iPrintlnBold("^1Cannot suicide while megaboss!");
-						}
+				clog(self.name + " suicided.");
+				self suicide();
+					
 			}
 			wait .1;
 		}
@@ -3522,7 +3398,6 @@ doGameStarter()
 	level.lastAlive = 0;
 	clog("Waiting for CREATED");
 	level waittill("CREATED");
-	alt_round_begin();
 	level thread doStartTimer();
 	foreach(player in level.players)
 	{
@@ -3712,7 +3587,6 @@ doIntermission()
 	level notify("gamestatechange");
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
 	level.lastAlive = 0;
-	alt_round_begin();
 	level thread doIntermissionTimer();
 	makeEveryoneNonSolid();
 
@@ -3745,9 +3619,7 @@ doIntermission()
 doIntermissionTimer()
 {
 	level.counter = getdvarInt("scr_zmod_intermission_time");
-	isn = isAltNext();
-	g = getDvarInt("scr_zmod_alt_round_warning_int");
-	l = g;
+
 	while(level.counter > 0)
 	{
 		level.TimerText destroy();
@@ -3756,15 +3628,7 @@ doIntermissionTimer()
 		level.TimerText setText("^2Intermission: " + level.counter);
 		setDvar("fx_draw", 1);
 		wait 1;
-		l--;
-		if (isn && l == 0)
-			{
-				foreach (player in level.players)
-				{
-					player iPrintlnBold(level.round_msg[level.cround]);
-				}
-				l = g;
-			}
+		
 		level.counter--;
 	}
 	level.TimerText setText("");
@@ -3778,24 +3642,14 @@ doZombieTimer()
 {
 	setDvar("cg_drawCrosshair", 1);
 	level.counter = getdvarInt("scr_zmod_alpha_time");
-	isn = isAltNext();
-	g = getDvarInt("scr_zmod_alt_round_warning_int");
-	l = g;
+
 	while(level.counter > 0){
 		level.TimerText destroy();
 		level.TimerText = level createServerFontString( "objective", 1.5 );
 		level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
 		level.TimerText setText("^1Alpha Zombie in: " + level.counter);
 		wait 1;
-		l--;
-		if (isn && l <= 0)
-		{
-				foreach (player in level.players)
-				{
-					player iPrintlnBold(level.round_msg[level.cround]);
-				}
-				l = g;
-		}
+		
 		level.counter--;
 	}
 	level.TimerText setText("");
@@ -3844,26 +3698,6 @@ chooseSurvivor()
 		for (i = 0; i < level.players.size; i++)
 		{
 			level.players[i].wasSurvivor = 0;
-		}
-		if (level.players.size == 0)
-			return -1;
-	}
-}
-
-chooseBoss()
-{
-	while(1)
-	{
-		for (i = 0; i < level.players.size; i++)
-		{
-			if (level.players[i].wasBoss == 1 || !level.players[i].ack["safe"])
-				continue;
-			level.players[i].wasBoss = 1;
-			return i;
-		}
-		for (i = 0; i < level.players.size; i++)
-		{
-			level.players[i].wasBoss = 0;
 		}
 		if (level.players.size == 0)
 			return -1;
@@ -3997,30 +3831,6 @@ ibroadcastDelay(time, msg, team)
 		ibroadcast(msg);
 }
 
-doMegaBossTimer()
-{
-	self endon("disconnect");
-	self endon("death");
-	time = getDvarInt("scr_zmod_megaboss_time");
-	timeh = time;
-	if (time <= 0)
-		return;
-	ibroadcastTeam("^1Survive or Kill the Mega Zombie!", "allies");
-	while (time > 0)
-	{
-		if (time % 15 == 0 || time == timeh)
-			ibroadcast("^1 Time until MegaBoss dies: " + floor(time / 60) + " Min " + (time % 60) + " Sec");
-		time--;
-		wait 1;
-	}
-	foreach (player in level.players)
-		if (player.isBoss) {
-			player suicide();
-			ibroadcast("^2Megaboss ran out of time!");
-			break;
-		}
-}
-
 doPlaceMsgLoop()
 {
 	level endon("game_ended");
@@ -4107,77 +3917,33 @@ doPickZombie()
 {
 	doPlaceTimerText();
 	
-	alt_round_set();
-	
-	clog("doing pick with: " + level.round_type);
-	
-	if (level.round_type == "")
+	times = 3;
+	if (getDvarInt("scr_zmod_alpha_count") != 0)
+		times = getDvarInt("scr_zmod_alpha_count");
+	if (getDvarInt("scr_zmod_autoadjust") == 1)
 	{
-		times = 3;
-		if (getDvarInt("scr_zmod_alpha_count") != 0)
-			times = getDvarInt("scr_zmod_alpha_count");
-		if (getDvarInt("scr_zmod_autoadjust") == 1)
-		{
-			if (level.players.size < 6)
-				times = 2;
-			if (level.players.size < 3)
-				times = 1;
-		}
-		//Make sure at least one human stays
-		if (times >= level.players.size)
-				times = level.players.size - 1;
-		//If theres only one person, make sure they go zombie all the time
-		if (times <= 0)
-				times = 1;
-		while (times > 0)
-		{
-			p = chooseZombie();
-			if (p == -1)
-				break;
-			level.players[p].isZombie = 2;
-			level.players[p] thread doAlphaZombie();
-			times--;
-		}
-		level.TimerText setText("^1Alpha Zombies RELEASED!");
+		if (level.players.size < 6)
+			times = 2;
+		if (level.players.size < 3)
+			times = 1;
 	}
-	else
+	//Make sure at least one human stays
+	if (times >= level.players.size)
+			times = level.players.size - 1;
+	//If theres only one person, make sure they go zombie all the time
+	if (times <= 0)
+			times = 1;
+	while (times > 0)
 	{
-		if (level.round_type == "survival")
-		{
-			p = chooseSurvivor();
-			if (p != -1)
-				for (i = 0; i < level.players.size; i++)
-				{
-					if (i == p)
-						continue;
-					level.players[i].isZombie = 2;
-					level.players[i] thread doAlphaZombie();
-				}
-			level.TimerText setText("^1Survival ROUND!");
-		}
-		
-		if (level.round_type == "megaboss")
-		{
-			p = ChooseBoss();
-			if (p != -1)
-			{
-				level.players[p].isZombie = 2;
-				level.players[p].isBoss = true;
-				level.players[p] thread doAlphaZombie();
-				for (i = 0; i < level.players.size; i++)
-				{
-					if (i == p)
-						continue;
-					level.players[i].bounty = getDvarInt("scr_zmod_megaboss_cash");
-					level.players[i] notify("CASH");
-					clog(level.players[i].name + " megaboss cash: " + level.players[i].bounty);
-				}
-			}
-			
-			level.TimerText setText("^1Mega-Boss ROUND!");
-			
-		}
+		p = chooseZombie();
+		if (p == -1)
+			break;
+		level.players[p].isZombie = 2;
+		level.players[p] thread doAlphaZombie();
+		times--;
 	}
+	level.TimerText setText("^1Alpha Zombies RELEASED!");
+	
 	level playSoundOnPlayers("mp_defeat");
 	
 	level.gameState = "playing"; //Gamestate goes to playing after doSetup's are done
@@ -4244,35 +4010,11 @@ doEnding()
 {
 	level.gameState = "ending";
 	level notify("gamestatechange");
-	destroyTrace();
 	notifyEnding = spawnstruct();
 	notifyEnding.titleText = "Round Over!";
 	notifyEnding.notifyText2 = "Next Round Will Start Soon!";
 	notifyEnding.glowColor = (0.0, 0.6, 0.3);
-	if(level.playersLeft["allies"] == 0)
-	{
-		if (level.round_type != "megaboss")
-			notifyEnding.notifyText = "Humans Survived: " + level.minutes + " minutes " + level.seconds + " seconds.";
-		else
-			notifyEnding.notifyText = "Mega Boss ^2Annihalated ^3Humans!";
-	}
-	if(level.playersLeft["axis"] == 0)
-	{
-		if (level.round_type != "megaboss")
-			notifyEnding.notifyText = "All the Zombies disappeared!";
-		else
-			notifyEnding.notifyText = "Defeated the ^3Mega Boss!";
-		//Humans are rewarded for their kills posthumously in the credit_kills record.
-		//Since noone changes teams
-		foreach (player in level.players)
-		{
-			if (player.credit_kills <= 0)
-				player.credit_kills = player.kills;
-			player.kills = 0;
-		}
-	}
 	
-	alt_round_end();
 	wait 1;
 	VisionSetNaked("blacktest", 1);
 	
@@ -5120,10 +4862,9 @@ HUDupdate()
 							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 						else
 							self.option2 setText("");
-						if (!self.isBoss)
-							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
-						else
-							self.option3 setText("");
+						
+						self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
+
 					}
 					else
 						if (self.menu == 3)
@@ -5245,8 +4986,6 @@ doSpawn()
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
-		if (level.round_type != "megaboss")
-			self.deaths = 1;
 		self.ck = self.kills;
 		self.cd = self.deaths;
 		self.cs = self.suicides;
@@ -5273,8 +5012,6 @@ doSpawn()
 					//Save it for rewarding
 					clog(self.name + " Credit saved: " + self.kills);
 					self.credit_kills = self.kills;
-					if (level.round_type == "megaboss")
-						self notify("menuresponse", game["menu_team"], "spectator");
 				}
 					
 		}
@@ -5284,10 +5021,6 @@ doSpawn()
 			self thread doSetup(true); //Called when human joins midround or respawn
 		}
 		
-		if (level.round_type == "megaboss" && self.deaths > 0)
-			self notify("menuresponse", game["menu_team"], "spectator");
-		else
-		{
 			if(self.isZombie == 1)
 			{
 				self thread doZombie();
@@ -5296,7 +5029,7 @@ doSpawn()
 			{
 				self thread doAlphaZombie();
 			}
-		}
+		
 	}
 	else
 		{
@@ -5360,10 +5093,7 @@ doJoinTeam()
 			}
 			if(level.gameState == "playing" || level.gameState == "ending"){
 			//Chaz Edit
-			if (level.round_type != "megaboss")
-				self notify("menuresponse", game["menu_team"], "axis");
-			else
-				self notify("menuresponse", game["menu_team"], "allies");
+			self notify("menuresponse", game["menu_team"], "allies");
 			//self notify("menuresponse", game["menu_team"], "spectator");
 			//self allowSpectateTeam( "freelook", true );
 			//self thread maps\mp\gametypes\_hud_message::notifyMessage( notifyHello );
@@ -6402,11 +6132,6 @@ onPlayerConnect()
 		player.isZombie = 0;
 		player.wasAlpha = 0;
 		player.wasSurvivor = 0;
-		if (level.debug == 1 && isd == true)
-			player.wasBoss = 1;
-		else
-			player.wasBoss = 0;
-		
 		//Chaz Edit
 		if (level.debug == 1)
 			player.credits = 50000;
