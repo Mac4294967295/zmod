@@ -2,6 +2,8 @@
 #include maps\mp\gametypes\_hud_util;
 #include common_scripts\utility;
 
+//Comment
+
 init()
 {
 	maps\mp\gametypes\_rank::registerScoreInfo( "headshot", 50 );
