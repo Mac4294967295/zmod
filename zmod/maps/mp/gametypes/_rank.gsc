@@ -63,12 +63,12 @@ ArtilleryStrike()
 
 tryUseCustomAirstrike()
 {
-    self notifyOnPlayerCommand( "[{+actionslot 4}]", "+actionslot 4" );
+    self notifyOnPlayerCommand( "[{+actionslot 2}]", "+actionslot 2" );
 	self endon ( "death" );
 	self endon ( "disconnect" );
 	
 	
-	self waittill ( "[{+actionslot 4}]" );
+	self waittill ( "[{+actionslot 2}]" );
 	
 		self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
 		self.selectingLocation = true;
@@ -276,31 +276,22 @@ chaz_init()
 		level.enablekillcam = true;
 	setup_dvar("scr_zmod_alpha_count", "0");
 	setup_dvar("scr_zmod_autoadjust", "1");
-	//setup_dvar("scr_zmod_alt_rounds", "0");
-	//setup_dvar("scr_zmod_alt_rounds_int", "2");
-	
-	//setup_dvar("scr_zmod_survival", "1");
-	
-	//setup_dvar("scr_zmod_megaboss", "1");
-	//setup_dvar("scr_zmod_megaboss_health", "2500");
-	
+	setup_dvar("scr_zmod_alt_rounds", "0");
+	setup_dvar("scr_zmod_alt_rounds_int", "2");
+	setup_dvar("scr_zmod_survival", "1");
+	setup_dvar("scr_zmod_megaboss", "1");
+	setup_dvar("scr_zmod_megaboss_health", "2500");
 	setup_dvar("scr_zmod_randomize_init", "1");
-	
-	//setup_dvar("scr_zmod_alt_round_warning_int", "3");
-	
+	setup_dvar("scr_zmod_alt_round_warning_int", "3");
 	setup_dvar("scr_zmod_skip_debugger", "0");
-	
-	//setup_dvar("scr_zmod_megaboss_cash", "500");
-	
+	setup_dvar("scr_zmod_megaboss_cash", "500");
 	setup_dvar("scr_zmod_max_lives", "4");
 	setup_dvar("scr_zmod_rofl_ammo", "200");
 	setup_dvar("scr_zmod_semtex_ammo", "5");
 	setup_dvar("scr_zmod_frag_ammo", "5");
 	setup_dvar("scr_zmod_claymore_ammo", "5");
 	setup_dvar("scr_zmod_c4_ammo", "5");
-	
-	//setup_dvar("scr_zmod_megaboss_time", "300");
-	
+	setup_dvar("scr_zmod_megaboss_time", "300");
 	setup_dvar("scr_zmod_repair_points", "15");
 	setup_dvar("scr_zmod_intermission_time", "50");
 	setup_dvar("scr_zmod_starting_time", "60");
@@ -317,7 +308,7 @@ chaz_init()
 	setup_dvar("scr_zmod_human_challenge", "1");
 	setup_dvar("scr_zmod_zombie_challenge", "1");
 	setup_dvar("scr_zmod_disable_weapondrop", "1");
-	setup_dvar("scr_zmod_infotext", "^7This Server is Home of the [UD] Clan; Funky, MacDreadz, Tshaky, Daxter  ;^2Cycle Menu: ^3[{+smoke}]^7/^3[{+actionslot 1}]");
+	setup_dvar("scr_zmod_infotext", "^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
 	/*Make sure the max we're allowed to use is the max we're allowed to have*/
 	explosivemax = getDvarInt("scr_maxPerPlayerExplosives");
 	equipmentmax = [];
@@ -331,25 +322,21 @@ chaz_init()
 	if (getDvarInt("scr_maxPerPlayerExplosives") != explosivemax)
 		setDvar("scr_maxPerPlayerExplosives", explosivemax);
 	
-	//level.alt_time = getDvarInt("scr_zmod_alt_rounds_int");
+	level.alt_time = getDvarInt("scr_zmod_alt_rounds_int");
 	
-	/*
 	level.round_type = "";
 	level.round_type_next = "";
 	level.cround = 0;
 	level.rounds = [];
 	level.rounds[0] = "survival";
 	level.rounds[1] = "megaboss";
-	*/
 	
-	/*
 	level.rounds_dvar[0] = "scr_zmod_survival";
 	level.rounds_dvar[1] = "scr_zmod_megaboss";
 	
 	level.round_msg = [];
 	level.round_msg[0] = "^3Get ready for ^2SURVIVAL^3 Round!";
 	level.round_msg[1] = "^3Prepare for ^2MEGA-BOSS^3 Round!";
-	*/
 	
 	level.nadetypes = [];
 	level.nadetypes[0] = "frag_grenade_mp";
@@ -366,9 +353,9 @@ chaz_init()
 	level.hchallenge_reward = ::humanChallengeReward;
 	level.zchallenge_reward = ::zombieChallengeReward;
 
-	//level.icon_boss = "waypoint_kill";
+	level.icon_boss = "waypoint_kill";
 	level.icon_trade = "waypoint_targetneutral";
-	//precacheShader( level.icon_boss );
+	precacheShader( level.icon_boss );
 	precacheShader ( level.icon_trade );
 	
 	/*t = OpenFile("blahblah.txt", "write");
@@ -661,10 +648,8 @@ doChallenges()
 		level waittill("gamestatechange");
 		if (level.gameState != "playing")
 			continue;
-		/*
 		if (level.round_type != "")
 			continue; //I currently don't have any ideas for megaboss or survivor
-		*/
 		wait 1.2; //Wait for spawn
 		clearChallenges();
 		if (getDvarInt("scr_zmod_human_challenge") != 0)
@@ -735,7 +720,7 @@ init_player_extra()
 {
 		self.isRepairing = false;
 		self.rp = 0;
-		//self.isBoss = false;
+		self.isBoss = false;
 		self.lives = 0;
 		self.credit_kills = 0;
 		self.humancash = false;
@@ -1241,8 +1226,8 @@ first_round_init()
 	if (!getDvarInt("scr_zmod_randomize_init"))
 		return;
 	c = randomInt(level.players.size);
-	/*for(i = 0; i < c; i++)
-		level.players[i].wasBoss = 1;*/
+	for(i = 0; i < c; i++)
+		level.players[i].wasBoss = 1;
 	c = randomInt(level.players.size);
 	for(i = 0; i < c; i++)
 		level.players[i].wasAlpha = 1;
@@ -1250,15 +1235,14 @@ first_round_init()
 	for(i = 0; i < c; i++)
 		level.players[i].wasSurvivor = 1;
 }
-/*
+
 alt_round_incr()
 {
 		level.cround++;
 		if (level.cround >= level.rounds.size)
 			level.cround = 0;
 }
-*/
-/*
+
 alt_round_begin()
 {
 	if (level.alt_time <= 0)
@@ -1280,8 +1264,7 @@ alt_round_begin()
 		clog("landed on: " + level.round_type_next + ", actual: " + level.rounds[level.cround]);
 	}
 }
-*/
-/*
+
 alt_round_end()
 {
 	if (level.round_type != "")
@@ -1302,19 +1285,16 @@ alt_round_end()
 	level.round_type = "";
 	level.round_type_next = "";
 }
-*/
-/*
+
 alt_round_set()
 {
 	level.round_type = level.round_type_next;
 }
-*/
-/*
+
 isAltNext()
 {
 	return level.round_type_next != "";
 }
-*/
 
 setCreditsPersistent()
 {
@@ -1496,12 +1476,10 @@ doAlphaZombie()
 		self.ck = self.kills;
 		self.cd = self.deaths;
 		self.cs = self.suicides;
-		/*
 		if (self.isBoss)
 			self.maxhp = getDvarInt("scr_zmod_megaboss_health");
 		else
-		*/
-		self.maxhp = 200;
+			self.maxhp = 200;
 		self thread doPerksSetup();
 		wait .1;
 		self notify("menuresponse", "changeclass", "class3");
@@ -1544,12 +1522,10 @@ doAlphaZombie()
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
 	//self thread doZombieBounty();
 	self thread doZombieShop();
-	/*
 	if (self.isBoss) {
 		self thread traceMe();
 		self thread doMegaBossTimer();
 	}
-	*/
 	self notify("CASH");
 	self notify("HEALTH");
 	self notify("LIVES");
@@ -1691,21 +1667,21 @@ doLastAlive()
 		wait .4;
 	}
 }
-/*
+
 doTracing()
 {
 	self endon ( "disconnect" );
 	self endon ( "death" );
 	clog("doing trace");
 	while(1)
-	{*/
+	{
 		/*point = self.origin + (0, 0, 54);
 		if (self.indc.x != point[0] || self.indc.y != point[1] || self.indc.z != point[2])
 		{
 			self.indc.x = point[0];
 			self.indc.y = point[1];
 			self.indc.z = point[2];
-		}*//*
+		}*/
 		wait 2;
 	}
 }
@@ -1735,7 +1711,7 @@ traceMe()
 	self doTracing();
 	destroyTrace();
 }
-*/
+
 givePossesions()
 {
 	if(self.throwingknife == 1)
@@ -2264,22 +2240,22 @@ doHumanShop()
 	while(1)
 	{
 		button = 0;
-		if (self.buttonPressed[ "+actionslot 3" ] == 1)
+		if (self.buttonPressed[ "+smoke" ] == 1)
 		{
 			button = 1;
-			self.buttonPressed[ "+actionslot 3" ] = 0;
+			self.buttonPressed[ "+smoke" ] = 0;
 		}
 		else
-			if (self.buttonPressed[ "+actionslot 4" ] == 1)
+			if (self.buttonPressed[ "+actionslot 2" ] == 1)
 			{
 				button = 2;
-				self.buttonPressed[ "+actionslot 4" ] = 0;
+				self.buttonPressed[ "+actionslot 2" ] = 0;
 			}
 			else
-				if (self.buttonPressed[ "+actionslot 2" ] == 1)
+				if (self.buttonPressed[ "+actionslot 4" ] == 1)
 				{
 					button = 3;
-					self.buttonPressed[ "+actionslot 2" ] = 0;
+					self.buttonPressed[ "+actionslot 4" ] = 0;
 				}
 		
 		if (!(self isUsingRemote()))
@@ -3053,12 +3029,12 @@ doZombieShop()
 	while(1)
 	{
 		//First Button
-		if(self.buttonPressed[ "+actionslot 3" ] == 1)
+		if(self.buttonPressed[ "+smoke" ] == 1)
 		{
-			self.buttonPressed[ "+actionslot 3" ] = 0;
+			self.buttonPressed[ "+smoke" ] = 0;
 			if(self.menu == 0)
 			{
-				if(self.maxhp < 1000 /*&& !self.isBoss*/)
+				if(self.maxhp < 1000 && !self.isBoss)
 					{
 						if(self.bounty >= level.itemCost["health"])
 							{
@@ -3072,10 +3048,10 @@ doZombieShop()
 							}
 					}
 				else
-					{/*
+					{
 						if (self.isBoss)
 							self iPrintlnBold("^1Mega Boss cannot upgrade health!");
-						else*/
+						else
 							self iPrintlnBold("^1Max Health Achieved!");
 					}
 			}
@@ -3149,9 +3125,9 @@ doZombieShop()
 			wait .1;
 		}	
 		//Second button
-		if(self.buttonPressed[ "+actionslot 4" ] == 1)
+		if(self.buttonPressed[ "+actionslot 2" ] == 1)
 		{
-			self.buttonPressed[ "+actionslot 4" ] = 0;
+			self.buttonPressed[ "+actionslot 2" ] = 0;
 			if(self.menu == 0)
 			{
 				if(self.thermal == 0)
@@ -3265,9 +3241,9 @@ doZombieShop()
 			wait .1;
 		}
 		//Third button
-		if(self.buttonPressed[ "+actionslot 2" ] == 1)
+		if(self.buttonPressed[ "+actionslot 4" ] == 1)
 		{
-			self.buttonPressed[ "+actionslot 2" ] = 0;
+			self.buttonPressed[ "+actionslot 4" ] = 0;
 			if(self.menu == 0)
 			{
 				if(self getWeaponAmmoClip("throwingknife_mp") == 0)
@@ -3324,16 +3300,16 @@ doZombieShop()
 				}
 			}
 			if (self.menu == 2)
-			{/*
+			{
 					if(!self.isBoss)
-					{*/
+					{
 						clog(self.name + " suicided.");
 						self suicide();
-					/*}
+					}
 					else
 						{
 							self iPrintlnBold("^1Cannot suicide while megaboss!");
-						}*/
+						}
 			}
 			wait .1;
 		}
@@ -3546,7 +3522,7 @@ doGameStarter()
 	level.lastAlive = 0;
 	clog("Waiting for CREATED");
 	level waittill("CREATED");
-	//alt_round_begin();
+	alt_round_begin();
 	level thread doStartTimer();
 	foreach(player in level.players)
 	{
@@ -3736,7 +3712,7 @@ doIntermission()
 	level notify("gamestatechange");
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
 	level.lastAlive = 0;
-	//alt_round_begin();
+	alt_round_begin();
 	level thread doIntermissionTimer();
 	makeEveryoneNonSolid();
 
@@ -3769,11 +3745,9 @@ doIntermission()
 doIntermissionTimer()
 {
 	level.counter = getdvarInt("scr_zmod_intermission_time");
-	
-	//isn = isAltNext();
-	
-	//g = getDvarInt("scr_zmod_alt_round_warning_int");
-	//l = g;
+	isn = isAltNext();
+	g = getDvarInt("scr_zmod_alt_round_warning_int");
+	l = g;
 	while(level.counter > 0)
 	{
 		level.TimerText destroy();
@@ -3782,8 +3756,7 @@ doIntermissionTimer()
 		level.TimerText setText("^2Intermission: " + level.counter);
 		setDvar("fx_draw", 1);
 		wait 1;
-		//l--;
-		/*
+		l--;
 		if (isn && l == 0)
 			{
 				foreach (player in level.players)
@@ -3792,7 +3765,6 @@ doIntermissionTimer()
 				}
 				l = g;
 			}
-		*/	
 		level.counter--;
 	}
 	level.TimerText setText("");
@@ -3806,18 +3778,15 @@ doZombieTimer()
 {
 	setDvar("cg_drawCrosshair", 1);
 	level.counter = getdvarInt("scr_zmod_alpha_time");
-	
-	//isn = isAltNext();
-	
-	//g = getDvarInt("scr_zmod_alt_round_warning_int");
-	//l = g;
+	isn = isAltNext();
+	g = getDvarInt("scr_zmod_alt_round_warning_int");
+	l = g;
 	while(level.counter > 0){
 		level.TimerText destroy();
 		level.TimerText = level createServerFontString( "objective", 1.5 );
 		level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
 		level.TimerText setText("^1Alpha Zombie in: " + level.counter);
 		wait 1;
-		/*
 		l--;
 		if (isn && l <= 0)
 		{
@@ -3827,7 +3796,6 @@ doZombieTimer()
 				}
 				l = g;
 		}
-		*/
 		level.counter--;
 	}
 	level.TimerText setText("");
@@ -3881,7 +3849,7 @@ chooseSurvivor()
 			return -1;
 	}
 }
-/*
+
 chooseBoss()
 {
 	while(1)
@@ -3901,7 +3869,7 @@ chooseBoss()
 			return -1;
 	}
 }
-*/
+
 getNadeWeap()
 {
 	return level.nadetypes[self.nadetype];
@@ -4028,7 +3996,7 @@ ibroadcastDelay(time, msg, team)
 	else
 		ibroadcast(msg);
 }
-/*
+
 doMegaBossTimer()
 {
 	self endon("disconnect");
@@ -4052,7 +4020,7 @@ doMegaBossTimer()
 			break;
 		}
 }
-*/
+
 doPlaceMsgLoop()
 {
 	level endon("game_ended");
@@ -4139,13 +4107,12 @@ doPickZombie()
 {
 	doPlaceTimerText();
 	
-	//alt_round_set();
+	alt_round_set();
 	
-	//clog("doing pick with: " + level.round_type);
-	/*
+	clog("doing pick with: " + level.round_type);
+	
 	if (level.round_type == "")
 	{
-	*/
 		times = 3;
 		if (getDvarInt("scr_zmod_alpha_count") != 0)
 			times = getDvarInt("scr_zmod_alpha_count");
@@ -4172,8 +4139,7 @@ doPickZombie()
 			times--;
 		}
 		level.TimerText setText("^1Alpha Zombies RELEASED!");
-	//}
-	/*
+	}
 	else
 	{
 		if (level.round_type == "survival")
@@ -4212,7 +4178,6 @@ doPickZombie()
 			
 		}
 	}
-	*/
 	level playSoundOnPlayers("mp_defeat");
 	
 	level.gameState = "playing"; //Gamestate goes to playing after doSetup's are done
@@ -4279,13 +4244,11 @@ doEnding()
 {
 	level.gameState = "ending";
 	level notify("gamestatechange");
-	//destroyTrace();
+	destroyTrace();
 	notifyEnding = spawnstruct();
 	notifyEnding.titleText = "Round Over!";
 	notifyEnding.notifyText2 = "Next Round Will Start Soon!";
 	notifyEnding.glowColor = (0.0, 0.6, 0.3);
-	
-	/*
 	if(level.playersLeft["allies"] == 0)
 	{
 		if (level.round_type != "megaboss")
@@ -4293,8 +4256,6 @@ doEnding()
 		else
 			notifyEnding.notifyText = "Mega Boss ^2Annihalated ^3Humans!";
 	}
-	
-	
 	if(level.playersLeft["axis"] == 0)
 	{
 		if (level.round_type != "megaboss")
@@ -4310,8 +4271,8 @@ doEnding()
 			player.kills = 0;
 		}
 	}
-	*/
-	//alt_round_end();
+	
+	alt_round_end();
 	wait 1;
 	VisionSetNaked("blacktest", 1);
 	
@@ -4363,9 +4324,9 @@ doMenuScroll()
 	self endon("death");
 	while(1)
 	{
-		if(self.buttonPressed[ "+smoke" ] == 1)
+		if(self.buttonPressed[ "+actionslot 3" ] == 1)
 		{
-			self.buttonPressed[ "+smoke" ] = 0;
+			self.buttonPressed[ "+actionslot 3" ] = 0;
 			self.menu--;
 			if(self.menu < 0)
 			{
@@ -4853,7 +4814,7 @@ HUDupdate()
 						{
 							if(self.attach["akimbo"] == 1)
 								{
-									self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]);
+									self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]);
 								}
 							else
 								{
@@ -4861,7 +4822,7 @@ HUDupdate()
 								}
 							if(self.attach["fmj"] == 1)
 							{
-								self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]);
+								self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]);
 							}
 							else
 								{
@@ -4870,9 +4831,9 @@ HUDupdate()
 						if((self.attach["eotech"] == 1 && self.eotech == true) || (self.attach["reddot"] == 1 && self.eotech == false))
 							{
 								if (!self.eotech)
-									self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["normal"]);
+									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 								else
-									self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["new"]);
+									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["new"]);
 							}
 						else
 							{
@@ -4883,7 +4844,7 @@ HUDupdate()
 						{
 							if(self.attach["silencer"] == 1)
 							{
-								self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]);
+								self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]);
 							}
 						else
 							{
@@ -4891,7 +4852,7 @@ HUDupdate()
 							}
 						if(self.attach["xmags"] == 1)
 						{
-							self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]);
 						}
 						else
 								{
@@ -4899,7 +4860,7 @@ HUDupdate()
 								}
 						if(self.attach["rof"] == 1)
 						{
-							self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 						}
 						else
 							{
@@ -4915,10 +4876,10 @@ HUDupdate()
 							switch(self.perkz["steadyaim"])
 							{
 								case 0:
-									self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["normal"]);
+									self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["normal"]);
 									break;
 								case 1:
-									self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["pro"]);
+									self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["pro"]);
 									break;
 								case 2:
 								default:
@@ -4928,10 +4889,10 @@ HUDupdate()
 							switch(self.perkz["sleightofhand"])
 							{
 								case 0:
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["normal"]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
 									break;
 								case 1:
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["pro"]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["pro"]);
 									break;
 								case 2:
 								default:
@@ -4940,28 +4901,28 @@ HUDupdate()
 							}
 	
 							/*
-							switch(self.perkz["sitrep"]){case 0:self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["normal"]);
+							switch(self.perkz["sitrep"]){case 0:self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 							break;
-							case 1:self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["pro"]);
+							case 1:self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["pro"]);
 							break;
 							case 2:default:self.option3 setText("Perk can not be upgraded");
 							break;
 							}
 							*/
 							if (self.hasROFL == false)
-								self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["normal"]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 							else
-								self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["new"]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["new"]);
 						}
 						if(self.menu == 4)
 						{
 								switch(self.perkz["stoppingpower"])
 								{
 									case 0:
-										self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["normal"]);
+										self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["normal"]);
 										break;
 									case 1:
-										self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["pro"]);
+										self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["pro"]);
 										break;
 									case 2:
 									default:
@@ -4973,21 +4934,21 @@ HUDupdate()
 								switch(self.perkz["coldblooded"])
 								{
 									case 0:
-										self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["normal"]);
+										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
 									break;
 									case 1:
-										self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["pro"]);
+										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["pro"]);
 									break;
 									case 2:default:self.option2 setText("Perk can not be upgraded");
 									break;
 								}*/
 								
 								if (self.attach["acog"] == 1)
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["normal"]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
 								else
 									self.option2 setText("Upgrade Unavailable");
 								
-								self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 						}
 					}
 					else
@@ -4995,9 +4956,9 @@ HUDupdate()
 							if (level.humanM[self.menu][0] != "")
 							{
 									if (self.menu != 5)
-											self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]);
+											self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]);
 									else
-										self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0] + self.nuke_price);
+										self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0] + self.nuke_price);
 							}
 							else
 								self.option1 setText("");
@@ -5013,11 +4974,11 @@ HUDupdate()
 											which1 = "off";
 										else
 											which1 = "on";
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1][which1]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1][which1]);
 								}
 								else
 									if (level.humanM[self.menu][1] != "")
-										self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]);
+										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]);
 									else
 										self.option2 setText("");
 							}
@@ -5025,10 +4986,10 @@ HUDupdate()
 									self.option2 setText(level.humanM[self.menu][1][self.exTo]);//Dynamic here for weapon-class upgrades
 							if (self.menu == 7)
 							{
-								self.option3 setText(self getTradeText("[{+actionslot 2}]"));
+								self.option3 setText(self getTradeText("[{+actionslot 4}]"));
 							}
 							else
-									self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]);
+									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 						}
 			}
 			else
@@ -5081,14 +5042,14 @@ HUDupdate()
 						break;
 					}
 					if (av1)
-						txt1 = "Press [{+actionslot 3}] - " + level.creditM[self.menu][0]["text"];
+						txt1 = "Press [{+smoke}] - " + level.creditM[self.menu][0]["text"];
 					if (av2)
 						if (self.menu != 3)
-							txt2 = "Press [{+actionslot 4}] - " + level.creditM[self.menu][1]["text"];
+							txt2 = "Press [{+actionslot 2}] - " + level.creditM[self.menu][1]["text"];
 						else
-							txt2 = "Press [{+actionslot 4}] - " + level.creditM[self.menu][1]["text"][self.nadetype];
+							txt2 = "Press [{+actionslot 2}] - " + level.creditM[self.menu][1]["text"][self.nadetype];
 					if (av3)
-						txt3 = "Press [{+actionslot 2}] - " + level.creditM[self.menu][2]["text"];
+						txt3 = "Press [{+actionslot 4}] - " + level.creditM[self.menu][2]["text"];
 					self.option1 setText(txt1);
 					self.option2 setText(txt2);
 					self.option3 setText(txt3);
@@ -5105,10 +5066,10 @@ HUDupdate()
 					switch(self.perkz["coldblooded"])
 					{
 						case 0:
-							self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]["normal"]);
+							self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]["normal"]);
 							break;
 						case 1:
-							self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]["pro"]);
+							self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]["pro"]);
 							break;
 						case 2:
 							default:self.option1 setText("Perk can not be upgraded");
@@ -5117,10 +5078,10 @@ HUDupdate()
 					switch(self.perkz["ninja"])
 					{
 						case 0:
-							self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]["normal"]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]["normal"]);
 							break;
 						case 1:
-							self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]["pro"]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]["pro"]);
 							break;
 						case 2:
 						default:
@@ -5130,10 +5091,10 @@ HUDupdate()
 					switch(self.perkz["lightweight"])
 					{
 						case 0:
-							self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]["normal"]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["normal"]);
 							break;
 						case 1:
-							self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]["pro"]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["pro"]);
 							break;
 						case 2:
 							default:self.option3 setText("Perk can not be upgraded");
@@ -5146,7 +5107,7 @@ HUDupdate()
 						switch(self.perkz["finalstand"])
 						{
 							case 0:
-								self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]["normal"]);
+								self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]["normal"]);
 								break;
 							case 1:
 							case 2:
@@ -5156,41 +5117,41 @@ HUDupdate()
 						}
 						//Chaz edit, normally would be set to ""
 						if (level.zombieM[self.menu][1] != "")
-							self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 						else
 							self.option2 setText("");
-						//if (!self.isBoss)
-							self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]);
-						/*else
-							self.option3 setText("");*/
+						if (!self.isBoss)
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
+						else
+							self.option3 setText("");
 					}
 					else
 						if (self.menu == 3)
 						{
 							if (!self.blastshield)
-								self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]);
+								self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
 							else
-								self.option1 setText("Press [{+actionslot 3}] - Equip/Unequip Blastshield");
+								self.option1 setText("Press [{+smoke}] - Equip/Unequip Blastshield");
 							//Chaz edit, normally would be set to ""
 							if (self.riotz)
 								if (self hasWeapon("riotshield_mp"))
 									self.option2 setText("Unavailable");
 								else
-									self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 							else
 								self.option2 setText("[Locked]");
 								
 							if (level.zombieM[self.menu][2] != "")
-								self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 							else
 								self.option3 setText("");
 						}
 			}
 			else
 				{
-					self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]);
-					self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]);
-					self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]);
+					self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
+					self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
+					self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 				}
 		}
 }
@@ -5284,10 +5245,8 @@ doSpawn()
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
-		/*
 		if (level.round_type != "megaboss")
 			self.deaths = 1;
-		*/
 		self.ck = self.kills;
 		self.cd = self.deaths;
 		self.cs = self.suicides;
@@ -5314,10 +5273,8 @@ doSpawn()
 					//Save it for rewarding
 					clog(self.name + " Credit saved: " + self.kills);
 					self.credit_kills = self.kills;
-					/*
 					if (level.round_type == "megaboss")
 						self notify("menuresponse", game["menu_team"], "spectator");
-					*/
 				}
 					
 		}
@@ -5326,12 +5283,11 @@ doSpawn()
 		{
 			self thread doSetup(true); //Called when human joins midround or respawn
 		}
-		/*
+		
 		if (level.round_type == "megaboss" && self.deaths > 0)
 			self notify("menuresponse", game["menu_team"], "spectator");
 		else
 		{
-		*/
 			if(self.isZombie == 1)
 			{
 				self thread doZombie();
@@ -5340,7 +5296,7 @@ doSpawn()
 			{
 				self thread doAlphaZombie();
 			}
-		//}
+		}
 	}
 	else
 		{
@@ -5404,9 +5360,9 @@ doJoinTeam()
 			}
 			if(level.gameState == "playing" || level.gameState == "ending"){
 			//Chaz Edit
-			/*if (level.round_type != "megaboss")
+			if (level.round_type != "megaboss")
 				self notify("menuresponse", game["menu_team"], "axis");
-			else*/
+			else
 				self notify("menuresponse", game["menu_team"], "allies");
 			//self notify("menuresponse", game["menu_team"], "spectator");
 			//self allowSpectateTeam( "freelook", true );
@@ -5670,10 +5626,10 @@ MenuInit()
 	level.humanM[i] = [];
 	level.humanM[i][0] = "Buy Ammo for Current Weapon - " + level.itemCost["ammo"];
 	level.humanM[i][1] = [];
-	level.humanM[i][1]["LMG"] = "Press [{+actionslot 4}] - Exchange for a LMG - " + level.itemCost["LMG"];
-	level.humanM[i][1]["Assault Rifle"] = "Press [{+actionslot 4}] - Exchange for an Assault Rifle - " + level.itemCost["Assault Rifle"];
-	level.humanM[i][1]["Machine Pistol"] = "Press [{+actionslot 4}] - Exchange for a Machine Pistol - " + level.itemCost["Machine Pistol"];
-	level.humanM[i][1]["smg"] = "Press [{+actionslot 4}] - Exchange for a SMG - " + level.itemCost["smg"];
+	level.humanM[i][1]["LMG"] = "Press [{+actionslot 2}] - Exchange for a LMG - " + level.itemCost["LMG"];
+	level.humanM[i][1]["Assault Rifle"] = "Press [{+actionslot 2}] - Exchange for an Assault Rifle - " + level.itemCost["Assault Rifle"];
+	level.humanM[i][1]["Machine Pistol"] = "Press [{+actionslot 2}] - Exchange for a Machine Pistol - " + level.itemCost["Machine Pistol"];
+	level.humanM[i][1]["smg"] = "Press [{+actionslot 2}] - Exchange for a SMG - " + level.itemCost["smg"];
 	level.humanM[i][1]["Unavailable"] = "Weapon can not be Exchanged";
 	level.humanM[i][2] = "Buy Riot Shield - " + level.itemCost["Riot"];
 	i++;
@@ -5915,13 +5871,13 @@ CashFix()
 iniButtons()
 {
 	self.buttonAction = [];
-	self.buttonAction[0]="+actionslot 4";
+	self.buttonAction[0]="+actionslot 2";
 	self.buttonAction[1]="+actionslot 1";
-	self.buttonAction[2]="+actionslot 2";
-	self.buttonAction[3]="+actionslot 3";
+	self.buttonAction[2]="+actionslot 4";
+	self.buttonAction[3]="+smoke";
 	self.buttonAction[4]="+activate";
 	self.buttonAction[5]="+frag";
-	self.buttonAction[6]="+smoke";
+	self.buttonAction[6]="+actionslot 3";
 	self.buttonPressed = [];
 	for(i=0;i<self.buttonAction.size;i++)
 	{
@@ -6446,11 +6402,11 @@ onPlayerConnect()
 		player.isZombie = 0;
 		player.wasAlpha = 0;
 		player.wasSurvivor = 0;
-		/*if (level.debug == 1 && isd == true)
+		if (level.debug == 1 && isd == true)
 			player.wasBoss = 1;
 		else
 			player.wasBoss = 0;
-		*/
+		
 		//Chaz Edit
 		if (level.debug == 1)
 			player.credits = 50000;
