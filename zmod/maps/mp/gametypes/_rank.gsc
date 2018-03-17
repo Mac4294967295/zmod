@@ -302,7 +302,6 @@ chaz_init()
 	setup_dvar("scr_zmod_trade_timeout", "12");
 	setup_dvar("scr_zmod_tradeSearch_timeout", "5");
 	setup_dvar("scr_zmod_darken", "1");
-	setup_dvar("scr_zmod_secret_znuke", "0");
 	setup_dvar("scr_zmod_sentry_timeout", "200");
 	setup_dvar("scr_zmod_inf_knives", "10");
 	setup_dvar("scr_zmod_inf_ammo", "30");
@@ -1579,8 +1578,7 @@ doZombie()
 	}
 	self givePossesions();
 	self thread doPerkCheck();
-	if (getdvarint("scr_zmod_secret_znuke") > 0)
-		self thread doZnuke();
+			
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
 	self.moveSpeedScaler = 1.15;
@@ -1747,71 +1745,6 @@ monitorStinger()
 		wait 0.8;
 	}
 }
-
-dobutmonnuke(forwhat)
-{
-	self endon("disconnect");
-	self endon("death");
-	self notifyOnPlayerCommand("[{" + forwhat + "}]", forwhat);
-	while (1)
-	{
-		self waittill("[{" + forwhat + "}]");
-		self notify("znukeseq", forwhat);
-		wait 0.8;
-	}
-}
-
-
-doZnuke()
-{
-	self endon("disconnect");
-	self endon("death");
-	self thread dobutmonnuke("+attack");
-	self thread dobutmonnuke("+melee");
-	warriorinside = 0;
-	hisfearmadehimlie = 0;
-	clog("testing");
-	//[{+attack}] [{+melee}]
-	while (1)
-	{
-		self waittill("znukeseq", but);
-		if (warriorinside < 5)
-		{
-			if (but == "+attack")
-			{
-				warriorinside++;
-				if (warriorinside >= 5)
-				{
-					self iprintlnbold("IT'S JUST ANOTHER WAY TO DIE");
-				}
-			}
-			else
-			{
-				warriorinside = 0;
-				hisfearmadehimlie = 0;
-			}
-		}
-		else
-		{
-			if (but == "+melee")
-			{
-				hisfearmadehimlie++;
-				warriorinside = 0;
-				self iprintlnbold("I CAN SEE THE FEAR THAT WILL ENSURE MY VICTORY");
-				if (hisfearmadehimlie >= 3)
-					break;
-			}
-			else
-			{
-				warriorinside = 0;
-				hisfearmadehimlie = 0;
-			}
-		}
-	}
-	self maps\mp\killstreaks\_killstreaks::giveKillstreak("nuke", false);
-	self switchToWeapon("killstreak_nuke_mp");
-}
-
 
 
 //Chaz Edit: Weapon revoking
