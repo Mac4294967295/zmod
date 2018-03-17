@@ -734,6 +734,12 @@ killedPlayer(who, weap)
 		return;
 	clog("who: " + who.name + " weap: " + weap);
 	processChallengeKill(self, who, weap);
+	
+	
+	//Testing money on Player Killed, +5000 | Testversion
+	self statCashAdd(5000);
+	
+	
 	if (self.isZombie != 0)
 	{
 		amount = 100 + (50 * self.combo);
@@ -5426,6 +5432,10 @@ doSpawn()
 	self thread doLives();
 	self thread destroyOnDeath();
 	self thread doMenuInfo();
+	
+	//Testing money on Player Spawn, +5000 | Testversion
+	self statCashAdd(5000);
+	
 	if(level.gamestate == "starting")
 	{
 		self thread OMAExploitFix();
