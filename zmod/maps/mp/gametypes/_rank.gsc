@@ -63,12 +63,12 @@ ArtilleryStrike()
 
 tryUseCustomAirstrike()
 {
-    self notifyOnPlayerCommand( "[{+actionslot 4}]", "+actionslot 4" );
+    self notifyOnPlayerCommand( "[{+actionslot 2}]", "+actionslot 2" );
 	self endon ( "death" );
 	self endon ( "disconnect" );
 	
 	
-	self waittill ( "[{+actionslot 4}]" );
+	self waittill ( "[{+actionslot 2}]" );
 	
 		self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
 		self.selectingLocation = true;
@@ -308,7 +308,7 @@ chaz_init()
 	setup_dvar("scr_zmod_human_challenge", "1");
 	setup_dvar("scr_zmod_zombie_challenge", "1");
 	setup_dvar("scr_zmod_disable_weapondrop", "1");
-	setup_dvar("scr_zmod_infotext", "^7This Server is Home of the [UD] Clan; Funky, MacDreadz, Tshaky, Daxter  ;^2Cycle Menu: ^3[{+smoke}]^7/^3[{+actionslot 1}]");
+	setup_dvar("scr_zmod_infotext", "^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
 	/*Make sure the max we're allowed to use is the max we're allowed to have*/
 	explosivemax = getDvarInt("scr_maxPerPlayerExplosives");
 	equipmentmax = [];
@@ -2240,22 +2240,22 @@ doHumanShop()
 	while(1)
 	{
 		button = 0;
-		if (self.buttonPressed[ "+actionslot 3" ] == 1)
+		if (self.buttonPressed[ "+smoke" ] == 1)
 		{
 			button = 1;
-			self.buttonPressed[ "+actionslot 3" ] = 0;
+			self.buttonPressed[ "+smoke" ] = 0;
 		}
 		else
-			if (self.buttonPressed[ "+actionslot 4" ] == 1)
+			if (self.buttonPressed[ "+actionslot 2" ] == 1)
 			{
 				button = 2;
-				self.buttonPressed[ "+actionslot 4" ] = 0;
+				self.buttonPressed[ "+actionslot 2" ] = 0;
 			}
 			else
-				if (self.buttonPressed[ "+actionslot 2" ] == 1)
+				if (self.buttonPressed[ "+actionslot 4" ] == 1)
 				{
 					button = 3;
-					self.buttonPressed[ "+actionslot 2" ] = 0;
+					self.buttonPressed[ "+actionslot 4" ] = 0;
 				}
 		
 		if (!(self isUsingRemote()))
@@ -3029,9 +3029,9 @@ doZombieShop()
 	while(1)
 	{
 		//First Button
-		if(self.buttonPressed[ "+actionslot 3" ] == 1)
+		if(self.buttonPressed[ "+smoke" ] == 1)
 		{
-			self.buttonPressed[ "+actionslot 3" ] = 0;
+			self.buttonPressed[ "+smoke" ] = 0;
 			if(self.menu == 0)
 			{
 				if(self.maxhp < 1000 && !self.isBoss)
@@ -3125,9 +3125,9 @@ doZombieShop()
 			wait .1;
 		}	
 		//Second button
-		if(self.buttonPressed[ "+actionslot 4" ] == 1)
+		if(self.buttonPressed[ "+actionslot 2" ] == 1)
 		{
-			self.buttonPressed[ "+actionslot 4" ] = 0;
+			self.buttonPressed[ "+actionslot 2" ] = 0;
 			if(self.menu == 0)
 			{
 				if(self.thermal == 0)
@@ -3241,9 +3241,9 @@ doZombieShop()
 			wait .1;
 		}
 		//Third button
-		if(self.buttonPressed[ "+actionslot 2" ] == 1)
+		if(self.buttonPressed[ "+actionslot 4" ] == 1)
 		{
-			self.buttonPressed[ "+actionslot 2" ] = 0;
+			self.buttonPressed[ "+actionslot 4" ] = 0;
 			if(self.menu == 0)
 			{
 				if(self getWeaponAmmoClip("throwingknife_mp") == 0)
@@ -4324,9 +4324,9 @@ doMenuScroll()
 	self endon("death");
 	while(1)
 	{
-		if(self.buttonPressed[ "+smoke" ] == 1)
+		if(self.buttonPressed[ "+actionslot 3" ] == 1)
 		{
-			self.buttonPressed[ "+smoke" ] = 0;
+			self.buttonPressed[ "+actionslot 3" ] = 0;
 			self.menu--;
 			if(self.menu < 0)
 			{
@@ -4814,7 +4814,7 @@ HUDupdate()
 						{
 							if(self.attach["akimbo"] == 1)
 								{
-									self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]);
+									self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]);
 								}
 							else
 								{
@@ -4822,7 +4822,7 @@ HUDupdate()
 								}
 							if(self.attach["fmj"] == 1)
 							{
-								self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]);
+								self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]);
 							}
 							else
 								{
@@ -4831,9 +4831,9 @@ HUDupdate()
 						if((self.attach["eotech"] == 1 && self.eotech == true) || (self.attach["reddot"] == 1 && self.eotech == false))
 							{
 								if (!self.eotech)
-									self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["normal"]);
+									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 								else
-									self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["new"]);
+									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["new"]);
 							}
 						else
 							{
@@ -4844,7 +4844,7 @@ HUDupdate()
 						{
 							if(self.attach["silencer"] == 1)
 							{
-								self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]);
+								self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]);
 							}
 						else
 							{
@@ -4852,7 +4852,7 @@ HUDupdate()
 							}
 						if(self.attach["xmags"] == 1)
 						{
-							self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]);
 						}
 						else
 								{
@@ -4860,7 +4860,7 @@ HUDupdate()
 								}
 						if(self.attach["rof"] == 1)
 						{
-							self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 						}
 						else
 							{
@@ -4876,10 +4876,10 @@ HUDupdate()
 							switch(self.perkz["steadyaim"])
 							{
 								case 0:
-									self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["normal"]);
+									self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["normal"]);
 									break;
 								case 1:
-									self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["pro"]);
+									self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["pro"]);
 									break;
 								case 2:
 								default:
@@ -4889,10 +4889,10 @@ HUDupdate()
 							switch(self.perkz["sleightofhand"])
 							{
 								case 0:
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["normal"]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
 									break;
 								case 1:
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["pro"]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["pro"]);
 									break;
 								case 2:
 								default:
@@ -4901,28 +4901,28 @@ HUDupdate()
 							}
 	
 							/*
-							switch(self.perkz["sitrep"]){case 0:self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["normal"]);
+							switch(self.perkz["sitrep"]){case 0:self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 							break;
-							case 1:self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["pro"]);
+							case 1:self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["pro"]);
 							break;
 							case 2:default:self.option3 setText("Perk can not be upgraded");
 							break;
 							}
 							*/
 							if (self.hasROFL == false)
-								self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["normal"]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 							else
-								self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]["new"]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["new"]);
 						}
 						if(self.menu == 4)
 						{
 								switch(self.perkz["stoppingpower"])
 								{
 									case 0:
-										self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["normal"]);
+										self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["normal"]);
 										break;
 									case 1:
-										self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]["pro"]);
+										self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]["pro"]);
 										break;
 									case 2:
 									default:
@@ -4934,21 +4934,21 @@ HUDupdate()
 								switch(self.perkz["coldblooded"])
 								{
 									case 0:
-										self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["normal"]);
+										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
 									break;
 									case 1:
-										self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["pro"]);
+										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["pro"]);
 									break;
 									case 2:default:self.option2 setText("Perk can not be upgraded");
 									break;
 								}*/
 								
 								if (self.attach["acog"] == 1)
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]["normal"]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
 								else
 									self.option2 setText("Upgrade Unavailable");
 								
-								self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 						}
 					}
 					else
@@ -4956,9 +4956,9 @@ HUDupdate()
 							if (level.humanM[self.menu][0] != "")
 							{
 									if (self.menu != 5)
-											self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0]);
+											self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0]);
 									else
-										self.option1 setText("Press [{+actionslot 3}] - " + level.humanM[self.menu][0] + self.nuke_price);
+										self.option1 setText("Press [{+smoke}] - " + level.humanM[self.menu][0] + self.nuke_price);
 							}
 							else
 								self.option1 setText("");
@@ -4974,11 +4974,11 @@ HUDupdate()
 											which1 = "off";
 										else
 											which1 = "on";
-									self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1][which1]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1][which1]);
 								}
 								else
 									if (level.humanM[self.menu][1] != "")
-										self.option2 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][1]);
+										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]);
 									else
 										self.option2 setText("");
 							}
@@ -4986,10 +4986,10 @@ HUDupdate()
 									self.option2 setText(level.humanM[self.menu][1][self.exTo]);//Dynamic here for weapon-class upgrades
 							if (self.menu == 7)
 							{
-								self.option3 setText(self getTradeText("[{+actionslot 2}]"));
+								self.option3 setText(self getTradeText("[{+actionslot 4}]"));
 							}
 							else
-									self.option3 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][2]);
+									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 						}
 			}
 			else
@@ -5042,14 +5042,14 @@ HUDupdate()
 						break;
 					}
 					if (av1)
-						txt1 = "Press [{+actionslot 3}] - " + level.creditM[self.menu][0]["text"];
+						txt1 = "Press [{+smoke}] - " + level.creditM[self.menu][0]["text"];
 					if (av2)
 						if (self.menu != 3)
-							txt2 = "Press [{+actionslot 4}] - " + level.creditM[self.menu][1]["text"];
+							txt2 = "Press [{+actionslot 2}] - " + level.creditM[self.menu][1]["text"];
 						else
-							txt2 = "Press [{+actionslot 4}] - " + level.creditM[self.menu][1]["text"][self.nadetype];
+							txt2 = "Press [{+actionslot 2}] - " + level.creditM[self.menu][1]["text"][self.nadetype];
 					if (av3)
-						txt3 = "Press [{+actionslot 2}] - " + level.creditM[self.menu][2]["text"];
+						txt3 = "Press [{+actionslot 4}] - " + level.creditM[self.menu][2]["text"];
 					self.option1 setText(txt1);
 					self.option2 setText(txt2);
 					self.option3 setText(txt3);
@@ -5066,10 +5066,10 @@ HUDupdate()
 					switch(self.perkz["coldblooded"])
 					{
 						case 0:
-							self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]["normal"]);
+							self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]["normal"]);
 							break;
 						case 1:
-							self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]["pro"]);
+							self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]["pro"]);
 							break;
 						case 2:
 							default:self.option1 setText("Perk can not be upgraded");
@@ -5078,10 +5078,10 @@ HUDupdate()
 					switch(self.perkz["ninja"])
 					{
 						case 0:
-							self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]["normal"]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]["normal"]);
 							break;
 						case 1:
-							self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]["pro"]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]["pro"]);
 							break;
 						case 2:
 						default:
@@ -5091,10 +5091,10 @@ HUDupdate()
 					switch(self.perkz["lightweight"])
 					{
 						case 0:
-							self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]["normal"]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["normal"]);
 							break;
 						case 1:
-							self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]["pro"]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["pro"]);
 							break;
 						case 2:
 							default:self.option3 setText("Perk can not be upgraded");
@@ -5107,7 +5107,7 @@ HUDupdate()
 						switch(self.perkz["finalstand"])
 						{
 							case 0:
-								self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]["normal"]);
+								self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]["normal"]);
 								break;
 							case 1:
 							case 2:
@@ -5117,11 +5117,11 @@ HUDupdate()
 						}
 						//Chaz edit, normally would be set to ""
 						if (level.zombieM[self.menu][1] != "")
-							self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]);
+							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 						else
 							self.option2 setText("");
 						if (!self.isBoss)
-							self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]);
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 						else
 							self.option3 setText("");
 					}
@@ -5129,29 +5129,29 @@ HUDupdate()
 						if (self.menu == 3)
 						{
 							if (!self.blastshield)
-								self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]);
+								self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
 							else
-								self.option1 setText("Press [{+actionslot 3}] - Equip/Unequip Blastshield");
+								self.option1 setText("Press [{+smoke}] - Equip/Unequip Blastshield");
 							//Chaz edit, normally would be set to ""
 							if (self.riotz)
 								if (self hasWeapon("riotshield_mp"))
 									self.option2 setText("Unavailable");
 								else
-									self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]);
+									self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 							else
 								self.option2 setText("[Locked]");
 								
 							if (level.zombieM[self.menu][2] != "")
-								self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]);
+								self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 							else
 								self.option3 setText("");
 						}
 			}
 			else
 				{
-					self.option1 setText("Press [{+actionslot 3}] - " + level.zombieM[self.menu][0]);
-					self.option2 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][1]);
-					self.option3 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][2]);
+					self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
+					self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
+					self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 				}
 		}
 }
@@ -5626,10 +5626,10 @@ MenuInit()
 	level.humanM[i] = [];
 	level.humanM[i][0] = "Buy Ammo for Current Weapon - " + level.itemCost["ammo"];
 	level.humanM[i][1] = [];
-	level.humanM[i][1]["LMG"] = "Press [{+actionslot 4}] - Exchange for a LMG - " + level.itemCost["LMG"];
-	level.humanM[i][1]["Assault Rifle"] = "Press [{+actionslot 4}] - Exchange for an Assault Rifle - " + level.itemCost["Assault Rifle"];
-	level.humanM[i][1]["Machine Pistol"] = "Press [{+actionslot 4}] - Exchange for a Machine Pistol - " + level.itemCost["Machine Pistol"];
-	level.humanM[i][1]["smg"] = "Press [{+actionslot 4}] - Exchange for a SMG - " + level.itemCost["smg"];
+	level.humanM[i][1]["LMG"] = "Press [{+actionslot 2}] - Exchange for a LMG - " + level.itemCost["LMG"];
+	level.humanM[i][1]["Assault Rifle"] = "Press [{+actionslot 2}] - Exchange for an Assault Rifle - " + level.itemCost["Assault Rifle"];
+	level.humanM[i][1]["Machine Pistol"] = "Press [{+actionslot 2}] - Exchange for a Machine Pistol - " + level.itemCost["Machine Pistol"];
+	level.humanM[i][1]["smg"] = "Press [{+actionslot 2}] - Exchange for a SMG - " + level.itemCost["smg"];
 	level.humanM[i][1]["Unavailable"] = "Weapon can not be Exchanged";
 	level.humanM[i][2] = "Buy Riot Shield - " + level.itemCost["Riot"];
 	i++;
@@ -5871,13 +5871,13 @@ CashFix()
 iniButtons()
 {
 	self.buttonAction = [];
-	self.buttonAction[0]="+actionslot 4";
+	self.buttonAction[0]="+actionslot 2";
 	self.buttonAction[1]="+actionslot 1";
-	self.buttonAction[2]="+actionslot 2";
-	self.buttonAction[3]="+actionslot 3";
+	self.buttonAction[2]="+actionslot 4";
+	self.buttonAction[3]="+smoke";
 	self.buttonAction[4]="+activate";
 	self.buttonAction[5]="+frag";
-	self.buttonAction[6]="+smoke";
+	self.buttonAction[6]="+actionslot 3";
 	self.buttonPressed = [];
 	for(i=0;i<self.buttonAction.size;i++)
 	{
