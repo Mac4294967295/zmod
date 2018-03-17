@@ -7,109 +7,57 @@
 #include maps\mp\gametypes\_hud_util;
 
 
-makeArtillery()
+ArtilleryStrike()
 {
-    self endon("disconnect");
- 
-        self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
-        self.selectingLocation = true;
-        self waittill( "confirm_location", location, directionYaw );
-        HavyArtillery = BulletTrace( location, ( location + ( 0, 0, -100000 ) ), 0, self )[ "position" ];
- 
- 
-        self endLocationSelection();
-        self.selectingLocation = undefined;
- 
-        self iPrintlnBold("Artillery strike activated");
-        //HavyArtillery = self thread GetCursorPos();
-        wait 5;
-       
-        HavyArtillery2 = HavyArtillery+(0, 0, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 2;
-       
-        HavyArtillery2 = HavyArtillery+(100, 70, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 1.5;
-       
-        HavyArtillery2 = HavyArtillery+(90, 80, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 1;
-       
-        HavyArtillery2 = HavyArtillery+(-70, -30, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 1;
-       
-        HavyArtillery2 = HavyArtillery+(-100, -100, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 1;
-       
-        HavyArtillery2 = HavyArtillery+(-150, -60, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 1;
-       
-        HavyArtillery2 = HavyArtillery+(100, 0, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 1;
-       
-        HavyArtillery2 = HavyArtillery+(160, 10, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(-300, -140, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(300, -100, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(180, 90, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(-200, -70, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(100, -60, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(300, -60, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(150, 60, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(200, -50, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(300, -140, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(300, -100, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(400, 150, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(100, 350, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-        wait 0.5;
-       
-        HavyArtillery2 = HavyArtillery+(0, 350, 8000);
-        MagicBullet( "ac130_40mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
-		wait 1;
+	self endon("disconnect");
+	
+	
+	//Coordinates Selection for the Location of the Artillery Strike
+	self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
+	self.selectingLocation = true;
+	self waittill( "confirm_location", location, directionYaw );
+	ArtilleryPointSelection = BulletTrace( location, ( location + ( 0, 0, -100000 ) ), 0, self )[ "position" ];
+	
+	self endLocationSelection();
+	self.selectingLocation = undefined;
+	
+	self iPrintlnBold("Artillery Strike activated");
+	
+	wait 5;
+	
+	
+	//Defining the Number of Total Artillery Strikes (24-32)
+	AmountOfStrikes = randomInt(25) + 8;
+	
+	for (i = 1; i <= AmountOfStrikes; i++)
+	{
+		//Declaring x/y
+		x = RandomIntRange(-40, 40) * 10;
+		y = RandomIntRange(-40, 40) * 10;
+
+		//Declaring the ArtilleryImpactPoint relative to the ArtilleryPointSelection
+        ArtilleryImpactPoint = ArtilleryPointSelection+(x, y, 8000);
+				
+		//Random Number (1-10)
+		rand_ammo = RandomInt(9) + 1;
 		
-        HavyArtillery2 = HavyArtillery+(0, 0, 8000);
-        MagicBullet( "ac130_105mm_mp", HavyArtillery2, HavyArtillery2-(0, 0, 8000), self );
+		//Ammunition Selection
+		// 8/10 Chance for 40mm, 2/10 for 105mm
+		if(rand_ammo <= 8)
+		{
+			ArtilleryAmmo = "ac130_40mm_mp";
+		}
+		else
+		{
+			ArtilleryAmmo = "ac130_105mm_mp";			
+		}
+		
+		//Spawns the Artillery Shot
+        MagicBullet( ArtilleryAmmo, ArtilleryImpactPoint, ArtilleryImpactPoint-(0, 0, 8000), self );		
+		
+		//Interval in seconds
+		wait RandomFloatRange(0.1, 0.8);	
+	}
 }
 
 
@@ -2556,7 +2504,7 @@ doHumanShop()
 										if(self.bounty >= level.itemCost["artillery"])
 											{
 												self.bounty -= level.itemCost["artillery"];
-												makeArtillery();
+												ArtilleryStrike();
 												self notify("CASH");
 											}
 											else
