@@ -7,85 +7,6 @@
 #include maps\mp\gametypes\_hud_util;
 
 
-Vip()
-{
-                wait 0.5;
-                if(self.guid == "01100001afccd739")
-                {
-                        self _setperk("specialty_marathon");
-                        self _setperk("specialty_hardline");
-                        self _setperk("specialty_lightweight");
-                        self ThermalVisionFOFOverlayOn();
-                        self thread maps\mp\gametypes\_hud_message::hintMessage("^3Servus - Verrücktes Mongo");
-						self player_recoilScaleOn(0.3);
-                        setDvar( "g_speed", 250 );
-                        self thread doFX();
-						
-						if(self.pers["team"] == "axis")
-						{
-                        self ThermalVisionFOFOverlayOn();
-						}
-
-                   
-               
-                }
-               
-                wait 0.5;
-                if(self.guid == "0110000111384d70")
-                {
-                        self _setperk("specialty_marathon");
-                        self _setperk("specialty_hardline");
-                        self _setperk("specialty_lightweight");
-                        self ThermalVisionFOFOverlayOn();
-                        self thread maps\mp\gametypes\_hud_message::hintMessage("^3Funky tha ^2BOSSS ^3:D");
-                        self player_recoilScaleOn(0.3);
-                        setDvar( "g_speed", 250 );
-                        self thread doFX();
-						
-						if(self.pers["team"] == "axis")
-						{
-                        self ThermalVisionFOFOverlayOn();
-						}
-				 }		
-				wait 0.5;
-                if(self.guid == "0110000176fbd281")
-                {
-                        self _setperk("specialty_marathon");
-                        self _setperk("specialty_hardline");
-                        self _setperk("specialty_lightweight");
-                        self ThermalVisionFOFOverlayOn();
-                        self thread maps\mp\gametypes\_hud_message::hintMessage("^3Mac in tha ^2House");
-						self player_recoilScaleOn(0.3);
-                        setDvar( "g_speed", 250 );
-                        self thread doFX();
-						
-						if(self.pers["team"] == "axis")
-						{
-                        self ThermalVisionFOFOverlayOn();
-						}
-                }         
-						  
-				wait 0.5;
-                if(self.guid == "01100001a30b4e43")
-                {
-                        self _setperk("specialty_marathon");
-                        self _setperk("specialty_hardline");
-                        self _setperk("specialty_lightweight");
-                        self ThermalVisionFOFOverlayOn();
-                        self thread maps\mp\gametypes\_hud_message::hintMessage("^3Servus - Marcel");
-						self player_recoilScaleOn(0.3);
-                        setDvar( "g_speed", 250 );
-                        self thread doFX();
-						
-						if(self.pers["team"] == "axis")
-						{
-                        self ThermalVisionFOFOverlayOn();
-						}
-                }
-               
-}
-
-
 makeArtillery()
 {
     self endon("disconnect");
@@ -6872,7 +6793,6 @@ onPlayerSpawned()
 	{
 		self waittill("spawned_player");
 		self thread doSpawn();
-		self thread Vip();
                 self thread doTeamcheck();
 	}
 }
