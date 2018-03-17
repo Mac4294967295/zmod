@@ -3,6 +3,8 @@
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\perks\_perkfunctions;
 
+//test comment
+
 init()
 {
 	level.perkFuncs = [];
