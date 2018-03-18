@@ -248,7 +248,7 @@ chaz_init()
 {
 	level thread doRoundWaitEnd();
 	level.debug = 0;
-	level.traders = [];
+	//level.traders = [];
 	setup_dvar("scr_zmod_debug", "0");
 	if (getDvarInt("scr_zmod_debug") != 0)
 		level.debug = 1;
@@ -706,8 +706,8 @@ init_player_extra()
 		self.ack["ts"] = TS_IDLE;
 		self.offerfirst = false;
 		self.humanfs = false;
-		self.traderid = -1;
-		self.ptrader = -1;
+		//self.traderid = -1;
+		//self.ptrader = -1;
 		self.riotz = false;
 		self.tact = false;
 		self.blastshield = false;
@@ -736,7 +736,7 @@ isValidWeaponForTrade(weap)
 		}
 		return false;
 }
-
+/*
 addTrader(player)
 {
 	if (player.ack["ts"] != TS_IDLE)
@@ -761,7 +761,8 @@ getIndex(target)
 			return i;
 	return -1;
 }
-
+*/
+/*
 findTrader(player)
 {
 	for (i = 0; i < level.traders.size; i++)
@@ -769,7 +770,8 @@ findTrader(player)
 			return i;
 	return -1;
 }
-
+*/
+/*
 removeTrader(player)
 {
 	target = findTrader(player);
@@ -788,7 +790,8 @@ removeTrader(player)
 	
 	level.traders[sz] = undefined;
 }
-
+*/
+/*
 clearTraders()
 {
 	level.traders = [];
@@ -798,12 +801,14 @@ clearTraders()
 		player.ptrader = -1;
 	}
 }
-
+*/
+/*
 getWeapname(player)
 {
 	return getRealWeaponName(player.current);
 }
-
+*/
+/*
 createTradeIcon()
 {
 	if (isDefined(self.tradeicon))
@@ -823,7 +828,7 @@ deleteTradeIcon()
 	self.tradeicon destroy();
 	self.tradeicon = undefined;
 }
-
+*/
 dropDead()
 {
 	foreach (player in level.players)
@@ -853,7 +858,7 @@ coords_thread()
 		level playSoundOnPlayers("mp_defcon_down");
 	}
 }
-
+/*
 searchForTradersTimeout()
 {
   self endon("disconnect");
@@ -875,11 +880,12 @@ searchForTradersTimeout()
 	self iprintlnbold("^3Trade canceled!");
 	self thread cancelTrading();
 }
-
+*/
 /*
 	1)User offers weapon for trade, and user enters OFFERING. User may change weapons
 	2)Another user as step 1 enters vicinity
 */
+/*
 searchForTradersThread()
 {
     self endon("disconnect");
@@ -930,7 +936,9 @@ searchForTradersThread()
     	wait 0.4;
     }
 }
+*/
 
+/*
 cancelTrading()
 {
 	self notify("end_trade_search");
@@ -956,7 +964,8 @@ resetTrade()
 		if (player.ack["ts"])
 			player cancelTrading();
 }
-
+*/
+/*
 confirmTradeThread(partner)
 {
     self endon("disconnect");
@@ -984,7 +993,8 @@ confirmTradeThread(partner)
 		partner iprintlnbold(txt);
     self thread cancelTrading();
 }
-
+*/
+/*
 startTradeConfim()
 {
 	if (self.ptrader == -1)
@@ -1005,7 +1015,8 @@ startTradeConfim()
 	partner.offerfirst = false;
 	self thread confirmTradeThread(partner);
 }
-
+*/
+/*
 onTradeItemUse()
 {
 		switch (self.ack["ts"])
@@ -1095,7 +1106,8 @@ onTradeItemUse()
 				break;
 		}
 }
-
+*/
+/*
 getTradeText(button)
 {
 	txt = "empty";
@@ -1142,7 +1154,7 @@ getTradeText(button)
 	}
 	return txt;
 }
-
+*/
 CleanupKillstreaks()
 {
 	//reset and player sentry states
@@ -1222,7 +1234,7 @@ doSetup(isRespawn)
 		self notify("menuresponse", "changeclass", "class1");
 		return;
 	}
-	self cancelTrading();
+	//self cancelTrading();
 	self doScoreReset();
 	wait .1;
 	self notify("menuresponse", "changeclass", "class1");
@@ -1307,7 +1319,7 @@ doSetup(isRespawn)
 		self.creditshop = false;
 	self setClientDvar("g_knockback", 1000);
 	
-	self resetTrade();
+	//self resetTrade();
 
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "Human";
@@ -1327,7 +1339,7 @@ doSetup(isRespawn)
 
 doAlphaZombie()
 {
-	self cancelTrading();
+	//self cancelTrading();
 	if(self.team == "allies")
 	{
 		self notify("menuresponse", game["menu_team"], "axis");
@@ -1393,7 +1405,7 @@ doAlphaZombie()
 
 doZombie()
 {
-	self cancelTrading();
+	//self cancelTrading();
 	if(self.team == "allies")
 	{
 			self notify("menuresponse", game["menu_team"], "axis");
@@ -2483,7 +2495,7 @@ doHumanShop()
 						else
 						if (self.menu == 7)
 						{
-							self onTradeItemUse();
+							//self onTradeItemUse();
 						}
 						else
 						if (self.menu == 8)
@@ -4458,7 +4470,8 @@ HUDupdate()
 									self.option2 setText(level.humanM[self.menu][1][self.exTo]);
 							if (self.menu == 7)
 							{
-								self.option3 setText(self getTradeText("[{+actionslot 4}]"));
+								//self.option3 setText(self getTradeText("[{+actionslot 4}]"));
+								self.option3 setText("Press [{+actionslot 4}] - " + "This slot is not in use");
 							}
 							else
 									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
@@ -5844,7 +5857,7 @@ onPlayerConnect()
 onDisconnect()
 {
 	self waittill("disconnect");
-	removeTrader(self);
+	//removeTrader(self);
 }
 
 clog_button_loop_change()
