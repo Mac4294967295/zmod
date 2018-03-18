@@ -4384,7 +4384,7 @@ MenuInit()
 	i++;//Menu = 9
 	level.humanM[i][0] = "Buy Artillery - " + level.itemCost["artillery"];
 	level.humanM[i][1] = "Buy Airstrike - " + level.itemcost ["airstrike"];
-	level.humanM[i][2] = "Buy 8-Shot - " + level.itemCost["GrimReaper"];
+	level.humanM[i][2] = "Buy GrimReaper - " + level.itemCost["GrimReaper"];
 	
 	i = 0;
 	level.zombieM[i] = [];
