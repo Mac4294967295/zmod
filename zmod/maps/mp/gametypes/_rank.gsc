@@ -2812,26 +2812,6 @@ chooseZombie()
 	return -1;
 }
 
-chooseSurvivor()
-{
-	while(1)
-	{
-		for (i = 0; i < level.players.size; i++)
-		{
-			if (level.players[i].wasSurvivor == 1 || !level.players[i].ack["safe"])
-				continue;
-			level.players[i].wasSurvivor = 1;
-			return i;
-		}
-		for (i = 0; i < level.players.size; i++)
-		{
-			level.players[i].wasSurvivor = 0;
-		}
-		if (level.players.size == 0)
-			return -1;
-	}
-}
-
 getNadeWeap()
 {
 	return level.nadetypes[self.nadetype];
