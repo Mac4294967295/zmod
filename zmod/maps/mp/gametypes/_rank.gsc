@@ -1123,9 +1123,7 @@ doLastAlive()
 	self endon("disconnect");
 	self endon("death");
 	wait 2;
-	self maps\mp\perks\_perks::givePerk("specialty_lightweight");
-	self.moveSpeedScaler = 1.6;
-	self setMoveSpeedScale(1.6);
+	self setMoveSpeedScale(1.7);
 	self GiveMaxAmmo(self.current);
 	if (self.commandopro == true)
 	{
@@ -4329,6 +4327,8 @@ doPerksSetup()
 
 doSpawn()
 {
+	
+	
 	//Chaz Edit:
 	self.combo = 0;
 	if (self.newcomer == 1)
