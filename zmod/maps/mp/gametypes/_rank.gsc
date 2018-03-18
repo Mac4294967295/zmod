@@ -319,9 +319,6 @@ chaz_init()
 	level.nadenames[1] = "Semtex";
 	level.nadenames[2] = "Claymore";
 	level.nadenames[3] = "C4 Charge";
-
-	level.icon_trade = "waypoint_targetneutral";
-	precacheShader ( level.icon_trade );	
 }
 
 TS_IDLE = 0;//Normal mode
