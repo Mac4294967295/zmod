@@ -2896,14 +2896,6 @@ calculateCredits()
 		level.players[i].kills = 0;
 }
 
-makeEveryoneNonSolid()
-{
-}
-
-makeEveryoneSolid()
-{
-}
-
 doIntermission()
 {
 	level.gameState = "intermission";
@@ -2911,7 +2903,6 @@ doIntermission()
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
 	level.lastAlive = 0;
 	level thread doIntermissionTimer();
-	makeEveryoneNonSolid();
 
 	level notify("RESETDOORS");
 	level notify("RESETCLUSTER");
@@ -2927,7 +2918,6 @@ doIntermission()
 		player thread doSetup();
 	
 	wait getdvarInt("scr_zmod_intermission_time");
-	makeEveryoneSolid();
 	level.ShowCreditShop = false;
 	level thread doZombieTimer();
 	CleanupKillstreaks();
