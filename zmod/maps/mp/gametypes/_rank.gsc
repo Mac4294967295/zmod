@@ -4384,10 +4384,6 @@ doInit()
 	wait 2;
 	
 	level thread doGameStarter();
-	if(level.friendlyfire != 0)
-	{
-		level thread ffend();
-	}
 }
 
 CostInit()
@@ -4711,34 +4707,6 @@ OverRider()
 		level.killstreakRewards = 0;
 		wait 1;
 	}
-}
-
-ffend()
-{
-	level endon ( "game_ended" );
-	for(i = 10;i > 0;i--)
-	{
-		foreach(player in level.players)
-		{
-			player iPrintlnBold("^1ERROR: Friendly Fires is Enabled. Game Ending");
-		}
-		wait .5;
-	}
-	exitLevel( false );
-}
-
-headend()
-{
-	level endon ( "game_ended" );
-	for(i = 10;i > 0;i--)
-	{
-		foreach(player in level.players)
-		{
-			player iPrintlnBold("^1ERROR: Headshots Only is Enabled. Game Ending");
-		}
-		wait .5;
-	}
-	exitLevel( false );
 }
 
 destroyOnDeath()
