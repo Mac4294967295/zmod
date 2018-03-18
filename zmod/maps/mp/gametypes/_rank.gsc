@@ -993,7 +993,7 @@ doAlphaZombie()
 	self thread doPerkCheck();
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.25;
+	//self.moveSpeedScaler = 1.7;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -1056,7 +1056,7 @@ doZombie()
 			
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.15;
+	//self.moveSpeedScaler = 1.15;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -1403,21 +1403,9 @@ doPerkCheck()
 				self maps\mp\perks\_perks::givePerk("specialty_quieter");
 		}
 		
-		if(self.perkz["lightweight"] == 1)
-		{
-			if(!self _hasPerk("specialty_lightweight"))
-				self maps\mp\perks\_perks::givePerk("specialty_lightweight");
-			self setMoveSpeedScale(1.2);
-		}
 		
-		if(self.perkz["lightweight"] == 2)
-		{
-			if(!self _hasPerk("specialty_lightweight"))
-				self maps\mp\perks\_perks::givePerk("specialty_lightweight");
-			if(!self _hasPerk("specialty_fastsprintrecovery"))
-				self maps\mp\perks\_perks::givePerk("specialty_fastsprintrecovery");
-			self setMoveSpeedScale(1.5);
-		}
+		
+		
 		
 		if(self.perkz["finalstand"] == 2 || (self.humanfs && self.team == "allies"))
 		{
@@ -2547,34 +2535,24 @@ doZombieShop()
 			}
 			if(self.menu == 1)
 			{
-				switch(self.perkz["lightweight"])
+				if(self.perkz["Movespeed"]<5) //Mac
 				{
-					case 0:
-						if(self.bounty >= level.itemCost["Lightweight"])
+					
+						if(self.bounty >= level.itemCost["Movespeed"])
 						{
-							self statCashSub(level.itemCost["Lightweight"]);
-							self.perkz["lightweight"] = 1;
-							self iPrintlnBold("^2Perk Bought!");
+
+							self.perkz["Movespeed"] += 1;	
+							self.moveSpeedScaler += 0.1;
+							self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+							self iPrintlnBold("^2Speed Bought!");
 						}
 						else
 							{
 								self iPrintlnBold("^1Not Enough ^3Cash");
 							}
-						break;
-					case 1:
-						if(self.bounty >= level.itemCost["LightweightPro"])
-						{
-							self statCashSub(level.itemCost["LightweightPro"]);
-							self.perkz["lightweight"] = 2;
-							self iPrintlnBold("^2Perk Upgraded!");
-						}
-						else
-							{
-								self iPrintlnBold("^1Not Enough ^3Cash");
-							}
-						break;
-					default:
-						break;
+
+				}else {
+					level.zombieM[1][2]["normal"] = "MS fully upgraded!";
 				}
 			}
 			if (self.menu == 2)
@@ -3909,6 +3887,8 @@ ZombiePerkHUDUpdate()
 
 HUDupdate()
 {
+	self.DebugHUD setText("Movespeed-var: " + self.perkz["Movespeed"] +" "+ self.moveSpeedScaler);
+
 		if(self.team == "allies")
 		{
 			self HumanPerkHUDUpdate();
@@ -4174,18 +4154,12 @@ HUDupdate()
 							self.option2 setText("Perk can not be upgraded");
 							break;
 					}
-					switch(self.perkz["lightweight"])
+					if(self.perkz["lightweight"]<5)
 					{
-						case 0:
-							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["normal"]);
-							break;
-						case 1:
-							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["pro"]);
-							break;
-						case 2:
-							default:self.option3 setText("Perk can not be upgraded");
-							break;
-					}
+						self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["normal"]);
+					}else{	
+						self.option3 setText("Perk can not be upgraded");
+					}		
 				}
 				else
 					if(self.menu == 2)
@@ -4316,7 +4290,7 @@ doPerksSetup()
 	self.perkz["sleightofhand"] = 0;
 	self.perkz["coldblooded"] = 0;
 	self.perkz["ninja"] = 0;
-	self.perkz["lightweight"] = 0;
+	self.perkz["Movespeed"] = 0;
 	self.perkz["finalstand"] = 0;
 	self.perkz["blastshield"] = 0;
 }
@@ -4519,8 +4493,7 @@ CostInit()
 	level.itemCost["ColdBloodedPro"] = 100;
 	level.itemCost["Ninja"] = 100;
 	level.itemCost["NinjaPro"] = 100;
-	level.itemCost["Lightweight"] = 100;
-	level.itemCost["LightweightPro"] = 50;
+	level.itemCost["Movespeed"] = 100;
 	level.itemCost["FinalStand"] = 100;
 	level.itemCost["pmissile"] = 150;
 	level.itemCost["rpg7"] = 50;
@@ -4743,7 +4716,7 @@ MenuInit()
 	level.zombieM[i][0]["pro"] = "Upgrade to Cold Blooded Pro - " + level.itemCost["ColdBloodedPro"];
 	level.zombieM[i][1]["normal"] = "Buy Ninja - " + level.itemCost["Ninja"];
 	level.zombieM[i][1]["pro"] = "Upgrade to Ninja Pro -" + level.itemCost["NinjaPro"];
-	level.zombieM[i][2]["normal"] = "Buy Lightweight - " + level.itemCost["Lightweight"];
+	level.zombieM[i][2]["normal"] = "Buy Movespeed - " + level.itemCost["Movespeed"];
 	level.zombieM[i][2]["pro"] = "Upgrade to Lightweight Pro - " + level.itemCost["LightweightPro"];
 	i++;
 	
@@ -4878,6 +4851,7 @@ destroyOnDeath()
 	self.perkztext3 destroy();
 	self.perkztext4 destroy();
 	self.perkztext5 destroy();
+	self.DebugHUD destroy();
 }
 
 OMAExploitFix()
@@ -4986,6 +4960,25 @@ CreatePlayerHUD()
 	s = 15;
 	i = 0;
 	a = 0.85;
+	
+	//Mac: Debug HUD
+	self.DebugHUD = NewClientHudElem( self );
+	//self.DebugHUD.alignY = "bottom";
+	//self.DebugHUD.horzAlign = "center";
+	//self.DebugHUD.vertAlign = "bottom";
+	self.DebugHUD.x = -100;
+	self.DebugHUD.y = -5;
+	self.DebugHUD.foreground = true;
+	self.DebugHUD.fontScale = 1.0;
+	self.DebugHUD.font = "objective";
+	self.DebugHUD.alpha = a;
+	self.DebugHUD.glow = 1;
+	self.DebugHUD.glowColor = ( 0.2, 0.2, 1 );
+	self.DebugHUD.glowAlpha = 1;
+	self.DebugHUD.color = ( 1.0, 1.0, 1.0 );
+	self.DebugHUD setText("Movespeed-var: init");
+	
+	
 	
 	self.scrollleft = NewClientHudElem( self );
 	self.scrollleft.alignX = "center";
