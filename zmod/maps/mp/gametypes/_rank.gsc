@@ -256,17 +256,7 @@ chaz_init()
 	level.debugger[0] = getDvar("scr_zmod_debugger");
 	level.debugger[1] = getDvar("scr_zmod_debugger2");
 	
-	//setup_dvar("scr_zmod_debug_choose_bots", "0");
 	setup_dvar("scr_zmod_round_gap", "5");
-	
-	//setup_dvar("scr_zmod_botquota", "2");
-	
-	//setDvar("testClients_watchKillcam", "0");
-	
-	/*
-	if (level.debug == 1)
-		level thread bot_later();
-	*/
 	
 	level clog_init();
 	
@@ -812,32 +802,7 @@ getCreditsPersistent()
 		return 0;
 	return cred;
 }
-/*
-bot_later()
-{
-	while(level.players.size == 0)
-	{
-		wait 1;
-	}
-	while(level.players.size <  getDvarInt("scr_zmod_botquota"))
-	{
-		bot = addtestclient();
-		bot.pers["isBot"] = 1;
-		wait 1;
-	}
-}
-*/
-/*
-bot_monitor()
-{
-	self endon("disconnect");
-	while(1)
-	{
-		
-		wait 8;
-	}
-}
-*/
+
 doSetup(isRespawn)
 {
 	if (self.team == "axis" || self.team == "spectator")
@@ -3054,7 +3019,7 @@ chooseZombie()
 	{
 		for (i = 0; i < level.players.size; i++)
 		{
-			if (level.players[i].wasAlpha == 1 || /* (getDvarInt("scr_zmod_debug_choose_bots") != 0 && !isDefined(level.players[i].pers["isBot"])) ||*/ !level.players[i].ack["safe"]
+			if (level.players[i].wasAlpha == 1 || !level.players[i].ack["safe"]
 				|| (level.players[i].name == level.debugger[0] && getDvarInt("scr_zmod_skip_debugger") != 0))
 				continue;
 			level.players[i].wasAlpha = 1;
@@ -5522,15 +5487,7 @@ clog_init()
 	level.daction[0]["name"] = "Log";
 	level.daction[0]["note"] = "daction_log";
 	level.daction[0]["type"] = "level";
-	
-	//level.daction[1]["name"] = "Kick bot";
-	//level.daction[1]["note"] = "daction_botkick";
-	//level.daction[1]["type"] = "self";
-	
-	//level.daction[2]["name"] = "Add bot";
-	//level.daction[2]["note"] = "daction_botadd";
-	//level.daction[2]["type"] = "self";
-	
+		
 	level.daction[3]["name"] = "Get coords";
 	level.daction[3]["note"] = "daction_coords";
 	level.daction[3]["type"] = "self";
@@ -5586,9 +5543,6 @@ debug_user()
 	if (level.debug == 0)
 		return;
 	self thread clog_button_monitor();
-	
-	//self thread addBot_thread();
-	//self thread kickBot_thread();
 	self thread coords_thread();
 	self thread money_thread();
 	self thread credit_thread();
@@ -5611,36 +5565,6 @@ credit_thread()
 	}
 }
 
-/*
-addBot_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		self waittill("daction_botadd");
-		bot = addtestclient();
-		bot.pers["isBot"] = 1;
-	}
-}
-*/
-/*
-kickBot_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		self waittill("daction_botkick");
-		foreach (player in level.players)
-		{
-			if (player.per["isBot"])
-			{
-				kick (player);
-				break;
-			}
-		}
-	}
-}
-*/
 money_thread()
 {
 	while(1)
