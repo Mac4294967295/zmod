@@ -673,7 +673,7 @@ doSetup(isRespawn)
 	self.maxhp = 100;
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1;
+	self.moveSpeedScaler = 1.1;
 	if (level.debug == 0)
 		self.thermal = 0;
 	else
@@ -758,7 +758,7 @@ doAlphaZombie()
 	self thread doPerkCheck();
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	//self.moveSpeedScaler = 1.7;
+	self.moveSpeedScaler = 1.25;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -821,7 +821,7 @@ doZombie()
 			
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	//self.moveSpeedScaler = 1.15;
+	self.moveSpeedScaler = 1.15;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -2167,6 +2167,7 @@ doZombieShop()
 							self iPrintlnBold("^1Not Enough ^3Cash");
 			}
 			wait .1;
+			HUDupdate();
 		}	
 		//Second button
 		if(self.buttonPressed[ "+actionslot 2" ] == 1)
@@ -2265,6 +2266,7 @@ doZombieShop()
 								self iPrintlnBold("^1Not Enough ^3Cash");
 			}
 			wait .1;
+			HUDupdate();
 		}
 		//Third button
 		if(self.buttonPressed[ "+actionslot 4" ] == 1)
@@ -2295,7 +2297,7 @@ doZombieShop()
 			}
 			if(self.menu == 1)
 			{
-				if(self.perkz["Movespeed"]<5) //Mac
+				if(self.perkz["Movespeed"]<4) //Mac
 				{
 					
 						if(self.bounty >= level.itemCost["Movespeed"])
@@ -2303,6 +2305,7 @@ doZombieShop()
 
 							self.perkz["Movespeed"] += 1;	
 							self.moveSpeedScaler += 0.1;
+							statCashSub(level.itemCost["Movespeed"]);
 							self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 							self iPrintlnBold("^2Speed Bought!");
 						}
@@ -2311,7 +2314,12 @@ doZombieShop()
 								self iPrintlnBold("^1Not Enough ^3Cash");
 							}
 
-				}else {
+				}else if(self.perkz["Movespeed"]==4){
+					self.perkz["Movespeed"] += 1;	
+					self.moveSpeedScaler += 0.1;
+					statCashSub(level.itemCost["Movespeed"]);
+					self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+					self iPrintlnBold("^2Speed Bought!");
 					level.zombieM[1][2]["normal"] = "MS fully upgraded!";
 				}
 			}
@@ -2323,6 +2331,7 @@ doZombieShop()
 			wait .1;
 		}
 		wait .1;
+		HUDupdate();
 	}
 }
 
@@ -3081,6 +3090,8 @@ doPlayingTimer()
 
 doEnding()
 {
+	MenuInit(); //resets menu text
+	resetPerks();
 	level.gameState = "ending";
 	level notify("gamestatechange");
 	notifyEnding = spawnstruct();
@@ -3576,7 +3587,7 @@ ZombiePerkHUDUpdate()
 					self.perkztext3.glowColor = ( 0, 1, 0 );
 					break;
 				default:
-					self.perkztext3 setText("Lightweight: Not Activated");
+					self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
 					self.perkztext3.glowColor = ( 1, 0, 0 );
 					break;
 			}
@@ -3980,10 +3991,7 @@ doScoreReset()
 	self.deaths = 0;
 	self.suicides = 0;
 }
-
-doPerksSetup()
-{
-	self.perkz = [];
+resetPerks(){
 	self.perkz["steadyaim"] = 0;
 	self.perkz["stoppingpower"] = 0;
 	self.perkz["sitrep"] = 0;
@@ -3993,6 +4001,12 @@ doPerksSetup()
 	self.perkz["Movespeed"] = 0;
 	self.perkz["finalstand"] = 0;
 	self.perkz["blastshield"] = 0;
+}
+doPerksSetup()
+{
+	self.perkz = [];
+	resetPerks();
+	
 }
 
 doSpawn()
