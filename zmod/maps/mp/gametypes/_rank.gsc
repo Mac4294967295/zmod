@@ -85,7 +85,6 @@ tryUseCustomAirstrike()
 		
 		Airstrike_support moveTo( Air_Strike_Support + (0, 0, 3000), 5 );
 		
-		//now to make the dive more realistic
 		wait 4;
 		MagicBullet( "javelin_mp", Airstrike_support.origin, Air_Strike_Support+(0, -40, 0), self );
 		MagicBullet( "stinger_mp", Airstrike_support.origin, Air_Strike_Support+(0, 40, 0), self );
@@ -121,7 +120,7 @@ tryUseCustomAirstrike()
 		
 		wait 3;
 		
-		Airstrike_support stoploopsound( "veh_b2_dist_loop" );		//Fixed the annonying soundbug [UD]Funky
+		Airstrike_support stoploopsound( "veh_b2_dist_loop" );
 		Airstrike_support delete();
 		Air_Strike_Support = undefined;
 }
@@ -235,7 +234,6 @@ setup_dvar(dname, dval)
 
 doRoundWaitEnd()
 {
-	//level endon("game_ended");
 	level waittill("game_ended");
 	foreach (player in level.players)
 	{
@@ -302,7 +300,6 @@ chaz_init()
 	setup_dvar("scr_zmod_zombie_challenge", "1");
 	setup_dvar("scr_zmod_disable_weapondrop", "1");
 	setup_dvar("scr_zmod_infotext", "^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
-	/*Make sure the max we're allowed to use is the max we're allowed to have*/
 	explosivemax = getDvarInt("scr_maxPerPlayerExplosives");
 	equipmentmax = [];
 	equipmentmax[0] = getDvarInt("scr_zmod_frag_ammo");
@@ -344,17 +341,7 @@ chaz_init()
 	level.zchallenge_reward = ::zombieChallengeReward;
 
 	level.icon_trade = "waypoint_targetneutral";
-	precacheShader ( level.icon_trade );
-	
-	/*t = OpenFile("blahblah.txt", "write");
-	setdvar("scr_zmod_success", "setfile");
-	if (t != -1)
-	{
-		FPrintLn(t, "heyheyheyheyhehyehyehyehy");
-		CloseFile(t);
-		setdvar("scr_zmod_success", "1");
-	}*/
-	
+	precacheShader ( level.icon_trade );	
 }
 
 TS_IDLE = 0;//Normal mode
@@ -477,7 +464,6 @@ generateHumanChallengeNormal()
 		return;
 	}
 	who = zombies[randomInt(zombies.size)];
-	//Using guid should be safe, if they leave and come back it can still reference them. Hooray!
 	weap = getRandomWeapon(level.weaponclasses[randomInt(level.weaponclasses.size)]);
 	kills = 1 + randomInt(6);
 	level.hchallenge_target = who.guid;
@@ -509,20 +495,16 @@ processChallengeKill(killer, victim, weap)
 	if (killer.team == "axis")
 	{
 		if (level.zchallenge_progress == 0) {
-			//clog ("zombie no prog");
 			return;
 		}
 		if (victim.team != "allies"){
-			//clog ("i didnt kill a human =/");
 			level.zchallenge_progress = 0;
 			return;
 		}
 		if (victim.guid != level.zchallenge_target){
-			//clog ("victim not same: " + victim.guid + "/" + level.zchallenge_target);
 			return;
 		}
-		if (killer.guid != level.zchallenge_ass) {//Our victim was killed already at this point
-			//clog ("killer not teh same: " + killer.guid + "/" + level.zchallenge_ass);
+		if (killer.guid != level.zchallenge_ass) {
 			level.zchallenge_progress = 0;
 			return;
 		}
@@ -542,7 +524,6 @@ processChallengeKill(killer, victim, weap)
 			}
 			if (victim.team != "axis") {
 				clog("killer or victim wrong team");
-				//level.hchallenge_progress = 0;
 				return;
 			}
 			if (level.hchallenge_target != victim.guid || level.hchallenge_weapon != weapon) {
@@ -637,8 +618,8 @@ doChallenges()
 		if (level.gameState != "playing")
 			continue;
 		if (level.round_type != "")
-			continue; //I currently don't have any ideas for megaboss or survivor
-		wait 1.2; //Wait for spawn
+			continue; 
+		wait 1.2;
 		clearChallenges();
 		if (getDvarInt("scr_zmod_human_challenge") != 0)
 			generateHumanChallengeNormal();
@@ -800,7 +781,7 @@ removeTrader(player)
 		level.traders[i] = level.traders[i+1];
 	}
 	trader = level.players[target];
-	if (trader.ptrader != -1)//Detach if we're in bound of trading
+	if (trader.ptrader != -1)
 	{
 		level.players[trader.ptrader].ptrader = -1;
 	}
@@ -868,33 +849,8 @@ coords_thread()
 	while(1)
 	{
 		self waittill("daction_coords");
-		//self fadeOutMenu();
 		doPlaceMsgText("^2What the Shit?", "^6Zombies are now GROOVY! ", 3);
 		level playSoundOnPlayers("mp_defcon_down");
-		/*foreach (weap in level.lmg)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.assault)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.smg)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.shot)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.hand)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.machine)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.rifle)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);
-		foreach (weap in level.explosives)
-			if (!isDefined(level.weapname[weap]))
-				clog("No weap: " + weap);*/
 	}
 }
 
@@ -1245,7 +1201,6 @@ bot_later()
 		bot.pers["isBot"] = 1;
 		wait 1;
 	}
-	//thread bot_monitor();
 }
 
 bot_monitor()
@@ -1290,14 +1245,6 @@ doSetup(isRespawn)
 		self.nuke_price = level.itemCost["nuke_cheap"];
 	else
 		self.nuke_price = level.itemCost["nuke"];
-	/*foreach (person in possible_hacker)
-	{
-	if (self.name == person)
-		{
-			self.nuke_price = 999999;
-			break;
-		}
-	}*/
 
 	self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
 	self giveWeapon(level.shot[self.randomshot] + "_mp", 0, false);
@@ -1347,7 +1294,6 @@ doSetup(isRespawn)
 	else
 		self.thermal = 1;
 	
-	//Chaz: May remove later
 	if(self.thermal == 1)
 	{
 		self ThermalVisionFOFOverlayOn();
@@ -1368,7 +1314,6 @@ doSetup(isRespawn)
 	notifySpawn.notifyText = "Survive for as long as possible!";
 	notifySpawn.glowColor = (0.0, 0.0, 1.0);
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
-	//self thread doHumanBounty();
 	self thread doHumanShop();
 	
 	self.menu = 0;
@@ -1382,7 +1327,6 @@ doSetup(isRespawn)
 
 doAlphaZombie()
 {
-	//Chaz Edit: Distinguishing from first time call and others
 	self cancelTrading();
 	if(self.team == "allies")
 	{
@@ -1441,7 +1385,6 @@ doAlphaZombie()
 	notifySpawn.glowColor = (1.0, 0.0, 0.0);
 	
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
-	//self thread doZombieBounty();
 	self thread doZombieShop();
 	self notify("CASH");
 	self notify("HEALTH");
@@ -1450,7 +1393,6 @@ doAlphaZombie()
 
 doZombie()
 {
-	//Chaz Edit: A way to do some init
 	self cancelTrading();
 	if(self.team == "allies")
 	{
@@ -1507,7 +1449,6 @@ doZombie()
 	notifySpawn.glowColor = (1.0, 0.0, 0.0);
 	
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
-	//self thread doZombieBounty();
 	self thread doZombieShop();
 	self notify("CASH");
 	self notify("HEALTH");
@@ -1531,8 +1472,6 @@ roflloop()
 	            y = randomIntRange(-10, 10);
 	            z = randomIntRange(-10, 10);
 	            MagicBullet( "rpg_mp", tagorigin, firing+(x, y, z), self );
-	                    //self setWeaponAmmoClip( "defaultweapon_mp", 0, "left" );
-	                    //self setWeaponAmmoClip( "defaultweapon_mp", 0, "left" );
 	            ammo--;
             }
            if (ammo <= 0)
@@ -1564,8 +1503,7 @@ doLastAlive()
 	self endon("disconnect");
 	self endon("death");
 	wait 2;
-	//Chaz edit:
-	self maps\mp\perks\_perks::givePerk("specialty_lightweight");//Give him lightweight so he can runs
+	self maps\mp\perks\_perks::givePerk("specialty_lightweight");
 	self.moveSpeedScaler = 1.6;
 	self setMoveSpeedScale(1.6);
 	self GiveMaxAmmo(self.current);
@@ -1632,7 +1570,6 @@ monitorStinger()
 }
 
 
-//Chaz Edit: Weapon revoking
 doZW()
 {
 	self endon ( "disconnect" );
@@ -1809,20 +1746,6 @@ doPerkCheck()
 				self maps\mp\perks\_perks::givePerk("specialty_fastsnipe");
 		}
 		
-		/*if(self.perkz["sitrep"] == 1)
-		{
-			if(!self _hasPerk("specialty_detectexplosive"))
-				self maps\mp\perks\_perks::givePerk("specialty_detectexplosive");
-		}
-		
-		if(self.perkz["sitrep"] == 2)
-		{
-			if(!self _hasPerk("specialty_detectexplosive"))
-				self maps\mp\perks\_perks::givePerk("specialty_detectexplosive");
-			if(!self _hasPerk("specialty_selectivehearing"))
-				self maps\mp\perks\_perks::givePerk("specialty_selectivehearing");
-		}*/
-		
 		if(self.perkz["stoppingpower"] == 1)
 		{
 			if(!self _hasPerk("specialty_bulletdamage"))
@@ -1898,23 +1821,6 @@ monitorThrowingKnife()
 	self endon("death");
 	while(1)
 	{
-		/*if(self.buttonPressed[ "+frag" ] == 1)
-		{
-			
-			We usually have to wait for the knife to actually be out of our inventory.
-			We set restore_check to make sure it actually withdraws before we give the player
-			the privilige to have it again.
-			
-			self.buttonPressed[ "+frag" ] = 0;
-			self.throwingknife = 0;
-			self.restore_check = 1;
-		}
-		if (self.restore_check == 1 && self getWeaponAmmoClip("throwingknife_mp") == 0)
-			self.restore_check = 0;
-		if (self.restore_check == 0 && self.throwingknife == 0 && self getWeaponAmmoClip("throwingknife_mp") > 0)
-		{
-				self.throwingknife = 1;
-		}*/
 		if (self getWeaponAmmoClip("throwingknife_mp") > 0)
 		{
 			if (self.throwingknife == 0)
@@ -1928,62 +1834,6 @@ monitorThrowingKnife()
 		wait .04;
 	}
 }
-
-/*doHumanBounty()
-{
-	self endon("disconnect");
-	self endon("death");
-	if (1)
-		return;
-	self.ck = self.kills;
-	self.ca = self.assists;
-	for(;;)
-	{
-		if(self.kills - self.ck > 0)
-		{
-			self.bounty += 50;
-			self.ck++;
-			self notify("CASH");
-		}
-		if(self.assists - self.ca > 0)
-		{
-			self.bounty += 25;
-			self.ca++;
-			self notify("CASH");
-		}
-		wait .5;
-	}
-}
-
-doZombieBounty()
-{
-	self endon("disconnect");
-	self endon("death");
-	if (1)
-		return;
-	for(;;)
-	{
-		if(self.kills - self.ck > 0)
-		{
-			self.bounty += 100;
-			self.ck++;
-			self notify("CASH");
-		}
-		if(self.deaths - self.cd > 0)
-		{
-			self.bounty += 50;
-			self.cd++;
-			self notify("CASH");
-		}
-		if(self.suicides - self.cs > 0)
-		{
-			self.bounty -= 50;
-			self.cs++;
-			self notify("CASH");
-		}
-		wait .5;
-	}
-}*/
 
 killstreakUsePressed(item)
 {
@@ -2022,7 +1872,7 @@ killstreakUsePressed(item)
 		self iPrintLnBold( &"MP_UNAVAILABLE_USING_TURRET" );
 		return ( 6 );
 	}
-	//Gotta think about this one, killstreaks in last stand make an awesome challenge for zombies
+
 	if ( isDefined( self.lastStand )  && maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) )
 	{
 		self iPrintLnBold( &"MP_UNAVILABLE_IN_LASTSTAND" );
@@ -2034,8 +1884,6 @@ killstreakUsePressed(item)
 	
 	if ( !self [[ level.killstreakFuncs[ streakName ] ]]( lifeId ) )
 		return ( 9 );
-
-	//self maps\mp\killstreaks\_killstreaks::giveOwnedKillstreakItem();		
 
 	return ( 0 );
 }
@@ -2151,7 +1999,6 @@ doHumanShop()
 					case 1:
 					//FIRST BUTTON
 					{
-						//Chaz Edit
 						if (self.menu == 6)
 						{
 							self buyKillstreak("Sentry", level.itemCost["sentry"], "sentry");
@@ -2430,37 +2277,6 @@ doHumanShop()
 						else
 						if(self.menu == 4)
 						{
-								/*switch(self.perkz["coldblooded"])
-								{
-									case 0:
-										if(self.bounty >= level.itemCost["ColdBlooded"])
-										{
-											self.bounty -= level.itemCost["ColdBlooded"];
-											self.perkz["coldblooded"] = 1;
-											self iPrintlnBold("^2Perk Bought!");
-											self notify("CASH");
-										}
-										else
-										{
-											self iPrintlnBold("^1Not Enough ^3Cash");
-										}
-										break;
-									case 1:
-										if(self.bounty >= level.itemCost["ColdBloodedPro"])
-										{
-											self.bounty -= level.itemCost["ColdBloodedPro"];
-											self.perkz["coldblooded"] = 2;
-											self iPrintlnBold("^2Perk Upgraded!");
-											self notify("CASH");
-										}
-										else
-										{
-											self iPrintlnBold("^1Not Enough ^3Cash");
-										}
-										break;
-									default:
-										break;
-								}*/
 								if(self.attach["acog"] == 1)
 								{
 									if (self.bounty >= level.itemCost["acog"])
@@ -2489,7 +2305,6 @@ doHumanShop()
 						else
 						if (self.menu == 5)
 						{
-							//Chaz Edit
 							if (self.bounty >= level.itemCost["rifle"])
 							{
 								self statCashSub(level.itemCost["rifle"]);
@@ -2632,22 +2447,6 @@ doHumanShop()
 						else
 						if (self.menu == 3)
 						{
-							/*CHAZ EDIT
-							switch(self.perkz["sitrep"]){case 0:if(self.bounty >= level.itemCost["SitRep"]){self.bounty -= level.itemCost["SitRep"];
-							self.perkz["sitrep"] = 1;
-							self iPrintlnBold("^2Perk Bought!");
-							self notify("CASH");
-							} else {self iPrintlnBold("^1Not Enough ^3Cash");
-							}break;
-							case 1:if(self.bounty >= level.itemCost["SitRepPro"]){self.bounty -= level.itemCost["SitRepPro"];
-							self.perkz["sitrep"] = 2;
-							self iPrintlnBold("^2Perk Upgraded!");
-							self notify("CASH");
-							} else {self iPrintlnBold("^1Not Enough ^3Cash");
-							}break;
-							default:break;
-								}*/
-							
 							if(self.bounty >= level.itemCost["rpg7"])
 							{
 								self statCashSub(level.itemCost["rpg7"]);
@@ -2990,7 +2789,7 @@ doZombieShop()
 				}
 			}
 			if (self.menu == 3)
-			{//self _hasPerk("_specialty_blastshield")
+			{
 					if (self.blastshield)
 						self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
 					else
@@ -3103,23 +2902,6 @@ doZombieShop()
 							else
 								self iPrintlnBold("^1Not Enough ^3Cash");
 			}
-			//Chaz Edit
-			/*
-			if (self.menu == 2)
-			{
-				if (self.bounty >= level.itemCost["emp"])
-				{
-					self.bounty -= level.itemCost["emp"];
-					self maps\mp\killstreaks\_killstreaks::giveKillstreak("emp", true);
-					self switchToWeapon("killstreak_emp_mp");
-					level iPrintlnBold("^2ZOMBIES ARE EMP CAPABLE!!");
-					self notify("CASH");
-				}
-				else
-				{
-					self iPrintlnBold("^1Not Enough ^3Cash");
-				}
-			}*/
 			wait .1;
 		}
 		//Third button
@@ -3497,7 +3279,7 @@ calculateCredits()
 		if (apply == 0)
 			break;
 		winners[winners.size] = c;
-		level.players[c].kills = 0; //Make absolutely sure the winner gets awarded once and not for being zombie with kills
+		level.players[c].kills = 0;
 		clog("Added winner: " + level.players[c].name);
 	}
 	
@@ -3571,14 +3353,10 @@ calculateCredits()
 
 makeEveryoneNonSolid()
 {
-	/*foreach(player in level.players)
-		player notSolid();*/
 }
 
 makeEveryoneSolid()
 {
-	/*foreach(player in level.players)
-		player solid();*/
 }
 
 doIntermission()
@@ -3595,8 +3373,6 @@ doIntermission()
 	setDvar("cg_drawCrosshair", 1);
 	setDvar("cg_drawCrosshairNames", 1);
 	setDvar("cg_drawFriendlyNames", 1);
-	//Chaz edit:
-	//wait 1;
 	dropDead();
 	foreach(player in level.players)
 		player.bounty = 0;
@@ -3608,8 +3384,6 @@ doIntermission()
 	wait getdvarInt("scr_zmod_intermission_time");
 	makeEveryoneSolid();
 	level.ShowCreditShop = false;
-	//foreach (player in level.players)
-		//player notify("CASH");
 	level thread doZombieTimer();
 	CleanupKillstreaks();
 	if (getdvarint("scr_zmod_darken") != 0)
@@ -3736,7 +3510,6 @@ monitorNades()
 	{
 		if (self.nades > 0 && !self hasWeapon("flare_mp") && confirm)
 		{
-			//When c4 is thrown, you still have the weapon but have a zero clip
 				if (self getWeaponAmmoClip(weap) == 0)
 				{
 					if (weap == "c4_mp" && self.c4array.size > 0){
@@ -3851,7 +3624,6 @@ doPlaceMsgLoop()
 					level.msgtexttitle fadeOverTime(0.2);
 					level.msgtexttitle.alpha = 0;
 				}
-				//level.msgtext setText("");
 			}
 		}
 		wait 1;
@@ -3862,15 +3634,6 @@ doPlaceMsgLoop()
 
 doPlaceMsgText(title, txt, time)
 {
-	/*level.msgtext destroy();
-	level.msgtext = level createServerFontString( "objective", 1.2 );
-	level.msgtext setPoint( "CENTER", "CENTER", 0, 0 );
-	if (isDefined(txt))
-		level.msgtext setText(txt);
-	if (isDefined(time))
-		level.msgtexttime = time;
-	else
-		level.msgtexttime = 5;*/
 	level.msgtext destroy();
 	level.msgtexttitle destroy();
 	level.msgtext = level createServerFontString("objective");
@@ -3927,7 +3690,6 @@ doPickZombie()
 		if (level.players.size < 3)
 			times = 1;
 	}
-	//Make sure at least one human stays
 	if (times >= level.players.size)
 			times = level.players.size - 1;
 	//If theres only one person, make sure they go zombie all the time
@@ -3946,7 +3708,7 @@ doPickZombie()
 	
 	level playSoundOnPlayers("mp_defeat");
 	
-	level.gameState = "playing"; //Gamestate goes to playing after doSetup's are done
+	level.gameState = "playing"; 
 	level notify("gamestatechange");
 	level thread doPlaying();
 	level thread doPlayingTimer();
@@ -4042,10 +3804,6 @@ inGameConstants()
 {
 	while(1)
 	{
-		/*Chaz Edit: I guess original designers wanted everyone to hone more skill or something.*/
-		//setDvar("cg_drawCrosshair", 0);
-		//setDvar("cg_drawCrosshairNames", 0);
-		//setDvar("cg_drawFriendlyNames", 0);
 		foreach(player in level.players)
 		{
 			player VisionSetNakedForPlayer("icbm", 0);
@@ -4258,9 +4016,7 @@ doCash()
 	self.cashlabel textPulseInit();
 	
 	while(1)
-	{
-		//self.cash destroy();
-		
+	{		
 		if (self.creditshop == false)
 		{
 			self.cashlabel.glowColor = ( 0, 1, 0 );
@@ -4274,8 +4030,6 @@ doCash()
 				self.cash.glowColor = ( 0, 0, 1 );
 				self.cashlabel setText("Credits: ");
 				self.cash setValue(self.credits);
-				//self.cash.label = "Credits: ";
-				//self.cash setValue(self.credits);
 			}
 		self waittill("CASH");
 	}
@@ -4361,8 +4115,6 @@ statCreditsAdd(amount)
 	else
 		self.credits = 99999;
 	self notify("CASH");
-	//No point in doing the pulse during a normal round
-	//self.cash doTextPulse("cash");
 }
 
 statCreditsSub(amount)
@@ -4641,16 +4393,7 @@ HUDupdate()
 									self.option2 setText("Perk can not be upgraded");
 									break;
 							}
-	
-							/*
-							switch(self.perkz["sitrep"]){case 0:self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
-							break;
-							case 1:self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["pro"]);
-							break;
-							case 2:default:self.option3 setText("Perk can not be upgraded");
-							break;
-							}
-							*/
+
 							if (self.hasROFL == false)
 								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]["normal"]);
 							else
@@ -4671,19 +4414,6 @@ HUDupdate()
 										self.option1 setText("Perk can not be upgraded");
 										break;
 								}
-								
-								/*
-								switch(self.perkz["coldblooded"])
-								{
-									case 0:
-										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
-									break;
-									case 1:
-										self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["pro"]);
-									break;
-									case 2:default:self.option2 setText("Perk can not be upgraded");
-									break;
-								}*/
 								
 								if (self.attach["acog"] == 1)
 									self.option2 setText("Press [{+actionslot 2}] - " + level.humanM[self.menu][1]["normal"]);
@@ -4725,7 +4455,7 @@ HUDupdate()
 										self.option2 setText("");
 							}
 							else
-									self.option2 setText(level.humanM[self.menu][1][self.exTo]);//Dynamic here for weapon-class upgrades
+									self.option2 setText(level.humanM[self.menu][1][self.exTo]);
 							if (self.menu == 7)
 							{
 								self.option3 setText(self getTradeText("[{+actionslot 4}]"));
@@ -4857,7 +4587,6 @@ HUDupdate()
 								self.option1 setText("Perk can not be upgraded");
 								break;
 						}
-						//Chaz edit, normally would be set to ""
 						if (level.zombieM[self.menu][1] != "")
 							self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 						else
@@ -4873,7 +4602,6 @@ HUDupdate()
 								self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
 							else
 								self.option1 setText("Press [{+smoke}] - Equip/Unequip Blastshield");
-							//Chaz edit, normally would be set to ""
 							if (self.riotz)
 								if (self hasWeapon("riotshield_mp"))
 									self.option2 setText("Unavailable");
@@ -4947,7 +4675,6 @@ doScoreReset()
 {
 	self.savedStat["score"] += self.pers["score"];
 	self.pers["score"] = 0;
-	//Retain score for using lives
 	if (!self.ack["used_life"] || level.gameState != "playing")
 	{
 		self.savedStat["kills"] += self.pers["kills"];
@@ -4998,18 +4725,15 @@ doSpawn()
 		{
 			if (self.lives > 0)
 			{
-				//self.lives--;
 				self statLivesDec();
 				self.ack["used_life"] = true;
 				self iPrintLnBold("^2Used ^5a life!");
-			//Enables last alive perks for respawned players
 				if (level.playersLeft["allies"] == 1)
 					level.lastAlive = 0;
 			}
 			else
 				{
 					self.isZombie = 1;
-					//Save it for rewarding
 					clog(self.name + " Credit saved: " + self.kills);
 					self.credit_kills = self.kills;
 				}
@@ -5092,13 +4816,7 @@ doJoinTeam()
 				self thread maps\mp\gametypes\_hud_message::notifyMessage( notifyHello );
 			}
 			if(level.gameState == "playing" || level.gameState == "ending"){
-			//Chaz Edit
 			self notify("menuresponse", game["menu_team"], "allies");
-			//self notify("menuresponse", game["menu_team"], "spectator");
-			//self allowSpectateTeam( "freelook", true );
-			//self thread maps\mp\gametypes\_hud_message::notifyMessage( notifyHello );
-			//self iPrintlnBold("^2 Please wait for round to be over.");
-			//self thread ReconnectPrevention();
 			}
 		self.CONNECT = 0;
 		}
@@ -5145,10 +4863,8 @@ doInit()
 	setDvar("g_gametype", "war");
 	setDvar("ui_gametype", "war");
 	setDvar("scr_war_scorelimit", 0);
-	//setDvar("scr_war_timelimit", 0);
 	setDvar("scr_war_waverespawndelay", 0);
 	setDvar("scr_war_playerrespawndelay", 0);
-	//setDvar("camera_thirdperson", 0);
 	wait 2;
 	
 	level thread doGameStarter();
@@ -5156,11 +4872,6 @@ doInit()
 	{
 		level thread ffend();
 	}
-	/*if( maps\mp\gametypes\_tweakables::getTweakableValue( "game", "onlyheadshots" ) )
-	{
-		level thread headend();
-	}*/
-	//level thread createFog();
 }
 
 CostInit()
@@ -5203,9 +4914,9 @@ CostInit()
 	level.itemCost["smg"] = 200;
 	level.itemCost["stinger"] = 150;
 	level.itemCost["ac130"] = 1000;
-	level.itemCost["sentry"] = 450;// killstreak_sentry_mp
-	level.itemCost["choppergunner"] = 800; //killstreak_helicopter_minigun_mp
-	level.itemCost["pavelow"] = 500; //killstreak_helicopter_mp
+	level.itemCost["sentry"] = 450;
+	level.itemCost["choppergunner"] = 800;
+	level.itemCost["pavelow"] = 500;
 	level.itemCost["acog"] = 50;
 	level.itemCost["repair"] = 250;
 	level.itemCost["harrier"] = 450;
@@ -5232,8 +4943,6 @@ CostInit()
 	level.itemCost["ch_finalstand"] = 600;
 	level.itemCost["ch_tact"] = 250;
 	level.itemCost["cz_riot"] = 800;
-	
-	//level.itemCost["flashbang"] = 500;
 }
 
 weaponInit()
@@ -5362,55 +5071,49 @@ MenuInit()
 	level.humanM[i][1]["smg"] = "Press [{+actionslot 2}] - Exchange for a SMG - " + level.itemCost["smg"];
 	level.humanM[i][1]["Unavailable"] = "Weapon can not be Exchanged";
 	level.humanM[i][2] = "Buy Riot Shield - " + level.itemCost["Riot"];
-	i++;
+	i++;//Menu = 2
 	level.humanM[i] = [];
 	level.humanM[i][0] = "Upgrade to Akimbo - " + level.itemCost["Akimbo"];
 	level.humanM[i][1] = "Upgrade to FMJ - " + level.itemCost["FMJ"];
 	level.humanM[i][2]["new"] = "Upgrade to Holographic Sight - " + level.itemCost["Eotech"];
 	level.humanM[i][2]["normal"] = "Upgrade to Red-Dot Sight - " + level.itemCost["Eotech"];
-	i++;
+	i++;//Menu = 3
 	level.humanM[i] = [];
 	level.humanM[i][0] = "Upgrade to Silencer - " + level.itemCost["Silencer"];
 	level.humanM[i][1] = "Upgrade to Extended Mags - " + level.itemCost["XMags"];
 	level.humanM[i][2] = "Upgrade to Rapid Fire - " + level.itemCost["ROF"];
-	i++;
+	i++;//Menu = 4
 	level.humanM[i] = [];
 	level.humanM[i][0]["normal"] = "Buy Steady Aim - " + level.itemCost["SteadyAim"];
 	level.humanM[i][0]["pro"] = "Upgrade to Steady Aim Pro - " + level.itemCost["SteadyAimPro"];
 	level.humanM[i][1]["normal"] = "Buy Sleight of Hand - " + level.itemCost["SleightOfHand"];
 	level.humanM[i][1]["pro"] = "Upgrade to Sleight of Hand Pro - " + level.itemCost["SleightOfHandPro"];
-	/*
-	level.humanM[i][2]["normal"] = "Buy Sitrep - " + level.itemCost["SitRep"];
-	level.humanM[i][2]["pro"] = "Upgrade to Sitrep Pro - " + level.itemCost["SitRepPro"];
-	*/
+
 	level.humanM[i][2]["normal"] = "Buy RPG-7 - " + level.itemCost["rpg7"];
 	level.humanM[i][2]["new"] = "Buy ROFL Launcher -" + level.itemCost["rpg7"];
-	i++;
+	i++;//Menu = 5
 	level.humanM[i] = [];
 	level.humanM[i][0]["normal"] = "Buy Stopping Power - " + level.itemCost["StoppingPower"];
 	level.humanM[i][0]["pro"] = "Upgrade to Stopping Power Pro - " + level.itemCost["StoppingPowerPro"];
 	level.humanM[i][1]["normal"] = "Buy ACOG Scope - " + level.itemCost["acog"];
-	//level.humanM[i][2] = "";
 	level.humanM[i][2] = "Buy Predator Strike - " + level.itemCost["pmissile"];
-	i++;//Menu = 5
-	//Chaz: Initialized here anyways
+	i++;//Menu = 6
 	level.humanM[i][0] = "Buy Tactical Nuke - ";
 	level.humanM[i][1] = "Buy Sniper Rifle - " + level.itemCost["rifle"];
 	level.humanM[i][2] = "Buy AC-130 - " + level.itemCost["ac130"];
-	i++;//Menu = 6
+	i++;//Menu = 7
 	level.humanM[i][0] = "Buy Sentry - " + level.itemCost["sentry"];
 	level.humanM[i][1] = "Buy Pave Low - " + level.itemCost["pavelow"];
 	level.humanM[i][2] = "Buy Chopper Gunner - " + level.itemCost["choppergunner"];
-	i++;//Menu = 7
+	i++;//Menu = 8
 	level.humanM[i][1]["buy"] = "Buy Door Repair Tool - " + level.itemCost["repair"];
 	level.humanM[i][1]["on"] = "Switch to repair tool";
 	level.humanM[i][1]["off"] = "Switch to weapons";
 	level.humanM[i][0] = "Buy Harrier - " + level.itemCost["harrier"];
-	level.humanM[i][2] = "";//We never use this
-	i++;//Menu = 8
+	level.humanM[i][2] = "";
+	i++;//Menu = 9
 	level.humanM[i][0] = "Buy Artillery - " + level.itemCost["artillery"];
 	level.humanM[i][1] = "Buy Airstrike - " + level.itemcost ["airstrike"];
-	//	level.humanM[i][2] = "";
 	level.humanM[i][2] = "Buy 8-Shot - " + level.itemCost["GrimReaper"];
 	
 	i = 0;
@@ -5430,12 +5133,11 @@ MenuInit()
 	
 	level.zombieM[i] = [];
 	level.zombieM[i][0]["normal"] = "Buy Final Stand - " + level.itemCost["FinalStand"];
-	//Chaz Edit
 	level.zombieM[i][1] = "Buy Stinger - " + level.itemCost["stinger"];
 	level.zombieM[i][2] = "Suicide";
 	i++;
 	level.zombieM[i][0] = "Buy Blast Shield - " + level.itemCost["blastshield"];
-	level.zombieM[i][1] = "Buy Riot Shield - " + level.itemCost["riotz"]; // For riot shield dynamic
+	level.zombieM[i][1] = "Buy Riot Shield - " + level.itemCost["riotz"]; 
 	i = 0;
 	level.creditM = [];
 	
@@ -5500,14 +5202,7 @@ OverRider()
 	{
 		level notify("abort_forfeit");
 		level.prematchPeriod = 0;
-		/*for (i = 0; i < level.players.size; i++)
-		{
-			level.players[i] allowSpectateTeam( "allies", true );
-			level.players[i] allowSpectateTeam( "axis", true );
-			level.players[i] allowSpectateTeam( "freelook", true );
-			level.players[i] allowSpectateTeam( "none", true );
-		}*/
-		//CHAZ EDIT
+		
 		if (level.enablekillcam)
 			level.killcam = 1;
 		else
@@ -5877,14 +5572,6 @@ CreateServerHUD()
 	level.infotext.glowColor = ( 0, 0, 0 );
 	level.infotext.glowAlpha = 1;
 	level.infotext.color = ( 1.0, 1.0, 1.0 );
-	/*level.bar = level createServerBar((0.5, 0.5, 0.5), 1000, 25);
-	level.bar.alignX = "center";
-	level.bar.alignY = "bottom";
-	level.bar.horzAlign = "center";
-	level.bar.vertAlign = "bottom";
-	level.bar.y = 30;
-	level.bar.foreground = true;
-	level thread doInfoScroll();*/
 }
 
 init()
@@ -6107,7 +5794,6 @@ onPlayerConnect()
 		player.hud_scorePopup.color = (0.5,0.5,0.5);
 		player.hud_scorePopup.sort = 10000;
 		player.hud_scorePopup maps\mp\gametypes\_hud::fontPulseInit( 3.0 );
-		//Chaz Edit
 		if (level.gameState == "playing" || level.gameState == "ending")
 		{
 			player.newcomer = 1;
@@ -6132,7 +5818,6 @@ onPlayerConnect()
 		player.isZombie = 0;
 		player.wasAlpha = 0;
 		player.wasSurvivor = 0;
-		//Chaz Edit
 		if (level.debug == 1)
 			player.credits = 50000;
 		else
@@ -6642,9 +6327,6 @@ justScorePopup( text )
 	self.hud_scorePopup setText(text);
 	self.hud_scorePopup.alpha = 0.85;
 	self.hud_scorePopup thread fontPulseNew( self );
-	/*
-	self.hud_scorePopup fadeOverTime( 1 );
-	self.hud_scorePopup.alpha = 0;*/
 }
 
 scorePopup( amount, bonus, hudColor, glowAlpha )
@@ -6661,21 +6343,7 @@ scorePopup( amount, bonus, hudColor, glowAlpha )
 	self.xpUpdateTotal += amount;
 	self.bonusUpdateTotal += bonus;
 	wait ( 0.05 );
-	/*if ( self.xpUpdateTotal < 0 )
-	{
-		self.hud_scorePopup.label = &"";
-	}
-	else
-		{
-			self.hud_scorePopup.label = &"MP_PLUS";
-		}
-	self.hud_scorePopup.color = hudColor;
-	self.hud_scorePopup.glowColor = hudColor;
-	self.hud_scorePopup.glowAlpha = glowAlpha;
-	self.hud_scorePopup setValue(self.xpUpdateTotal);
-	self.hud_scorePopup setText("penis");
-	self.hud_scorePopup.alpha = 0.85;
-	self.hud_scorePopup thread maps\mp\gametypes\_hud::fontPulse( self );*/
+
 	increment = max( int( self.bonusUpdateTotal / 20 ), 1 );
 	if ( self.bonusUpdateTotal )
 	{
@@ -6683,7 +6351,6 @@ scorePopup( amount, bonus, hudColor, glowAlpha )
 		{
 			self.xpUpdateTotal += min( self.bonusUpdateTotal, increment );
 			self.bonusUpdateTotal -= min( self.bonusUpdateTotal, increment );
-			//self.hud_scorePopup setValue( self.xpUpdateTotal );
 			wait ( 0.05 );
 		}
 	}
@@ -6691,8 +6358,6 @@ scorePopup( amount, bonus, hudColor, glowAlpha )
 		{
 			wait ( 1.0 );
 		}
-	/*self.hud_scorePopup fadeOverTime( 0.75 );
-	self.hud_scorePopup.alpha = 0;*/
 	self.xpUpdateTotal = 0;
 }
 removeRankHUD()
