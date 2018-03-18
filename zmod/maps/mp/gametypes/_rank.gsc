@@ -125,83 +125,59 @@ tryUseCustomAirstrike()
 		Air_Strike_Support = undefined;
 }
 
-
-Ammo( amnt )
-{
-self endon("disconnect");
-self endon("death");
-self endon("noboom");
-self endon("reload");
- 
-		while ( 1 ) {
-		currentweapon = self GetCurrentWeapon();
-			self setWeaponAmmoClip( currentweapon, amnt );
-			self setWeaponAmmoClip( currentweapon, amnt, "left" );
-			self setWeaponAmmoClip( currentweapon, amnt, "right" );
-		wait 0.05; }
-}
-
 GrimReaper()
 {
     self endon("death");
-    self endon("noboom");
-
-    self.specialactive = 1;
-    self thread Autoswitch();
-    self thread RemoveGrim();
-    self thread Ammo(9);
+	
+    prevweapon = self GetCurrentWeapon();
+	
+	//gives AT4, gives ammo in clip (chamber) and stock (reserve), switches to AT4
     self giveWeapon("at4_mp", 0, true);
+	self setWeaponAmmoClip("at4_mp", 1);
+	self setWeaponAmmoStock("at4_mp", 1);
     self switchToWeapon("at4_mp");
-    for(;;){
-    self waittill ("weapon_fired");
-    forward = self getTagOrigin("tag_weapon_left");
-    end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
-    location = BulletTrace( forward, end, 0, self )[ "position" ];
-    MagicBullet( "ac130_105mm_mp", forward, location, self );}
-}
-
-Autoswitch()
-{
-    self endon("death");
-    self endon("noboom");
-
-    for(;;){
-    self switchToWeapon("at4_mp");
-    wait 0.1;}
-}
-
-RemoveGrim()
-{
-    self endon("death");
-
-    old = self getCurrentWeapon();
-    self.rockets = 8;
-    Rockets = self createFontString( "default", 2.5 );
-    Rockets setPoint( "LEFT", "LEFT", 0, 150);
-    Rockets setValue(self.rockets);
-    for(;;)
-    {
-    self waittill ("weapon_fired");
-    self.rockets -= 1;
-    Rockets setValue(self.rockets);
-    if(self.rockets == 4)
-    {
-    self thread Ammo(0);
-    self notify("reload");
-    self setWeaponAmmoStock("at4_mp", 3);	
-    self waittill ("weapon_fired");
-    self thread Ammo(9);
-    }
-    if(self.rockets == 0)
-    {
-    Rockets destroy();
-    self notify("noboom");
-    self thread Ammo(0);
-    self SwitchToWeapon(old);	
-    wait 0.2;
+	
+	//fires 4 shots, reloads, fires 4 shots
+	for(self.rockets = 8; self.rockets > 0; self.rockets--)
+	{
+		if(self.rockets == 5)
+		{
+			//no new ammunition after third shot, causing a reload on the fourth shot
+			self waittill ("weapon_fired");
+		}
+		else if(self.rockets == 4)
+		{
+			//waiting for reload to end
+			while(!(self getWeaponAmmoClip("at4_mp")))
+			{
+			wait 0.1;
+			}
+			//giving stock ammo before and giving clip and stock ammo after firing
+			self setWeaponAmmoStock("at4_mp", 1);
+			self waittill ("weapon_fired");		
+			self setWeaponAmmoStock("at4_mp", 1);	
+			self setWeaponAmmoClip("at4_mp", 1);			
+		}
+		else
+		{
+			//giving stock and clip ammo after firing 
+			self waittill ("weapon_fired");
+			self setWeaponAmmoStock("at4_mp", 1);			
+			self setWeaponAmmoClip("at4_mp", 1);
+		}
+		//causing a ac130_105mm_mp explosion at rocket destination
+		forward = self getTagOrigin("tag_weapon_left");
+		end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
+		location = BulletTrace( forward, end, 0, self )[ "position" ];
+		MagicBullet( "ac130_105mm_mp", forward, location, self );
+		
+		wait  0.1;
+	}
+	//destroy self.rockets in case the for-loop exits prematurely
+	self.rockets destroy();
+	self SwitchToWeapon(prevweapon);
+	wait 0.2;
     self takeWeapon("at4_mp");
-    }
-    }
 }
 
 createMoney()
@@ -270,10 +246,10 @@ chaz_init()
 	setup_dvar("scr_zmod_claymore_ammo", "5");
 	setup_dvar("scr_zmod_c4_ammo", "5");
 	setup_dvar("scr_zmod_repair_points", "15");
-	setup_dvar("scr_zmod_intermission_time", "50");
-	setup_dvar("scr_zmod_starting_time", "60");
+	setup_dvar("scr_zmod_intermission_time", "10");
+	setup_dvar("scr_zmod_starting_time", "10");
 	setup_dvar("scr_zmod_alpha_time", "10");
-	setup_dvar("scr_zmod_mapwait_time", "25");
+	setup_dvar("scr_zmod_mapwait_time", "10");
 	setup_dvar("scr_zmod_nuke_time", "25");
 	setup_dvar("scr_zmod_trade_distance", "80");
 	setup_dvar("scr_zmod_trade_timeout", "12");
@@ -4411,7 +4387,7 @@ MenuInit()
 	i++;//Menu = 9
 	level.humanM[i][0] = "Buy Artillery - " + level.itemCost["artillery"];
 	level.humanM[i][1] = "Buy Airstrike - " + level.itemcost ["airstrike"];
-	level.humanM[i][2] = "Buy 8-Shot - " + level.itemCost["GrimReaper"];
+	level.humanM[i][2] = "Buy GrimReaper - " + level.itemCost["GrimReaper"];
 	
 	i = 0;
 	level.zombieM[i] = [];
