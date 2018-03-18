@@ -3957,7 +3957,7 @@ HUDupdate()
 				}
 		}
 }
-
+/*
 doHUDControl_old()
 {
 	self endon("disconnect");
@@ -3970,12 +3970,12 @@ doHUDControl_old()
 		wait 1;
 	}
 }
-
+*/
 doHUDControl()
 {
 	self endon("disconnect");
 	self endon("death");
-	self thread doHUDControl_old();
+	//self thread doHUDControl_old();
 	while(1)
 	{
 		self.HintText setText(self.hint);
