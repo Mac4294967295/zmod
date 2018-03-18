@@ -251,14 +251,8 @@ chaz_init()
 	setup_dvar("scr_zmod_debug", "0");
 	if (getDvarInt("scr_zmod_debug") != 0)
 		level.debug = 1;
-	
-	level.debugger = [];
-	level.debugger[0] = getDvar("scr_zmod_debugger");
-	level.debugger[1] = getDvar("scr_zmod_debugger2");
-	
+		
 	setup_dvar("scr_zmod_round_gap", "5");
-	
-	level clog_init();
 	
 	if (level.debug)
 		level.enablekillcam = false;
@@ -451,10 +445,7 @@ getWeaponSize(class)
 generateHumanChallengeNormal()
 {
 	zombies = getTeam("axis");
-	if (zombies.size == 0) {
-		clog("no zombos");
-		return;
-	}
+
 	who = zombies[randomInt(zombies.size)];
 	weap = getRandomWeapon(level.weaponclasses[randomInt(level.weaponclasses.size)]);
 	kills = 1 + randomInt(6);
@@ -469,10 +460,7 @@ generateZombieChallengeNormal()
 {
 	humans = getTeam("allies");
 	zombies = getTeam("axis");
-	if (humans.size == 0 || zombies.size == 0) {
-		clog("no zombos or humans");
-		return;
-	}
+
 	who = humans[randomInt(humans.size)];
 	assailant = zombies[randomInt(zombies.size)];
 	level.zchallenge_target = who.guid;
@@ -510,18 +498,6 @@ processChallengeKill(killer, victim, weap)
 	else
 		if (killer.team == "allies")
 		{
-			if (level.hchallenge_progress == 0) {
-				clog("no prog");
-				return;
-			}
-			if (victim.team != "axis") {
-				clog("killer or victim wrong team");
-				return;
-			}
-			if (level.hchallenge_target != victim.guid || level.hchallenge_weapon != weapon) {
-				clog ("guid " + level.hchallenge_target + "/" + victim.guid + " " + level.hchallenge_weapon + "/" + weapon);
-				return;
-			}
 			level.hchallenge_progress--;
 			if (level.hchallenge_progress == 0) {
 				level thread playSoundOnPlayers("mp_enemy_obj_taken", "allies");
@@ -640,7 +616,6 @@ killedPlayer(who, weap)
 		return;
 	if (self.team == who.team)
 		return;
-	clog("who: " + who.name + " weap: " + weap);
 	processChallengeKill(self, who, weap);
 	
 	
@@ -1111,7 +1086,6 @@ destroyTrace()
 {
 	if (isDefined(level.bosspoint))
 	{
-		clog("trace destroyed");
 		level.bosspoint destroy();
 		level.bosspoint = undefined;
 	}
@@ -1128,7 +1102,6 @@ givePossesions()
 	}
 	if (self.stinger > 0)
 	{
-		clog("Giving back stinger, is at " + self.stinger);
 		self giveWeapon("stinger_mp", 0, false);
 		self setWeaponAmmoClip("stinger_mp", 1);
 		if (self.stinger > 1)
@@ -1480,8 +1453,6 @@ tryUsekillstreak(name, cost, item)
 		self iPrintlnBold("^2Bought " + name + "!");
 		self notify("CASH");
 	}
-	else
-		clog("failed killstreak: " + ret);
 }
 
 buyKillstreak(name, cost, item)
@@ -2457,7 +2428,7 @@ doZombieShop()
 							self GiveStartAmmo("stinger_mp");
 							self.stinger = self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp");
 							self thread monitorStinger();
-							clog("Total stinger ammo: " + self.stinger);
+							//clog("Total stinger ammo: " + self.stinger);
 							self iPrintlnBold("^2Bought Stinger!");
 						}
 						else
@@ -2548,7 +2519,6 @@ doZombieShop()
 			}
 			if (self.menu == 2)
 			{
-				clog(self.name + " suicided.");
 				self suicide();
 					
 			}
@@ -2761,7 +2731,6 @@ doGameStarter()
 	level notify("gamestatechange");
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
 	level.lastAlive = 0;
-	clog("Waiting for CREATED");
 	level waittill("CREATED");
 	level thread doStartTimer();
 	foreach(player in level.players)
@@ -2863,11 +2832,7 @@ calculateCredits()
 			break;
 		winners[winners.size] = c;
 		level.players[c].kills = 0;
-		clog("Added winner: " + level.players[c].name);
-	}
-	
-	clog("Winners: " + winners.size);
-	
+	}	
 	i = 0;
 	prize = (winners.size * 50) + 100;
 	foreach (w in winners)
@@ -2913,11 +2878,8 @@ calculateCredits()
 		if (apply == 0)
 			break;
 		zwinners[zwinners.size] = c;
-		clog("Added ZWinner: " + level.players[c].name);
 	}
-	
-	clog("ZWinners: " + zwinners.size);
-	
+		
 	i = 0;
 	prize = (zwinners.size * 100) + 100;
 	foreach (w in zwinners)
@@ -3019,8 +2981,7 @@ chooseZombie()
 	{
 		for (i = 0; i < level.players.size; i++)
 		{
-			if (level.players[i].wasAlpha == 1 || !level.players[i].ack["safe"]
-				|| (level.players[i].name == level.debugger[0] && getDvarInt("scr_zmod_skip_debugger") != 0))
+			if (level.players[i].wasAlpha == 1 || !level.players[i].ack["safe"])
 				continue;
 			level.players[i].wasAlpha = 1;
 			if (level.players[i].antialpha == true)
@@ -3152,7 +3113,6 @@ initTacticalInsertion()
 
 giveNonIntermissionPermissableItems()
 {
-	clog ("handing out items");
 	foreach (player in level.players)
 		player giveNonIntermissionPermissableItem();
 }
@@ -4292,9 +4252,6 @@ doPerksSetup()
 
 doSpawn()
 {
-	
-	
-	//Chaz Edit:
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
@@ -4319,7 +4276,6 @@ doSpawn()
 			else
 				{
 					self.isZombie = 1;
-					clog(self.name + " Credit saved: " + self.kills);
 					self.credit_kills = self.kills;
 				}
 					
@@ -5389,16 +5345,7 @@ onPlayerConnect()
 		}
 		
 		isd = false;
-		
-		foreach (debugee in level.debugger)
-		{
-			if (debugee == player.name)
-			{
-				player thread debug_user();
-				isd = true;
-			}
-		}
-
+				
 		player.doorInRange = 0;
 		player.isZombie = 0;
 		player.wasAlpha = 0;
@@ -5431,87 +5378,6 @@ onDisconnect()
 	self waittill("disconnect");
 }
 
-clog_button_loop_change()
-{
-	self endon("disconnect");
-	self notifyOnPlayerCommand("[{+actionslot 1}]", "+actionslot 1");
-	while(1)
-	{
-		self waittill("[{+actionslot 1}]");
-		level.curaction++;
-		if (level.curaction > level.daction.size)
-			level.curaction = 0;
-		self iPrintlnBold("Debug action: " + level.daction[level.curaction]["name"]);
-	}
-}
-
-clog_button_monitor()
-{
-	self endon("disconnect");
-	self thread clog_button_loop_change();
-	while(1)
-	{
-		self notifyOnPlayerCommand("[{+activate}]", "+activate");
-		self waittill("[{+activate}]");
-		type = level.daction[level.curaction]["type"];
-		note = level.daction[level.curaction]["note"];
-		if (type == "level")
-			level notify(note);
-		else
-			if (type == "self")
-				self notify(note);
-			else
-				if (type == "all")
-				{
-					level notify(note);
-					self notify(note);
-				}
-		wait 0.2;
-	}
-}
-
-clog_init()
-{
-	if (level.debug == 0)
-		return;
-	level.msg_class = [];
-	level.msgs = [];
-	level.msgs_size = 0;
-	level.msgs_back = 0;
-	level.logtext = level createServerFontString( "objective", 1 );
-	level.logtext setPoint( "CENTER", "CENTER", 0, 100);
-	level.logtext setText("^1Empty Log");
-	setDvar("fx_draw", 1);
-	
-	level.daction = [];
-	level.daction[0]["name"] = "Log";
-	level.daction[0]["note"] = "daction_log";
-	level.daction[0]["type"] = "level";
-		
-	level.daction[3]["name"] = "Get coords";
-	level.daction[3]["note"] = "daction_coords";
-	level.daction[3]["type"] = "self";
-	
-	level.daction[4]["name"] = "Give money";
-	level.daction[4]["note"] = "daction_money";
-	level.daction[4]["type"] = "self";
-	
-	level.daction[5]["name"] = "Exhaust credits";
-	level.daction[5]["note"] = "daction_credits";
-	level.daction[5]["type"] = "self";
-	
-	
-	
-	
-	end = level.daction.size;
-	level.daction[end]["name"] = "Nothing";
-	level.daction[end]["note"] = "nothing";
-	level.daction[end]["type"] = "";
-	
-	level.curaction = 0;
-	level thread log_thread();
-}
-
 clog(msg)
 {
 	if (level.debug == 0)
@@ -5523,96 +5389,6 @@ clog(msg)
 	level.msgs_size += 1;
 }
 
-clog_reset(class, limit)
-{
-	level.msg_class[class] = limit;
-}
-
-clogc(msg, class, limit)
-{
-	if (!isDefined(level.msg_class[class]))
-		level.msg_class[class] = limit;
-	if (level.msg_class[class] <= 0)
-		return;
-	clog(msg);
-	level.msg_class--;
-}
-
-debug_user()
-{
-	if (level.debug == 0)
-		return;
-	self thread clog_button_monitor();
-	self thread coords_thread();
-	self thread money_thread();
-	self thread credit_thread();
-}
-
-credit_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		self waittill("daction_credits");
-		i = 0;
-		while (i < 800)
-		{
-			self.bounty += 1;
-			self.credits += 1;
-			self notify("CASH");
-			wait 0.001;
-		}
-	}
-}
-
-money_thread()
-{
-	while(1)
-	{
-		self waittill("daction_money");
-		self statCashAdd(25);
-		self iPrintlnBold("Added cash!");
-		wait 5;
-	}
-}
-
-
-disp_log(msg)
-{
-	text = "LOG: " + msg;
-
-	level.logtext destroy();
-	
-	setDvar("fx_draw", 1);
-	level.logtext = level createServerFontString( "objective", 1 );
-	level.logtext setPoint( "CENTER", "CENTER", 0, 100 );
-	level.logtext setText(text);
-	println(text);
-}
-log_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		if (level.msgs_size > 0 && level.msgs_back < level.msgs_size)
-		{
-			disp_log(level.msgs[level.msgs_back]);
-			level waittill("daction_log");
-			level.msgs_back += 1;
-			if (level.msgs_back == level.msgs_size)
-			{
-				level.msgs_back = 0;
-				level.msgs_size = 0;
-				level.logtext destroy();
-				setDvar("fx_draw", 1);
-				level.logtext = level createServerFontString( "objective", 1 );
-				level.logtext setPoint( "CENTER", "CENTER", 0, 100 );
-				level.logtext setText("");
-			}
-		}
-		wait 0.2;
-	}
-}
 onJoinedTeam()
 {
 	self endon("disconnect");
