@@ -5,7 +5,7 @@
 #include common_scripts\utility;
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
-
+#include maps\mp\gametypes\_shop_menu;
 
 ArtilleryStrike()
 {
@@ -459,6 +459,7 @@ killedPlayer(who, weap)
 	self statCashAdd(5000);
 	
 	
+	
 	if (self.isZombie != 0)
 	{
 		amount = 100 + (50 * self.combo);
@@ -601,6 +602,7 @@ getCreditsPersistent()
 
 doSetup(isRespawn)
 {
+	foo();
 	if (self.team == "axis" || self.team == "spectator")
 	{
 		self notify("menuresponse", game["menu_team"], "allies");
@@ -673,7 +675,7 @@ doSetup(isRespawn)
 	self.maxhp = 100;
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.1;
+	self.moveSpeedScaler = 1.0;
 	if (level.debug == 0)
 		self.thermal = 0;
 	else
@@ -745,7 +747,6 @@ doAlphaZombie()
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
 	if(self.thermal == 1)
@@ -758,7 +759,7 @@ doAlphaZombie()
 	self thread doPerkCheck();
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.25;
+	self.moveSpeedScaler = 1.15;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -809,7 +810,6 @@ doZombie()
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
 	if(self.thermal == 1)
@@ -2167,7 +2167,7 @@ doZombieShop()
 							self iPrintlnBold("^1Not Enough ^3Cash");
 			}
 			wait .1;
-			HUDupdate();
+			self notify("MENUCHANGE_2");
 		}	
 		//Second button
 		if(self.buttonPressed[ "+actionslot 2" ] == 1)
@@ -2266,7 +2266,7 @@ doZombieShop()
 								self iPrintlnBold("^1Not Enough ^3Cash");
 			}
 			wait .1;
-			HUDupdate();
+			self notify("MENUCHANGE_2");
 		}
 		//Third button
 		if(self.buttonPressed[ "+actionslot 4" ] == 1)
@@ -2297,15 +2297,15 @@ doZombieShop()
 			}
 			if(self.menu == 1)
 			{
-				if(self.perkz["Movespeed"]<4) //Mac
+				if(self.ZMenu["movespeed"]["in_use"]<4) //Mac
 				{
 					
-						if(self.bounty >= level.itemCost["Movespeed"])
+						if(self.bounty >= self.ZMenu["movespeed"]["cost"])
 						{
 
-							self.perkz["Movespeed"] += 1;	
+							self.ZMenu["movespeed"]["in_use"] += 1;	
 							self.moveSpeedScaler += 0.1;
-							statCashSub(level.itemCost["Movespeed"]);
+							statCashSub(self.ZMenu["movespeed"]["cost"]);
 							self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 							self iPrintlnBold("^2Speed Bought!");
 						}
@@ -2314,13 +2314,14 @@ doZombieShop()
 								self iPrintlnBold("^1Not Enough ^3Cash");
 							}
 
-				}else if(self.perkz["Movespeed"]==4){
-					self.perkz["Movespeed"] += 1;	
+				}else if(self.ZMenu["movespeed"]["in_use"]==4){
+					self.ZMenu["movespeed"]["in_use"] += 1;	
 					self.moveSpeedScaler += 0.1;
-					statCashSub(level.itemCost["Movespeed"]);
+					foo();
+					statCashSub(self.ZMenu["movespeed"]["cost"]);
 					self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 					self iPrintlnBold("^2Speed Bought!");
-					level.zombieM[1][2]["normal"] = "MS fully upgraded!";
+					self.ZMenu["movespeed"]["print_text"] = self.ZMenu["movespeed"]["text2"];
 				}
 			}
 			if (self.menu == 2)
@@ -2329,9 +2330,21 @@ doZombieShop()
 					
 			}
 			wait .1;
+			if (self.menu== 3){
+				if(self.perkz["Commando"]==0){
+					if(self.bounty >= level.itemCost["Commando"]){
+						self.perkz["Commando"]=1;
+						self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
+						self maps\mp\perks\_perks::givePerk("specialty_falldamage");
+						statCashSub(level.itemCost["Movespeed"]);
+						self iPrintlnBold("^2Commando Bought!");
+						level.zombieM[3][2] = "already bought Commando";
+					}else self iPrintlnBold("^1Not Enough ^3Cash");
+				}
+			}
 		}
 		wait .1;
-		HUDupdate();
+		self notify("MENUCHANGE_2");
 	}
 }
 
@@ -3617,7 +3630,7 @@ ZombiePerkHUDUpdate()
 
 HUDupdate()
 {
-	self.DebugHUD setText("Movespeed-var: " + self.perkz["Movespeed"] +" "+ self.moveSpeedScaler);
+	self.DebugHUD setText("Movespeed-var: " + self.ZMenu["movespeed"]["in_use"] +" "+ self.moveSpeedScaler);
 
 		if(self.team == "allies")
 		{
@@ -3884,14 +3897,8 @@ HUDupdate()
 							self.option2 setText("Perk can not be upgraded");
 							break;
 					}
-					if(self.perkz["lightweight"]<5)
-					{
-						self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]["normal"]);
-					}else{	
-						self.option3 setText("Perk can not be upgraded");
-					}		
-				}
-				else
+					self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
+				}else
 					if(self.menu == 2)
 					{
 						switch(self.perkz["finalstand"])
@@ -3910,28 +3917,21 @@ HUDupdate()
 						else
 							self.option2 setText("");
 						
-						self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
+						self.option3 setText("Press [{+actionslot 4}] - " + self.ZMenu["movespeed"]["print_text"]); //print example
 
 					}
 					else
 						if (self.menu == 3)
 						{
-							if (!self.blastshield)
-								self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
-							else
-								self.option1 setText("Press [{+smoke}] - Equip/Unequip Blastshield");
-							if (self.riotz)
-								if (self hasWeapon("riotshield_mp"))
-									self.option2 setText("Unavailable");
-								else
-									self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
-							else
-								self.option2 setText("[Locked]");
+							if (!self.blastshield) self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
+							else self.option1 setText("Press [{+smoke}] - Equip/Unequip Blastshield");
+							if (self.riotz){
+								if (self hasWeapon("riotshield_mp")) self.option2 setText("Unavailable");
+								else self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
+							}else self.option2 setText("[Locked]");
 								
-							if (level.zombieM[self.menu][2] != "")
-								self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
-							else
-								self.option3 setText("");
+							self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
+							
 						}
 			}
 			else
@@ -4001,6 +4001,7 @@ resetPerks(){
 	self.perkz["Movespeed"] = 0;
 	self.perkz["finalstand"] = 0;
 	self.perkz["blastshield"] = 0;
+	self.perkz["Commando"] = 0;
 }
 doPerksSetup()
 {
@@ -4011,6 +4012,7 @@ doPerksSetup()
 
 doSpawn()
 {
+	initializeZMenu();
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
@@ -4073,7 +4075,7 @@ doSpawn()
 	
 	//Testing money on Player Spawn, +5000 | Testversion
 	self statCashAdd(5000);
-	
+	foo();
 	if(level.gamestate == "starting")
 	{
 		self thread OMAExploitFix();
@@ -4192,6 +4194,7 @@ CostInit()
 	level.itemCost["SleightOfHandPro"] = 100;
 	level.itemCost["SitRep"] = 50;
 	level.itemCost["SitRepPro"] = 50;
+	level.itemCost["Commando"] = 200;
 	level.itemCost["StoppingPower"] = 200;
 	level.itemCost["StoppingPowerPro"] = 50;
 	level.itemCost["ColdBlooded"] = 250;
@@ -4421,8 +4424,7 @@ MenuInit()
 	level.zombieM[i][0]["pro"] = "Upgrade to Cold Blooded Pro - " + level.itemCost["ColdBloodedPro"];
 	level.zombieM[i][1]["normal"] = "Buy Ninja - " + level.itemCost["Ninja"];
 	level.zombieM[i][1]["pro"] = "Upgrade to Ninja Pro -" + level.itemCost["NinjaPro"];
-	level.zombieM[i][2]["normal"] = "Buy Movespeed - " + level.itemCost["Movespeed"];
-	level.zombieM[i][2]["pro"] = "Upgrade to Lightweight Pro - " + level.itemCost["LightweightPro"];
+	level.zombieM[i][2] = "Buy Movespeed - " + level.itemCost["Movespeed"];
 	i++;
 	
 	level.zombieM[i] = [];
@@ -4430,8 +4432,10 @@ MenuInit()
 	level.zombieM[i][1] = "Buy Stinger - " + level.itemCost["stinger"];
 	level.zombieM[i][2] = "Suicide";
 	i++;
+	level.zombieM[i] = [];
 	level.zombieM[i][0] = "Buy Blast Shield - " + level.itemCost["blastshield"];
 	level.zombieM[i][1] = "Buy Riot Shield - " + level.itemCost["riotz"]; 
+	level.zombieM[i][2] = "Buy Commando - " + level.itemCost["Commando"];
 	i = 0;
 	level.creditM = [];
 	
