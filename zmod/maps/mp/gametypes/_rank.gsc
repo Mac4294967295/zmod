@@ -246,10 +246,10 @@ chaz_init()
 	setup_dvar("scr_zmod_claymore_ammo", "5");
 	setup_dvar("scr_zmod_c4_ammo", "5");
 	setup_dvar("scr_zmod_repair_points", "15");
-	setup_dvar("scr_zmod_intermission_time", "50");
-	setup_dvar("scr_zmod_starting_time", "60");
+	setup_dvar("scr_zmod_intermission_time", "10");
+	setup_dvar("scr_zmod_starting_time", "10");
 	setup_dvar("scr_zmod_alpha_time", "10");
-	setup_dvar("scr_zmod_mapwait_time", "25");
+	setup_dvar("scr_zmod_mapwait_time", "10");
 	setup_dvar("scr_zmod_nuke_time", "25");
 	setup_dvar("scr_zmod_trade_distance", "80");
 	setup_dvar("scr_zmod_trade_timeout", "12");
