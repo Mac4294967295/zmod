@@ -717,21 +717,6 @@ saveus()
 		self iprintlnbold(w + e + " clip: " + self getWeaponAmmoClip(w) + " stock: " + self getWeaponAmmoStock(w));
 }
 
-coords_thread()
-{
-	self endon("disconnect");
-	level.ooo = "1";
-	cur = 0;
-	curc = 7;
-	sz = 0;
-	while(1)
-	{
-		self waittill("daction_coords");
-		doPlaceMsgText("^2What the Shit?", "^6Zombies are now GROOVY! ", 3);
-		level playSoundOnPlayers("mp_defcon_down");
-	}
-}
-
 CleanupKillstreaks()
 {
 	//reset and player sentry states
