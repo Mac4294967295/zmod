@@ -282,8 +282,6 @@ chaz_init()
 	setup_dvar("scr_zmod_sentry_timeout", "200");
 	setup_dvar("scr_zmod_inf_knives", "10");
 	setup_dvar("scr_zmod_inf_ammo", "30");
-	setup_dvar("scr_zmod_human_challenge", "1");
-	setup_dvar("scr_zmod_zombie_challenge", "1");
 	setup_dvar("scr_zmod_disable_weapondrop", "1");
 	setup_dvar("scr_zmod_infotext", "^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
 	explosivemax = getDvarInt("scr_maxPerPlayerExplosives");
@@ -321,10 +319,6 @@ chaz_init()
 	level.nadenames[1] = "Semtex";
 	level.nadenames[2] = "Claymore";
 	level.nadenames[3] = "C4 Charge";
-	
-	clearChallenges();
-	level.hchallenge_reward = ::humanChallengeReward;
-	level.zchallenge_reward = ::zombieChallengeReward;
 
 	level.icon_trade = "waypoint_targetneutral";
 	precacheShader ( level.icon_trade );	
@@ -442,160 +436,6 @@ getWeaponSize(class)
 	return weap;
 }
 
-generateHumanChallengeNormal()
-{
-	zombies = getTeam("axis");
-
-	who = zombies[randomInt(zombies.size)];
-	weap = getRandomWeapon(level.weaponclasses[randomInt(level.weaponclasses.size)]);
-	kills = 1 + randomInt(6);
-	level.hchallenge_target = who.guid;
-	level.hchallenge_weapon = strtok(weap, "_")[0];
-	level.hchallenge_kills = kills;
-	level.hchallenge_progress = kills;
-	level thread ibroadcastDelay(0.1, "^3HUMAN CHALLENGE: ^1KILL ^7" + who.name + "^3 WITH ^7" + getRealWeaponName(weap) + " ^3" + kills + " TIMES!", "allies");
-}
-
-generateZombieChallengeNormal()
-{
-	humans = getTeam("allies");
-	zombies = getTeam("axis");
-
-	who = humans[randomInt(humans.size)];
-	assailant = zombies[randomInt(zombies.size)];
-	level.zchallenge_target = who.guid;
-	level.zchallenge_ass = assailant.guid;
-	level.zchallenge_progress = 1;
-	level thread ibroadcastDelay(0.1, "^3ZOMBIE CHALLENGE: ^7" + assailant.name + "^3 MUST KILL ^7" + who.name, "axis");
-}
-
-processChallengeKill(killer, victim, weap)
-{
-	weapon = strtok(weap, "_")[0];
-	if (killer.team == "axis")
-	{
-		if (level.zchallenge_progress == 0) {
-			return;
-		}
-		if (victim.team != "allies"){
-			level.zchallenge_progress = 0;
-			return;
-		}
-		if (victim.guid != level.zchallenge_target){
-			return;
-		}
-		if (killer.guid != level.zchallenge_ass) {
-			level.zchallenge_progress = 0;
-			return;
-		}
-		level.zchallenge_progress = 0;
-		level thread playSoundOnPlayers("mp_enemy_obj_taken", "axis");
-		level thread playSoundOnPlayers("mp_defcon_down", "allies");
-		
-		thread doPlaceMsgText("^3Zombie Challenge Complete!", "^1" + killer.name + "^3 has given zombies infinite knives for ^5"+ getDvarInt("scr_zmod_inf_knives") +"^3 secs!", 7);
-		thread [[level.zchallenge_reward]]();
-	}
-	else
-		if (killer.team == "allies")
-		{
-			level.hchallenge_progress--;
-			if (level.hchallenge_progress == 0) {
-				level thread playSoundOnPlayers("mp_enemy_obj_taken", "allies");
-				level thread playSoundOnPlayers("mp_defcon_down", "axis");
-				thread doPlaceMsgText("^3Human Challenge Complete!", "^1" + killer.name + "^3 has given humans infinite ammo for ^5" + getDvarInt("scr_zmod_inf_ammo") + "^3 secs!", 7);
-				thread [[level.hchallenge_reward]]();
-			}
-			else{
-				thread doPlaceMsgText(undefined, "^7Human Challenge Progress: ^3" + floor((1 - (level.hchallenge_progress / level.hchallenge_kills))*100) + " ^7PERCENT", 3);
-			}
-		}
-}
-
-challengeTimeoutNotify(msg, time, dmsg)
-{
-	level endon("game_ended");
-	level endon("gamestatechange");
-	wait time;
-	level notify(msg);
-	ibroadcast(dmsg);
-}
-
-humanChallengeReward()
-{
-	level endon("game_ended");
-	level endon("gamestatechange");
-	level endon("infammotimeout");
-	time = getDvarInt("scr_zmod_inf_ammo");
-	thread challengeTimeoutNotify("infammotimeout", time, "INFINITE AMMO FOR HUMANS ^1ENDED!");
-	for (;;)
-	{
-		foreach (player in level.players){
-			if (player.team != "allies")
-				continue;
-			weap = player getCurrentWeapon();
-			if (weap == "" || weap == "defaultweapon_mp")
-				continue;
-			player setWeaponAmmoClip(weap, weaponClipSize(weap));
-		}
-		wait 0.35;
-	}
-}
-
-zombieChallengeReward()
-{
-	level endon("game_ended");
-	level endon("gamestatechange");
-	level endon("infknivestimeout");
-	time = getDvarInt("scr_zmod_inf_ammo");
-	thread challengeTimeoutNotify("infknivestimeout", time, "INFINITE KNIVES FOR ZOMBIES ^1ENDED!");
-	for (;;)
-	{
-		foreach (player in level.players){
-			if (player.team != "axis")
-				continue;
-			if (!player hasWeapon("throwingknife_mp")){
-				player maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
-				player setWeaponAmmoClip("throwingknife_mp", 1);
-			}
-			if (player getWeaponAmmoClip("throwingknife_mp") == 0)
-				player setWeaponAmmoClip("throwingknife_mp", 1);
-		}
-		wait 0.35;
-	}
-}
-
-
-clearChallenges()
-{
-	level.hchallenge_target = 0;
-	level.hchallenge_weapon = "";
-	level.hchallenge_kills = 0;
-	level.hchallenge_progress = 0;
-	
-	level.zchallenge_target = 0;
-	level.zchallenge_ass = 0;
-	level.zchallenge_progress = 0;
-}
-
-doChallenges()
-{
-	level endon("game_ended");
-	for (;;)
-	{
-		level waittill("gamestatechange");
-		if (level.gameState != "playing")
-			continue;
-		if (level.round_type != "")
-			continue; 
-		wait 1.2;
-		clearChallenges();
-		if (getDvarInt("scr_zmod_human_challenge") != 0)
-			generateHumanChallengeNormal();
-		if (getDvarInt("scr_zmod_zombie_challenge") != 0)
-			generateZombieChallengeNormal();
-	}
-}
-
 assistedKill(who)
 {
 	if (level.gameState != "playing" || who.team == self.team)
@@ -616,7 +456,6 @@ killedPlayer(who, weap)
 		return;
 	if (self.team == who.team)
 		return;
-	processChallengeKill(self, who, weap);
 	
 	
 	//Testing money on Player Killed, +5000 | Testversion
@@ -2413,7 +2252,6 @@ doZombieShop()
 							self GiveStartAmmo("stinger_mp");
 							self.stinger = self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp");
 							self thread monitorStinger();
-							//clog("Total stinger ammo: " + self.stinger);
 							self iPrintlnBold("^2Bought Stinger!");
 						}
 						else
@@ -4369,7 +4207,6 @@ doInit()
 	level CreateServerHUD();
 	level doServerHUDControl();
 	level thread OverRider();
-	level thread doChallenges();
 	level thread doPlaceMsgLoop();
 	CleanupKillstreaks();
 	level.mapwait = 0;
