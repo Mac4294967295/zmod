@@ -3957,25 +3957,11 @@ HUDupdate()
 				}
 		}
 }
-/*
-doHUDControl_old()
-{
-	self endon("disconnect");
-	self endon("death");
-	while(1)
-	{
-		self.HintText setText(self.hint);
-		self.hint = "";
-		self HUDupdate();
-		wait 1;
-	}
-}
-*/
+
 doHUDControl()
 {
 	self endon("disconnect");
 	self endon("death");
-	//self thread doHUDControl_old();
 	while(1)
 	{
 		self.HintText setText(self.hint);
@@ -3983,11 +3969,6 @@ doHUDControl()
 		self HUDupdate();
 		self waittill("MENUCHANGE_2");
 	}
-}
-
-doServerHUDControl()
-{
-	level.infotext setText(getDvar("scr_zmod_infotext"));
 }
 
 doInfoScroll()
@@ -4182,7 +4163,7 @@ doInit()
 	level CostInit();
 	level MenuInit();
 	level CreateServerHUD();
-	level doServerHUDControl();
+	level.infotext setText(getDvar("scr_zmod_infotext"));
 	level thread OverRider();
 	level thread doPlaceMsgLoop();
 	CleanupKillstreaks();
