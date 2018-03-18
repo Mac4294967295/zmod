@@ -251,21 +251,8 @@ chaz_init()
 	setup_dvar("scr_zmod_debug", "0");
 	if (getDvarInt("scr_zmod_debug") != 0)
 		level.debug = 1;
-	
-	level.debugger = [];
-	level.debugger[0] = getDvar("scr_zmod_debugger");
-	level.debugger[1] = getDvar("scr_zmod_debugger2");
-	
-	setup_dvar("scr_zmod_debug_choose_bots", "0");
+		
 	setup_dvar("scr_zmod_round_gap", "5");
-	
-	setup_dvar("scr_zmod_botquota", "2");
-	
-	setDvar("testClients_watchKillcam", "0");
-	if (level.debug == 1)
-		level thread bot_later();
-	
-	level clog_init();
 	
 	if (level.debug)
 		level.enablekillcam = false;
@@ -295,8 +282,6 @@ chaz_init()
 	setup_dvar("scr_zmod_sentry_timeout", "200");
 	setup_dvar("scr_zmod_inf_knives", "10");
 	setup_dvar("scr_zmod_inf_ammo", "30");
-	setup_dvar("scr_zmod_human_challenge", "1");
-	setup_dvar("scr_zmod_zombie_challenge", "1");
 	setup_dvar("scr_zmod_disable_weapondrop", "1");
 	setup_dvar("scr_zmod_infotext", "^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
 	explosivemax = getDvarInt("scr_maxPerPlayerExplosives");
@@ -334,13 +319,6 @@ chaz_init()
 	level.nadenames[1] = "Semtex";
 	level.nadenames[2] = "Claymore";
 	level.nadenames[3] = "C4 Charge";
-	
-	clearChallenges();
-	level.hchallenge_reward = ::humanChallengeReward;
-	level.zchallenge_reward = ::zombieChallengeReward;
-
-	level.icon_trade = "waypoint_targetneutral";
-	precacheShader ( level.icon_trade );	
 }
 
 TS_IDLE = 0;//Normal mode
@@ -455,178 +433,6 @@ getWeaponSize(class)
 	return weap;
 }
 
-generateHumanChallengeNormal()
-{
-	zombies = getTeam("axis");
-	if (zombies.size == 0) {
-		clog("no zombos");
-		return;
-	}
-	who = zombies[randomInt(zombies.size)];
-	weap = getRandomWeapon(level.weaponclasses[randomInt(level.weaponclasses.size)]);
-	kills = 1 + randomInt(6);
-	level.hchallenge_target = who.guid;
-	level.hchallenge_weapon = strtok(weap, "_")[0];
-	level.hchallenge_kills = kills;
-	level.hchallenge_progress = kills;
-	level thread ibroadcastDelay(0.1, "^3HUMAN CHALLENGE: ^1KILL ^7" + who.name + "^3 WITH ^7" + getRealWeaponName(weap) + " ^3" + kills + " TIMES!", "allies");
-}
-
-generateZombieChallengeNormal()
-{
-	humans = getTeam("allies");
-	zombies = getTeam("axis");
-	if (humans.size == 0 || zombies.size == 0) {
-		clog("no zombos or humans");
-		return;
-	}
-	who = humans[randomInt(humans.size)];
-	assailant = zombies[randomInt(zombies.size)];
-	level.zchallenge_target = who.guid;
-	level.zchallenge_ass = assailant.guid;
-	level.zchallenge_progress = 1;
-	level thread ibroadcastDelay(0.1, "^3ZOMBIE CHALLENGE: ^7" + assailant.name + "^3 MUST KILL ^7" + who.name, "axis");
-}
-
-processChallengeKill(killer, victim, weap)
-{
-	weapon = strtok(weap, "_")[0];
-	if (killer.team == "axis")
-	{
-		if (level.zchallenge_progress == 0) {
-			return;
-		}
-		if (victim.team != "allies"){
-			level.zchallenge_progress = 0;
-			return;
-		}
-		if (victim.guid != level.zchallenge_target){
-			return;
-		}
-		if (killer.guid != level.zchallenge_ass) {
-			level.zchallenge_progress = 0;
-			return;
-		}
-		level.zchallenge_progress = 0;
-		level thread playSoundOnPlayers("mp_enemy_obj_taken", "axis");
-		level thread playSoundOnPlayers("mp_defcon_down", "allies");
-		
-		thread doPlaceMsgText("^3Zombie Challenge Complete!", "^1" + killer.name + "^3 has given zombies infinite knives for ^5"+ getDvarInt("scr_zmod_inf_knives") +"^3 secs!", 7);
-		thread [[level.zchallenge_reward]]();
-	}
-	else
-		if (killer.team == "allies")
-		{
-			if (level.hchallenge_progress == 0) {
-				clog("no prog");
-				return;
-			}
-			if (victim.team != "axis") {
-				clog("killer or victim wrong team");
-				return;
-			}
-			if (level.hchallenge_target != victim.guid || level.hchallenge_weapon != weapon) {
-				clog ("guid " + level.hchallenge_target + "/" + victim.guid + " " + level.hchallenge_weapon + "/" + weapon);
-				return;
-			}
-			level.hchallenge_progress--;
-			if (level.hchallenge_progress == 0) {
-				level thread playSoundOnPlayers("mp_enemy_obj_taken", "allies");
-				level thread playSoundOnPlayers("mp_defcon_down", "axis");
-				thread doPlaceMsgText("^3Human Challenge Complete!", "^1" + killer.name + "^3 has given humans infinite ammo for ^5" + getDvarInt("scr_zmod_inf_ammo") + "^3 secs!", 7);
-				thread [[level.hchallenge_reward]]();
-			}
-			else{
-				thread doPlaceMsgText(undefined, "^7Human Challenge Progress: ^3" + floor((1 - (level.hchallenge_progress / level.hchallenge_kills))*100) + " ^7PERCENT", 3);
-			}
-		}
-}
-
-challengeTimeoutNotify(msg, time, dmsg)
-{
-	level endon("game_ended");
-	level endon("gamestatechange");
-	wait time;
-	level notify(msg);
-	ibroadcast(dmsg);
-}
-
-humanChallengeReward()
-{
-	level endon("game_ended");
-	level endon("gamestatechange");
-	level endon("infammotimeout");
-	time = getDvarInt("scr_zmod_inf_ammo");
-	thread challengeTimeoutNotify("infammotimeout", time, "INFINITE AMMO FOR HUMANS ^1ENDED!");
-	for (;;)
-	{
-		foreach (player in level.players){
-			if (player.team != "allies")
-				continue;
-			weap = player getCurrentWeapon();
-			if (weap == "" || weap == "defaultweapon_mp")
-				continue;
-			player setWeaponAmmoClip(weap, weaponClipSize(weap));
-		}
-		wait 0.35;
-	}
-}
-
-zombieChallengeReward()
-{
-	level endon("game_ended");
-	level endon("gamestatechange");
-	level endon("infknivestimeout");
-	time = getDvarInt("scr_zmod_inf_ammo");
-	thread challengeTimeoutNotify("infknivestimeout", time, "INFINITE KNIVES FOR ZOMBIES ^1ENDED!");
-	for (;;)
-	{
-		foreach (player in level.players){
-			if (player.team != "axis")
-				continue;
-			if (!player hasWeapon("throwingknife_mp")){
-				player maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
-				player setWeaponAmmoClip("throwingknife_mp", 1);
-			}
-			if (player getWeaponAmmoClip("throwingknife_mp") == 0)
-				player setWeaponAmmoClip("throwingknife_mp", 1);
-		}
-		wait 0.35;
-	}
-}
-
-
-clearChallenges()
-{
-	level.hchallenge_target = 0;
-	level.hchallenge_weapon = "";
-	level.hchallenge_kills = 0;
-	level.hchallenge_progress = 0;
-	
-	level.zchallenge_target = 0;
-	level.zchallenge_ass = 0;
-	level.zchallenge_progress = 0;
-}
-
-doChallenges()
-{
-	level endon("game_ended");
-	for (;;)
-	{
-		level waittill("gamestatechange");
-		if (level.gameState != "playing")
-			continue;
-		if (level.round_type != "")
-			continue; 
-		wait 1.2;
-		clearChallenges();
-		if (getDvarInt("scr_zmod_human_challenge") != 0)
-			generateHumanChallengeNormal();
-		if (getDvarInt("scr_zmod_zombie_challenge") != 0)
-			generateZombieChallengeNormal();
-	}
-}
-
 assistedKill(who)
 {
 	if (level.gameState != "playing" || who.team == self.team)
@@ -647,8 +453,6 @@ killedPlayer(who, weap)
 		return;
 	if (self.team == who.team)
 		return;
-	clog("who: " + who.name + " weap: " + weap);
-	processChallengeKill(self, who, weap);
 	
 	
 	//Testing money on Player Killed, +5000 | Testversion
@@ -749,21 +553,6 @@ saveus()
 		self iprintlnbold(w + e + " clip: " + self getWeaponAmmoClip(w) + " stock: " + self getWeaponAmmoStock(w));
 }
 
-coords_thread()
-{
-	self endon("disconnect");
-	level.ooo = "1";
-	cur = 0;
-	curc = 7;
-	sz = 0;
-	while(1)
-	{
-		self waittill("daction_coords");
-		doPlaceMsgText("^2What the Shit?", "^6Zombies are now GROOVY! ", 3);
-		level playSoundOnPlayers("mp_defcon_down");
-	}
-}
-
 CleanupKillstreaks()
 {
 	//reset and player sentry states
@@ -808,30 +597,6 @@ getCreditsPersistent()
 	if (!cred)
 		return 0;
 	return cred;
-}
-
-bot_later()
-{
-	while(level.players.size == 0)
-	{
-		wait 1;
-	}
-	while(level.players.size <  getDvarInt("scr_zmod_botquota"))
-	{
-		bot = addtestclient();
-		bot.pers["isBot"] = 1;
-		wait 1;
-	}
-}
-
-bot_monitor()
-{
-	self endon("disconnect");
-	while(1)
-	{
-		
-		wait 8;
-	}
 }
 
 doSetup(isRespawn)
@@ -1142,7 +907,6 @@ destroyTrace()
 {
 	if (isDefined(level.bosspoint))
 	{
-		clog("trace destroyed");
 		level.bosspoint destroy();
 		level.bosspoint = undefined;
 	}
@@ -1159,7 +923,6 @@ givePossesions()
 	}
 	if (self.stinger > 0)
 	{
-		clog("Giving back stinger, is at " + self.stinger);
 		self giveWeapon("stinger_mp", 0, false);
 		self setWeaponAmmoClip("stinger_mp", 1);
 		if (self.stinger > 1)
@@ -1499,8 +1262,6 @@ tryUsekillstreak(name, cost, item)
 		self iPrintlnBold("^2Bought " + name + "!");
 		self notify("CASH");
 	}
-	else
-		clog("failed killstreak: " + ret);
 }
 
 buyKillstreak(name, cost, item)
@@ -2476,7 +2237,6 @@ doZombieShop()
 							self GiveStartAmmo("stinger_mp");
 							self.stinger = self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp");
 							self thread monitorStinger();
-							clog("Total stinger ammo: " + self.stinger);
 							self iPrintlnBold("^2Bought Stinger!");
 						}
 						else
@@ -2557,7 +2317,6 @@ doZombieShop()
 			}
 			if (self.menu == 2)
 			{
-				clog(self.name + " suicided.");
 				self suicide();
 					
 			}
@@ -2770,7 +2529,6 @@ doGameStarter()
 	level notify("gamestatechange");
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
 	level.lastAlive = 0;
-	clog("Waiting for CREATED");
 	level waittill("CREATED");
 	level thread doStartTimer();
 	foreach(player in level.players)
@@ -2872,11 +2630,7 @@ calculateCredits()
 			break;
 		winners[winners.size] = c;
 		level.players[c].kills = 0;
-		clog("Added winner: " + level.players[c].name);
-	}
-	
-	clog("Winners: " + winners.size);
-	
+	}	
 	i = 0;
 	prize = (winners.size * 50) + 100;
 	foreach (w in winners)
@@ -2922,11 +2676,8 @@ calculateCredits()
 		if (apply == 0)
 			break;
 		zwinners[zwinners.size] = c;
-		clog("Added ZWinner: " + level.players[c].name);
 	}
-	
-	clog("ZWinners: " + zwinners.size);
-	
+		
 	i = 0;
 	prize = (zwinners.size * 100) + 100;
 	foreach (w in zwinners)
@@ -2943,14 +2694,6 @@ calculateCredits()
 		level.players[i].kills = 0;
 }
 
-makeEveryoneNonSolid()
-{
-}
-
-makeEveryoneSolid()
-{
-}
-
 doIntermission()
 {
 	level.gameState = "intermission";
@@ -2958,7 +2701,6 @@ doIntermission()
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
 	level.lastAlive = 0;
 	level thread doIntermissionTimer();
-	makeEveryoneNonSolid();
 
 	level notify("RESETDOORS");
 	level notify("RESETCLUSTER");
@@ -2974,7 +2716,6 @@ doIntermission()
 		player thread doSetup();
 	
 	wait getdvarInt("scr_zmod_intermission_time");
-	makeEveryoneSolid();
 	level.ShowCreditShop = false;
 	level thread doZombieTimer();
 	CleanupKillstreaks();
@@ -3028,8 +2769,7 @@ chooseZombie()
 	{
 		for (i = 0; i < level.players.size; i++)
 		{
-			if (level.players[i].wasAlpha == 1 || (getDvarInt("scr_zmod_debug_choose_bots") != 0 && !isDefined(level.players[i].pers["isBot"])) || !level.players[i].ack["safe"]
-				|| (level.players[i].name == level.debugger[0] && getDvarInt("scr_zmod_skip_debugger") != 0))
+			if (level.players[i].wasAlpha == 1 || !level.players[i].ack["safe"])
 				continue;
 			level.players[i].wasAlpha = 1;
 			if (level.players[i].antialpha == true)
@@ -3048,26 +2788,6 @@ chooseZombie()
 			return -1;
 	}
 	return -1;
-}
-
-chooseSurvivor()
-{
-	while(1)
-	{
-		for (i = 0; i < level.players.size; i++)
-		{
-			if (level.players[i].wasSurvivor == 1 || !level.players[i].ack["safe"])
-				continue;
-			level.players[i].wasSurvivor = 1;
-			return i;
-		}
-		for (i = 0; i < level.players.size; i++)
-		{
-			level.players[i].wasSurvivor = 0;
-		}
-		if (level.players.size == 0)
-			return -1;
-	}
 }
 
 getNadeWeap()
@@ -3161,7 +2881,6 @@ initTacticalInsertion()
 
 giveNonIntermissionPermissableItems()
 {
-	clog ("handing out items");
 	foreach (player in level.players)
 		player giveNonIntermissionPermissableItem();
 }
@@ -4213,24 +3932,10 @@ HUDupdate()
 		}
 }
 
-doHUDControl_old()
-{
-	self endon("disconnect");
-	self endon("death");
-	while(1)
-	{
-		self.HintText setText(self.hint);
-		self.hint = "";
-		self HUDupdate();
-		wait 1;
-	}
-}
-
 doHUDControl()
 {
 	self endon("disconnect");
 	self endon("death");
-	self thread doHUDControl_old();
 	while(1)
 	{
 		self.HintText setText(self.hint);
@@ -4238,11 +3943,6 @@ doHUDControl()
 		self HUDupdate();
 		self waittill("MENUCHANGE_2");
 	}
-}
-
-doServerHUDControl()
-{
-	level.infotext setText(getDvar("scr_zmod_infotext"));
 }
 
 doInfoScroll()
@@ -4297,9 +3997,6 @@ doPerksSetup()
 
 doSpawn()
 {
-	
-	
-	//Chaz Edit:
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
@@ -4324,7 +4021,6 @@ doSpawn()
 			else
 				{
 					self.isZombie = 1;
-					clog(self.name + " Credit saved: " + self.kills);
 					self.credit_kills = self.kills;
 				}
 					
@@ -4441,9 +4137,8 @@ doInit()
 	level CostInit();
 	level MenuInit();
 	level CreateServerHUD();
-	level doServerHUDControl();
+	level.infotext setText(getDvar("scr_zmod_infotext"));
 	level thread OverRider();
-	level thread doChallenges();
 	level thread doPlaceMsgLoop();
 	CleanupKillstreaks();
 	level.mapwait = 0;
@@ -4458,10 +4153,6 @@ doInit()
 	wait 2;
 	
 	level thread doGameStarter();
-	if(level.friendlyfire != 0)
-	{
-		level thread ffend();
-	}
 }
 
 CostInit()
@@ -4770,21 +4461,6 @@ MenuInit()
 	
 }
 
-createFog()
-{
-	level.mapCenter = maps\mp\gametypes\_spawnlogic::findBoxCenter( level.spawnMins, level.spawnMaxs );
-	level._effect[ "FOW" ] = loadfx( "dust/nuke_aftermath_mp" );
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( 0 , 0 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( 0 , 3000 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( 0 , -3000 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( 3000 , 0 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( 3000 , 3000 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( 3000 , -3000 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( -3000 , 0 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( -3000 , 3000 , 500 ));
-	PlayFX(level._effect[ "FOW" ], level.mapCenter + ( -3000 , -3000 , 500 ));
-}
-
 OverRider()
 {
 	for(;;)
@@ -4799,34 +4475,6 @@ OverRider()
 		level.killstreakRewards = 0;
 		wait 1;
 	}
-}
-
-ffend()
-{
-	level endon ( "game_ended" );
-	for(i = 10;i > 0;i--)
-	{
-		foreach(player in level.players)
-		{
-			player iPrintlnBold("^1ERROR: Friendly Fires is Enabled. Game Ending");
-		}
-		wait .5;
-	}
-	exitLevel( false );
-}
-
-headend()
-{
-	level endon ( "game_ended" );
-	for(i = 10;i > 0;i--)
-	{
-		foreach(player in level.players)
-		{
-			player iPrintlnBold("^1ERROR: Headshots Only is Enabled. Game Ending");
-		}
-		wait .5;
-	}
-	exitLevel( false );
 }
 
 destroyOnDeath()
@@ -5413,16 +5061,7 @@ onPlayerConnect()
 		}
 		
 		isd = false;
-		
-		foreach (debugee in level.debugger)
-		{
-			if (debugee == player.name)
-			{
-				player thread debug_user();
-				isd = true;
-			}
-		}
-
+				
 		player.doorInRange = 0;
 		player.isZombie = 0;
 		player.wasAlpha = 0;
@@ -5455,95 +5094,6 @@ onDisconnect()
 	self waittill("disconnect");
 }
 
-clog_button_loop_change()
-{
-	self endon("disconnect");
-	self notifyOnPlayerCommand("[{+actionslot 1}]", "+actionslot 1");
-	while(1)
-	{
-		self waittill("[{+actionslot 1}]");
-		level.curaction++;
-		if (level.curaction > level.daction.size)
-			level.curaction = 0;
-		self iPrintlnBold("Debug action: " + level.daction[level.curaction]["name"]);
-	}
-}
-
-clog_button_monitor()
-{
-	self endon("disconnect");
-	self thread clog_button_loop_change();
-	while(1)
-	{
-		self notifyOnPlayerCommand("[{+activate}]", "+activate");
-		self waittill("[{+activate}]");
-		type = level.daction[level.curaction]["type"];
-		note = level.daction[level.curaction]["note"];
-		if (type == "level")
-			level notify(note);
-		else
-			if (type == "self")
-				self notify(note);
-			else
-				if (type == "all")
-				{
-					level notify(note);
-					self notify(note);
-				}
-		wait 0.2;
-	}
-}
-
-clog_init()
-{
-	if (level.debug == 0)
-		return;
-	level.msg_class = [];
-	level.msgs = [];
-	level.msgs_size = 0;
-	level.msgs_back = 0;
-	level.logtext = level createServerFontString( "objective", 1 );
-	level.logtext setPoint( "CENTER", "CENTER", 0, 100);
-	level.logtext setText("^1Empty Log");
-	setDvar("fx_draw", 1);
-	
-	level.daction = [];
-	level.daction[0]["name"] = "Log";
-	level.daction[0]["note"] = "daction_log";
-	level.daction[0]["type"] = "level";
-	
-	level.daction[1]["name"] = "Kick bot";
-	level.daction[1]["note"] = "daction_botkick";
-	level.daction[1]["type"] = "self";
-	
-	level.daction[2]["name"] = "Add bot";
-	level.daction[2]["note"] = "daction_botadd";
-	level.daction[2]["type"] = "self";
-	
-	level.daction[3]["name"] = "Get coords";
-	level.daction[3]["note"] = "daction_coords";
-	level.daction[3]["type"] = "self";
-	
-	level.daction[4]["name"] = "Give money";
-	level.daction[4]["note"] = "daction_money";
-	level.daction[4]["type"] = "self";
-	
-	level.daction[5]["name"] = "Exhaust credits";
-	level.daction[5]["note"] = "daction_credits";
-	level.daction[5]["type"] = "self";
-	
-	
-	
-	
-	end = level.daction.size;
-	level.daction[end]["name"] = "Nothing";
-	level.daction[end]["note"] = "nothing";
-	level.daction[end]["type"] = "";
-	
-	level.curaction = 0;
-	level thread log_thread();
-}
-
 clog(msg)
 {
 	if (level.debug == 0)
@@ -5555,127 +5105,6 @@ clog(msg)
 	level.msgs_size += 1;
 }
 
-clog_reset(class, limit)
-{
-	level.msg_class[class] = limit;
-}
-
-clogc(msg, class, limit)
-{
-	if (!isDefined(level.msg_class[class]))
-		level.msg_class[class] = limit;
-	if (level.msg_class[class] <= 0)
-		return;
-	clog(msg);
-	level.msg_class--;
-}
-
-debug_user()
-{
-	if (level.debug == 0)
-		return;
-	self thread clog_button_monitor();
-	
-	self thread addBot_thread();
-	self thread kickBot_thread();
-	self thread coords_thread();
-	self thread money_thread();
-	self thread credit_thread();
-}
-
-credit_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		self waittill("daction_credits");
-		i = 0;
-		while (i < 800)
-		{
-			self.bounty += 1;
-			self.credits += 1;
-			self notify("CASH");
-			wait 0.001;
-		}
-	}
-}
-
-addBot_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		self waittill("daction_botadd");
-		bot = addtestclient();
-		bot.pers["isBot"] = 1;
-	}
-}
-
-kickBot_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		self waittill("daction_botkick");
-		foreach (player in level.players)
-		{
-			if (player.per["isBot"])
-			{
-				kick (player);
-				break;
-			}
-		}
-	}
-}
-
-money_thread()
-{
-	while(1)
-	{
-		self waittill("daction_money");
-		self statCashAdd(25);
-		self iPrintlnBold("Added cash!");
-		wait 5;
-	}
-}
-
-
-disp_log(msg)
-{
-	text = "LOG: " + msg;
-
-	level.logtext destroy();
-	
-	setDvar("fx_draw", 1);
-	level.logtext = level createServerFontString( "objective", 1 );
-	level.logtext setPoint( "CENTER", "CENTER", 0, 100 );
-	level.logtext setText(text);
-	println(text);
-}
-log_thread()
-{
-	self endon("disconnect");
-	while (1)
-	{
-		if (level.msgs_size > 0 && level.msgs_back < level.msgs_size)
-		{
-			disp_log(level.msgs[level.msgs_back]);
-			level waittill("daction_log");
-			level.msgs_back += 1;
-			if (level.msgs_back == level.msgs_size)
-			{
-				level.msgs_back = 0;
-				level.msgs_size = 0;
-				level.logtext destroy();
-				setDvar("fx_draw", 1);
-				level.logtext = level createServerFontString( "objective", 1 );
-				level.logtext setPoint( "CENTER", "CENTER", 0, 100 );
-				level.logtext setText("");
-			}
-		}
-		wait 0.2;
-	}
-}
 onJoinedTeam()
 {
 	self endon("disconnect");
