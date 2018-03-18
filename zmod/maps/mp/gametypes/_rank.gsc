@@ -248,7 +248,6 @@ chaz_init()
 {
 	level thread doRoundWaitEnd();
 	level.debug = 0;
-	level.traders = [];
 	setup_dvar("scr_zmod_debug", "0");
 	if (getDvarInt("scr_zmod_debug") != 0)
 		level.debug = 1;
@@ -706,8 +705,6 @@ init_player_extra()
 		self.ack["ts"] = TS_IDLE;
 		self.offerfirst = false;
 		self.humanfs = false;
-		self.traderid = -1;
-		self.ptrader = -1;
 		self.riotz = false;
 		self.tact = false;
 		self.blastshield = false;
@@ -735,93 +732,6 @@ isValidWeaponForTrade(weap)
 				return false;
 		}
 		return false;
-}
-
-addTrader(player)
-{
-	if (player.ack["ts"] != TS_IDLE)
-		return;
-	idx = getIndex(player);
-	level.traders[level.traders.size] = idx;
-	player.traderid = idx;
-	clog("Trader size: " + level.traders.size + ", " + level.players[idx].name);
-	clog("before: " + player.name);
-	player.ack["ts"] = TS_OFFERING;
-	player createTradeIcon();
-	player thread searchForTradersThread();
-	clog("after: " + player.name);
-	clog("Added " + player.name + " to traders.");
-}
-
-getIndex(target)
-{
-	sz = level.players.size;
-	for (i = 0; i < sz; i++)
-		if (level.players[i].clientid == target.clientid)
-			return i;
-	return -1;
-}
-
-findTrader(player)
-{
-	for (i = 0; i < level.traders.size; i++)
-		if (level.traders[i].clientid == player.clientid)
-			return i;
-	return -1;
-}
-
-removeTrader(player)
-{
-	target = findTrader(player);
-	if (target == -1)
-		return;
-	sz = level.traders.size-1;
-	for (i = target ; i < sz ; i++)
-	{
-		level.traders[i] = level.traders[i+1];
-	}
-	trader = level.players[target];
-	if (trader.ptrader != -1)
-	{
-		level.players[trader.ptrader].ptrader = -1;
-	}
-	
-	level.traders[sz] = undefined;
-}
-
-clearTraders()
-{
-	level.traders = [];
-	foreach(player in level.players)
-	{
-		player.ack["ts"] = TS_IDLE;
-		player.ptrader = -1;
-	}
-}
-
-getWeapname(player)
-{
-	return getRealWeaponName(player.current);
-}
-
-createTradeIcon()
-{
-	if (isDefined(self.tradeicon))
-		return;
-	self.tradeicon = newTeamHudElem( "allies" );
-	self.tradeicon.alpha = 1;
-	self.tradeicon.isShown = true;
-	self.tradeicon setShader(level.icon_trade, 8, 8);
-	self.tradeicon setwaypoint(true, true);
-	self.tradeicon SetTargetEnt(self);
-}
-
-deleteTradeIcon()
-{
-	if (!isDefined(self.tradeicon))
-		return;
-	self.tradeicon destroy();
-	self.tradeicon = undefined;
 }
 
 dropDead()
@@ -852,295 +762,6 @@ coords_thread()
 		doPlaceMsgText("^2What the Shit?", "^6Zombies are now GROOVY! ", 3);
 		level playSoundOnPlayers("mp_defcon_down");
 	}
-}
-
-searchForTradersTimeout()
-{
-  self endon("disconnect");
-  self endon("death");
-  self endon("end_trade_search");
-  to = getDvarInt("scr_zmod_tradeSearch_timeout");
-	timeout = to;
-	if (timeout == 0)
-		return;
-	while (timeout > 0) {
-		if (self.ptrader == -1) {
-			self iprintlnbold("^3Trade times out in " + timeout + "...");
-			timeout--;
-		}
-		else
-			timeout = to;
-		wait 1;
-	}
-	self iprintlnbold("^3Trade canceled!");
-	self thread cancelTrading();
-}
-
-/*
-	1)User offers weapon for trade, and user enters OFFERING. User may change weapons
-	2)Another user as step 1 enters vicinity
-*/
-searchForTradersThread()
-{
-    self endon("disconnect");
-    self endon("death");
-    self endon("end_trade_search");
-    mindis = getdvarint("scr_zmod_trade_distance");
-    self thread searchForTradersTimeout();
-    self.ack["ts"] = TS_OFFERING;
-    //clog("search init");
-    trader = undefined;
-    for (;;)
-    {
-    	f = false;
-    	if (self.ptrader == -1)
-    	{
-	    	foreach (traderid in level.traders)
-	    	{
-	    		trader = level.players[traderid];
-	    		//clog("TRADE STATE " + self.name + " " + trader.ack["ts"]);
-	    		if (trader.clientid == self.clientid || trader.ack["ts"] != TS_OFFERING)
-	    			continue;
-	    		//Should prevent partner ack mismatch
-	    		if (trader.ptrader != -1 && trader.ptrader != self.traderid)//Don't snag with them if they havent snagged with us
-	    			continue;
-	    		//clog("testing: " + self.name);
-	    		if (Distance(self.origin, trader.origin) > mindis)
-	    				continue;
-	    		//clog("Gotcha! " + self.name);
-					self.ptrader = traderid;
-					f = true;
-					self notify("MENUCHANGE_2");
-					break;
-	    	}
-	    }
-	    else//Continually lock onto our partner
-	    {
-	    	if (Distance(self.origin, trader.origin) <= mindis)
-	    		f = true;
-	    	else
-	    	{
-	    		self.ptrader = -1;
-	    		self notify("MENUCHANGE_2");
-	    		//clog("AWww! " + self.name);
-	    	}
-	    }
-    	if (!f && self.ptrader != -1)
-    		self.ptrader = -1;
-    	wait 0.4;
-    }
-}
-
-cancelTrading()
-{
-	self notify("end_trade_search");
-	self notify("end_trade_confirm");
-	removeTrader(self);
-	self deleteTradeIcon();
-	widowid = self.ptrader;
-	self.ptrader = -1;
-	self.offerfirst = false;
-	self.ack["ts"] = TS_IDLE;
-	if (widowid != -1)
-	{
-		widow = level.players[widowid];
-		widow.ptrader = -1;
-		widow cancelTrading();
-	}
-	self notify("MENUCHANGE_2");
-}
-
-resetTrade()
-{
-	foreach (player in level.players)
-		if (player.ack["ts"])
-			player cancelTrading();
-}
-
-confirmTradeThread(partner)
-{
-    self endon("disconnect");
-    self endon("death");
-    self endon("end_trade_confirm");
-    
-    timeout = getdvarint("scr_zmod_trade_timeout");
-    if (self.ptrader != -1)
-    {
-	    while (1)
-	    {
-	    	txt = "Trade times out in.." + timeout;
-	    	self iprintlnbold(txt);
-	    	partner iprintlnbold(txt);
-	    	timeout--;
-	    	wait 1;
-	    	if (timeout <= 0)
-	    		break;
-	    	if (self.ack["ts"] != TS_CONFIRM || partner.ack["ts"] != TS_CONFIRM || self.ptrader == -1 || partner.ptrader == -1)
-	    		break;
-	    }
-	   }
-		txt = "Trade Canceled!";
-		self iprintlnbold(txt);
-		partner iprintlnbold(txt);
-    self thread cancelTrading();
-}
-
-startTradeConfim()
-{
-	if (self.ptrader == -1)
-	{
-		clog("trading canceled, lost partner in confirm: " + self.name);
-		self cancelTrading();
-		return;
-	}
-	partner = level.players[self.ptrader];
-	self deleteTradeIcon();
-	partner deleteTradeIcon();
-	self notify("end_trade_search");
-	partner notify("end_trade_search");
-	self.ack["ts"] = TS_CONFIRM;
-	partner.ack["ts"] = TS_CONFIRM;
-	//Reuse offerfirst for confirm
-	self.offerfirst = false;
-	partner.offerfirst = false;
-	self thread confirmTradeThread(partner);
-}
-
-onTradeItemUse()
-{
-		switch (self.ack["ts"])
-		{
-			case 0://TS_IDLE
-				if (isValidWeaponForTrade(self.current))
-				{
-					addTrader(self);
-					self notify("MENUCHANGE_2");
-				}
-				else
-					self iprintlnbold("Cannot offer this weapon for trade!");
-				break;
-			case 1://TS_OFFERING
-				if (self.ptrader == -1)
-				{//Cancel
-					//clog("trading canceled, lost partner in offering: " + self.name);
-					self iprintlnbold("^3Trade canceled!");
-					self cancelTrading();
-				}
-				else
-				{
-					partner = level.players[self.ptrader];
-					if (!isValidWeaponForTrade(partner.current))
-					{
-						self iprintlnbold(partner.name + " does not have a valid weapon!");
-						break;
-					}
-					else
-						if (!isValidWeaponForTrade(self.current))
-						{
-							self iprintlnbold("You do not have a valid weapon!");
-							break;
-						}
-					if (partner.ack["ts"] != TS_OFFERING)
-						break;
-					self startTradeConfim();
-					self notify("MENUCHANGE_2");
-				}
-				break;
-			case 2://TS_CONFIRM
-				if (self.ptrader == -1)
-				{
-					//clog("trading canceled, lost partner in confirm: " + self.name);
-					self cancelTrading();//Partner's gone, let's just worry about us
-				}
-				else
-				{
-					partner = level.players[self.ptrader];
-					self.offerfirst = true;
-					if (!partner.offerfirst) // If they havent confirmed, wait for them
-						break;
-					//clog("canceling trade for the better good: " + self.name);
-					partner cancelTrading();
-					self cancelTrading();
-					if (!isValidWeaponForTrade(self.current) || !isValidWeaponForTrade(partner.current))
-					{
-						partner iprintlnbold("Cannot trade an invalid weapon!");
-						self iprintlnbold("Cannot trade an invalid weapon!");
-						break;
-					}
-					hisWeap = partner.current;
-					myWeap = self.current;
-					clog("partner weap: " + hisWeap + " myWeap: " + myWeap);
-					hisStock = partner GetWeaponAmmoStock(hisWeap);
-					myStock = self GetWeaponAmmoStock(myWeap);
-					hisClip = partner GetWeaponAmmoClip(hisWeap);
-					myClip = self GetWeaponAmmoClip(myWeap);
-					
-					partner takeWeapon(hisWeap);
-					self takeWeapon(myWeap);
-					
-					partner giveWeapon(myWeap , 0, true);
-					self giveWeapon(hisWeap , 0, true);
-					partner setWeaponAmmoStock(myWeap, myStock);
-					self setWeaponAmmoStock(hisWeap, hisStock);
-					partner setWeaponAmmoClip(myWeap, myClip);
-					self setWeaponAmmoClip(hisWeap, hisClip);
-					
-					partner switchToWeapon(myWeap);
-					self switchToWeapon(hisWeap);
-					
-					partner iprintlnbold("GOT A " + getWeapname(myWeap) + " FROM " + self.name + "!");
-					self iprintlnbold("GOT A " + getWeapname(hisWeap) + " FROM " + partner.name + "!");
-					self notify("MENUCHANGE_2");
-				}
-				break;
-		}
-}
-
-getTradeText(button)
-{
-	txt = "empty";
-	isValid = isValidWeaponForTrade(self.current);
-	name = getWeapname(self);
-	
-	if (!isValid)
-	{
-		return "^1This weapon cannot be traded.";
-	}
-	switch (self.ack["ts"])
-	{
-		case 0://TS_IDLE
-			txt = "^2Press " + button + " to Offer [" + name + "] for trade";
-			break;
-		case 1://TS_OFFERING
-			txt = "^5Searching to trade [" + name + "], Press " + button + " to cancel";
-			if (self.ptrader != -1)
-			{
-				trader = level.players[self.ptrader];
-				if (!isValidWeaponForTrade(trader.current))
-					return "^1"+trader.current+"'s ["+name+"] is not a valid weapon for trade.";
-				traderweap = getWeapname(trader);
-				txt = "^2Press " + button + " to trade [" + name + "] for [" + traderweap + "] with " + trader.name;
-			}
-			break;
-		case 2://TS_CONFIRM
-			if (self.ptrader != -1)
-			{
-				partner = level.players[self.ptrader];
-				if (self.offerfirst)
-					txt = "^6Waiting for " + partner.name + " to accept...";
-				else
-					txt = "^6Press " + button + " to confim trade for " + partner.name + "'s [" + getWeapname(partner) + "]";
-			}
-			break;
-		default:
-			break;
-	}
-	if (txt == "empty")
-	{
-		txt = "ERROR " + self.ack["ts"];
-		wait 5;
-	}
-	return txt;
 }
 
 CleanupKillstreaks()
@@ -1222,7 +843,6 @@ doSetup(isRespawn)
 		self notify("menuresponse", "changeclass", "class1");
 		return;
 	}
-	self cancelTrading();
 	self doScoreReset();
 	wait .1;
 	self notify("menuresponse", "changeclass", "class1");
@@ -1306,8 +926,6 @@ doSetup(isRespawn)
 	else
 		self.creditshop = false;
 	self setClientDvar("g_knockback", 1000);
-	
-	self resetTrade();
 
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "Human";
@@ -1327,7 +945,6 @@ doSetup(isRespawn)
 
 doAlphaZombie()
 {
-	self cancelTrading();
 	if(self.team == "allies")
 	{
 		self notify("menuresponse", game["menu_team"], "axis");
@@ -1393,7 +1010,6 @@ doAlphaZombie()
 
 doZombie()
 {
-	self cancelTrading();
 	if(self.team == "allies")
 	{
 			self notify("menuresponse", game["menu_team"], "axis");
@@ -2481,7 +2097,7 @@ doHumanShop()
 						else
 						if (self.menu == 7)
 						{
-							self onTradeItemUse();
+							//Previous Trading Function
 						}
 						else
 						if (self.menu == 8)
@@ -4456,7 +4072,7 @@ HUDupdate()
 									self.option2 setText(level.humanM[self.menu][1][self.exTo]);
 							if (self.menu == 7)
 							{
-								self.option3 setText(self getTradeText("[{+actionslot 4}]"));
+								self.option3 setText("Press [{+actionslot 4}] - " + "This slot is not in use");
 							}
 							else
 									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
@@ -5844,7 +5460,6 @@ onPlayerConnect()
 onDisconnect()
 {
 	self waittill("disconnect");
-	removeTrader(self);
 }
 
 clog_button_loop_change()
