@@ -3,6 +3,7 @@
 //HUDupdate();  updates HUD
 foo(){
 	self iPrintlnBold("testtesttest");
+	self iPrintlnBold(self.ZMenu["movespeed"]["cost"]);
 	self iPrintlnBold(self.ZMenu["movespeed"]["in_use"]);
 }
 initShopItem(name, cost, page, pos, text1, text2, print_text){
@@ -12,20 +13,16 @@ initShopItem(name, cost, page, pos, text1, text2, print_text){
 	self.ZMenu[name]["text1"] = text1;
 	self.ZMenu[name]["text2"] = text2;
 	self.ZMenu[name]["print_text"] = print_text;
+	self.ZMenu[name]["in_use"] = 0;
 }
 
 
 resetZMenu(){
-	m = 100; //menu page
-	
-	for(i=0;i<m;i++){
-		self.ZMenu[i]["in_use"] = 0;
-	}
 	initShopItem("health", 50, 0, 0, "Buy Health - 50", "^1Max Health achieved", "Buy Health - 50");
 	initShopItem("movespeed", 50, 1, 2, "Buy Movespeed - 50", "^1Max Movespeed achieved", "Buy Movespeed - 50");
 }
 initializeZMenu(){
-	self iPrintlnBold("testtesttesttest");
+	//self iPrintlnBold("testtesttesttest");
 	self.ZMenu[100][7] = []; 
 	resetZMenu();
 }

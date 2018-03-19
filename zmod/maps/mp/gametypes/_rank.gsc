@@ -578,7 +578,7 @@ getCreditsPersistent()
 
 doSetup(isRespawn)
 {
-	foo();
+	self initializeZMenu();
 	if (self.team == "axis" || self.team == "spectator")
 	{
 		self notify("menuresponse", game["menu_team"], "allies");
@@ -651,7 +651,7 @@ doSetup(isRespawn)
 	self.maxhp = 100;
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.0;
+	self.moveSpeedScaler = 1.0+self.ZMenu["movespeed"]["in_use"]*0.1;
 	if (level.debug == 0)
 		self.thermal = 0;
 	else
@@ -735,7 +735,7 @@ doAlphaZombie()
 	self thread doPerkCheck();
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.15;
+	self.moveSpeedScaler = 1.0+self.ZMenu["movespeed"]["in_use"]*0.1;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -797,7 +797,7 @@ doZombie()
 			
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhealth;
-	self.moveSpeedScaler = 1.15;
+	self.moveSpeedScaler = 1.0+self.ZMenu["movespeed"]["in_use"]*0.1;
 	self setClientDvar("g_knockback", 3500);
 	
 	notifySpawn = spawnstruct();
@@ -860,7 +860,6 @@ doLastAlive()
 	self endon("disconnect");
 	self endon("death");
 	wait 2;
-	self setMoveSpeedScale(1.7);
 	self GiveMaxAmmo(self.current);
 	if (self.commandopro == true)
 	{
@@ -2279,7 +2278,8 @@ doZombieShop()
 						if(self.bounty >= self.ZMenu["movespeed"]["cost"])
 						{
 
-							self.ZMenu["movespeed"]["in_use"] += 1;	
+							self.ZMenu["movespeed"]["in_use"] += 1;
+							foo();							
 							self.moveSpeedScaler += 0.1;
 							statCashSub(self.ZMenu["movespeed"]["cost"]);
 							self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
@@ -2532,6 +2532,7 @@ doGameStarter()
 	foreach(player in level.players)
 	{
 		player thread doSetup();
+		
 	}
 	wait getdvarint("scr_zmod_starting_time");
 	level thread doZombieTimer();
@@ -3873,7 +3874,7 @@ HUDupdate()
 							self.option2 setText("Perk can not be upgraded");
 							break;
 					}
-					self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
+					self.option3 setText("Press [{+actionslot 4}] - " + self.ZMenu["movespeed"]["print_text"]); //print example
 				}else
 					if(self.menu == 2)
 					{
@@ -3893,7 +3894,7 @@ HUDupdate()
 						else
 							self.option2 setText("");
 						
-						self.option3 setText("Press [{+actionslot 4}] - " + self.ZMenu["movespeed"]["print_text"]); //print example
+						self.option3 setText("Press [{+actionslot 4}] - Suicide");
 
 					}
 					else
@@ -3917,6 +3918,7 @@ HUDupdate()
 					self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 				}
 		}
+		
 }
 
 doHUDControl()
@@ -3988,7 +3990,7 @@ doPerksSetup()
 
 doSpawn()
 {
-	initializeZMenu();
+	
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
@@ -4051,7 +4053,6 @@ doSpawn()
 	
 	//Testing money on Player Spawn, +5000 | Testversion
 	self statCashAdd(5000);
-	foo();
 	if(level.gamestate == "starting")
 	{
 		self thread OMAExploitFix();
@@ -4332,6 +4333,7 @@ weaponInit()
 
 MenuInit()
 {
+	self initializeZMenu();
 	level.humanM = [];
 	level.zombieM = [];
 	i = 0;
@@ -4891,6 +4893,7 @@ init()
 	level thread patientZeroWaiter();
 	level thread onPlayerConnect();
 	level thread doInit();
+	
 	
 }
 
