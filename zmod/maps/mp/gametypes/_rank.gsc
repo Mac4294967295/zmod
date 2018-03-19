@@ -2057,22 +2057,17 @@ doZombieShop()
 			if(self.menu == 0)
 			{
 				if(self.maxhp < 1000)
-					{
-						if(self.bounty >= level.itemCost["health"])
-							{
-								self statCashSub(level.itemCost["health"]);
-								self statMaxHealthAdd(level.itemCost["health"]);
-								self iPrintlnBold("^2Health Increased!");
-							}
-						else
-							{
-								self iPrintlnBold("^1Not Enough ^3Cash");
-							}
-					}
-				else
-					{
-							self iPrintlnBold("^1Max Health Achieved!");
-					}
+				{
+					if(self.bounty >= self.ZMenu["health"]["cost"]){
+						self.ZMenu["health"]["in_use"] += 1;
+						self statMaxHealthAdd(50);
+						self statCashSub(self.ZMenu["health"]["cost"]);
+						self iPrintlnBold("^2Health Increased!");
+						if(self.maxhp==1000){
+							self.ZMenu["health"]["print_text"] = self.ZMenu["health"]["text2"];
+						}
+					}else self iPrintlnBold("^1Not Enough ^3Cash");
+				}
 			}
 			if(self.menu == 1)
 			{
@@ -2272,32 +2267,20 @@ doZombieShop()
 			}
 			if(self.menu == 1)
 			{
-				if(self.ZMenu["movespeed"]["in_use"]<4) //Mac
+				if(self.ZMenu["movespeed"]["in_use"]<5) //allows a max of 5 movespeed upgrades
 				{
-					
-						if(self.bounty >= self.ZMenu["movespeed"]["cost"])
-						{
-
-							self.ZMenu["movespeed"]["in_use"] += 1;
-							foo();							
-							self.moveSpeedScaler += 0.1;
-							statCashSub(self.ZMenu["movespeed"]["cost"]);
-							self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-							self iPrintlnBold("^2Speed Bought!");
+					if(self.bounty >= self.ZMenu["movespeed"]["cost"])
+					{
+						self.ZMenu["movespeed"]["in_use"] += 1;						
+						self.moveSpeedScaler += 0.1;
+						statCashSub(self.ZMenu["movespeed"]["cost"]);
+						self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+						self iPrintlnBold("^2Speed Bought!");
+						if(self.ZMenu["movespeed"]["in_use"]==5){ //at Max rank update what to print in the menu
+							self.ZMenu["movespeed"]["print_text"] = self.ZMenu["movespeed"]["text2"];
 						}
-						else
-							{
-								self iPrintlnBold("^1Not Enough ^3Cash");
-							}
-
-				}else if(self.ZMenu["movespeed"]["in_use"]==4){
-					self.ZMenu["movespeed"]["in_use"] += 1;	
-					self.moveSpeedScaler += 0.1;
-					foo();
-					statCashSub(self.ZMenu["movespeed"]["cost"]);
-					self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-					self iPrintlnBold("^2Speed Bought!");
-					self.ZMenu["movespeed"]["print_text"] = self.ZMenu["movespeed"]["text2"];
+					}
+					else self iPrintlnBold("^1Not Enough ^3Cash");		
 				}
 			}
 			if (self.menu == 2)
@@ -3607,7 +3590,7 @@ ZombiePerkHUDUpdate()
 
 HUDupdate()
 {
-	self.DebugHUD setText("Movespeed-var: " + self.ZMenu["movespeed"]["in_use"] +" "+ self.moveSpeedScaler);
+	self.DebugHUD setText("");
 
 		if(self.team == "allies")
 		{
@@ -3913,7 +3896,7 @@ HUDupdate()
 			}
 			else
 				{
-					self.option1 setText("Press [{+smoke}] - " + level.zombieM[self.menu][0]);
+					self.option1 setText("Press [{+smoke}] - " + self.ZMenu["health"]["print_text"]); //print example
 					self.option2 setText("Press [{+actionslot 2}] - " + level.zombieM[self.menu][1]);
 					self.option3 setText("Press [{+actionslot 4}] - " + level.zombieM[self.menu][2]);
 				}
