@@ -5,32 +5,32 @@ I) Place the zmod folder in your mods folder located in your game root folder
 II) run following command: fs_game mods/zmod; map *<MAP_NAME>*
 
 # Map Names
-mp_afghan:		Afghan
-mp_derail:		Derail
-mp_estate:		Estate
-mp_favela:		Favela
-mp_highrise:	Highrise
-mp_invasion:	Invasion
-mp_checkpoint:	Karachi
-mp_quarry:		Quarry
-mp_rundown:		Rundown
-mp_rust:		Rust
-mp_boneyard:	Scrapyard
-mp_nightshift:	Skidrow
-mp_subbase:		Sub Base
-mp_terminal:	Terminal
-mp_underpass:	Underpass
-mp_brecourt:	Wasteland 
-mp_complex:		Bailout
-mp_crash:		Crash
-mp_compact:		Salvage
-mp_overgrown:	Overgrown
-mp_storm :		Storm
-mp_abandon 		Carnival 
-mp_fuel2:		Fuel
-mp_strike:		Strike
-mp_trailerpark:	Trailer Park
-mp_vacant:		Vacant
+- mp_afghan:		Afghan
+- mp_derail:		Derail
+- mp_estate:		Estate
+- mp_favela:		Favela
+- mp_highrise:		Highrise
+- mp_invasion:		Invasion
+- mp_checkpoint:	Karachi
+- mp_quarry:		Quarry
+- mp_rundown:		Rundown
+- mp_rust:			Rust
+- mp_boneyard:		Scrapyard
+- mp_nightshift:	Skidrow
+- mp_subbase:		Sub Base
+- mp_terminal:		Terminal
+- mp_underpass:		Underpass
+- mp_brecourt:		Wasteland 
+- mp_complex:		Bailout
+- mp_crash:			Crash
+- mp_compact:		Salvage
+- mp_overgrown:		Overgrown
+- mp_storm :		Storm
+- mp_abandon 		Carnival 
+- mp_fuel2:			Fuel
+- mp_strike:		Strike
+- mp_trailerpark:	Trailer Park
+- mp_vacant:		Vacant
 
 #structure of the mod
 The main logic of the mod is located in the file zmod\maps\mp\gametypes\_rank.gsc
