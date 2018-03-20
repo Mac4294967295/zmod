@@ -106,6 +106,73 @@ CollectSpawnCords()
 	}
 }
 
+//Creates spawnpoints between point1 x/y and point 2 x/y; make sure numspawn (number of spawns) doesn't overflow arraySpawnPoint
+SetSpawnZone(team, point1_x, point1_y, point2_x, point2_y, height, angle, numspawns)
+{
+	playersize = 50;
+	xdiff = 0;
+	ydiff = 0;
+	
+	//calculates the differences between the x/y cords of the two points
+	if(point1_x >= point2_x)
+	{
+		xdiff = point1_x - point2_x;
+	}
+	else if(point2_x >= point1_x)
+	{
+		xdiff = point2_x - point1_x ;
+	}
+	if(point1_y >= point2_y)
+	{
+		ydiff = point1_y - point2_y;
+	}
+	else if(point2_y >= point1_y)
+	{
+		ydiff = point2_y - point1_y;
+	}
+
+	maxrows = int(xdiff / playersize);
+	maxcolumns = int(ydiff / playersize);
+	maxspawns = maxrows * maxcolumns;
+	createdspawns = 0;
+		
+	if(numspawns == 0)
+	{
+		numspawns = maxspawns;
+	}
+	
+	//creates the spawnpoints from point1_x to point2_x and from point1_y to point2_y
+	for(rowcounter = 0; rowcounter < maxrows && createdspawns < maxspawns && createdspawns < numspawns; rowcounter++)
+	{		
+		for(columncounter = 0; columncounter < maxcolumns && createdspawns < maxspawns && createdspawns < numspawns; columncounter++)
+		{			
+			if(point1_x > point2_x)
+			{
+				if(point1_y > point2_y)
+				{
+					SetSpawnPoint(team, point1_x - columncounter * playersize , point1_y - rowcounter * playersize , height, angle);
+				}
+				else if(point2_y > point1_y)
+				{
+					SetSpawnPoint(team, point1_x - columncounter * playersize , point1_y + rowcounter * playersize, height, angle);
+				}		
+			}
+			else if(point2_x > point1_x)
+			{
+				if(point1_y > point2_y)
+				{
+					SetSpawnPoint(team, point1_x + columncounter * playersize , point1_y - rowcounter * playersize , height, angle);
+				}
+				else if(point2_y > point1_y)
+				{
+					SetSpawnPoint(team, point1_x + columncounter * playersize , point1_y + rowcounter * playersize, height, angle);
+				}
+			}
+			createdspawns++;
+		}
+	}		
+}
+
 //creates all spawnpoints that are defined here
 LoadSpawnPoints()
 {	
@@ -113,15 +180,8 @@ LoadSpawnPoints()
 	{
 		case "mp_rust":
 			
-			SetSpawnPoint("allies", 700, 1400, 280, -90);
-			SetSpawnPoint("allies", 700, 1350, 280, -90);
-			SetSpawnPoint("allies", 650, 1410, 280, -90);
-			SetSpawnPoint("allies", 620, 1250, 280, -90);
-			SetSpawnPoint("allies", 580, 1220, 280, -90);
-			SetSpawnPoint("allies", 540, 1300, 280, -90);
-			SetSpawnPoint("allies", 560, 1240, 280, -90);
+			SetSpawnZone("allies", 770, 1480, 550, 1150, 300, -90, 10);
 			
-
 			SetSpawnPoint("axis", -254, 1760, -236, 0);
 			SetSpawnPoint("axis", 1130, 1762, -228, 180);
 			SetSpawnPoint("axis", 1470, 1360, -236, -90);
