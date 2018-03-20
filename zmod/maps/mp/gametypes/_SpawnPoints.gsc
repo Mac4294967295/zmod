@@ -1,4 +1,4 @@
-
+#include maps\mp\gametypes\_rank;
 
 //Returns the number of the next spawn that is nulled, don't set spawns on 0/0/0
 GetSpawnPoint(team)
@@ -46,19 +46,22 @@ SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
 {	
 	spawnpoint = GetSpawnPoint(team);
 
-	if(team == "allies")
+	if(spawnpoint < getdvarInt("max_spawnpoints_perteam") - 1)
 	{
-		team = 0;
+		if(team == "allies")
+		{
+			team = 0;
+		}
+		else if(team == "axis")
+		{
+			team = 1;
+		}
+		
+		level.arraySpawnPoint[team][spawnpoint][0] = x_cord;
+		level.arraySpawnPoint[team][spawnpoint][1] = y_cord;
+		level.arraySpawnPoint[team][spawnpoint][2] = z_cord;
+		level.arraySpawnPoint[team][spawnpoint][3] = angle;
 	}
-	else if(team == "axis")
-	{
-		team = 1;
-	}
-	
-	level.arraySpawnPoint[team][spawnpoint][0] = x_cord;
-	level.arraySpawnPoint[team][spawnpoint][1] = y_cord;
-	level.arraySpawnPoint[team][spawnpoint][2] = z_cord;
-	level.arraySpawnPoint[team][spawnpoint][3] = angle;
 }
 
 //spawns player on random team spawnpoint
@@ -89,12 +92,14 @@ SpawnPlayer(team)
 InitializeSpawnPoints()
 {	
 	//[Attackers/Defenders][Spawnpoint#][x_cord / y_cord / z_cord / angle]
-	level.arraySpawnPoint[2][50][4] = [];
+	setup_dvar("max_spawnpoints_perteam", "50");
+	level.arraySpawnPoint[2][getdvarInt("max_spawnpoints_perteam")][4] = [];
 	NullSpawnPoints();
 	LoadSpawnPoints();
 }
 
 //function that prints player cords and angle; uncomment function call in _rank to enable
+//the middle number in Angles in the one necessary for SetSpawnPoint and SetSpawnZone
 CollectSpawnCords()
 {
 	SetDvar("scr_zmod_intermission_time", "300");
@@ -134,13 +139,27 @@ SetSpawnZone(team, point1_x, point1_y, point2_x, point2_y, height, angle, numspa
 	maxrows = int(xdiff / playersize);
 	maxcolumns = int(ydiff / playersize);
 	maxspawns = maxrows * maxcolumns;
-	createdspawns = 0;
-		
+	
+	//when numspawns 0 set it to maxspawns
 	if(numspawns == 0)
 	{
 		numspawns = maxspawns;
 	}
+	//if numspawn is greater then max possible spawns set it to maxspawns
+	if(numspawns > maxspawns)
+	{
+		numspawns = maxspawns;
+	}
 	
+	//if numspawns is greater then the available space in the arraySpawnPoint set it to max possible
+	if(numspawns > getdvarInt("max_spawnpoints_perteam") - GetSpawnPoint(team))
+	{
+		numspawn = getdvarInt("max_spawnpoints_perteam") - GetSpawnPoint(team);
+	}
+	
+	createdspawns = 0;
+		
+
 	//creates the spawnpoints from point1_x to point2_x and from point1_y to point2_y
 	for(rowcounter = 0; rowcounter < maxrows && createdspawns < maxspawns && createdspawns < numspawns; rowcounter++)
 	{		
@@ -173,9 +192,13 @@ SetSpawnZone(team, point1_x, point1_y, point2_x, point2_y, height, angle, numspa
 	}		
 }
 
-//creates all spawnpoints that are defined here
+//loads all spawnpoints/zones of the current map
 LoadSpawnPoints()
 {	
+	//SetSpawnPoint creates a single spawnpoint for a team on a coordinate; parameters (without []): SetSpawnPoint("[allies/axis]", [x_coordinate], [y_coordinate], [z_coordinate], [player angle/view direction]);
+	//SetSpawnZone creates one or multiple spawnpoints for a team on a 2D plain between 2 points; parameters (without []): SetSpawnZone([allies/axis]", [x_coordinate point 1], [y_coordinate point 1], [x_coordinate point 2], [y_coordinate point 2], [z_coordinate], [player angle/view direction], [number of spawns (0 = max possible)]);
+	//Use CollectSpawnCords() to collect coordinates / angles
+	
 	switch(getDvar("mapname"))
 	{
 		case "mp_rust":
