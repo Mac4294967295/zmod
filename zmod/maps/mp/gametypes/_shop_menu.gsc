@@ -44,3 +44,9 @@ initializeZMenu(){
 	self.ZArray[10][3] = []; //stores name of shop item in regard to position; is used for printing the menu
 	resetZMenu();
 }
+getItemVal(item_name, var){
+	return self.ZMenu[item_name][var];
+}
+setItemVal(item_name, var, value){
+	self.Zmenu[item_name][var] = value;
+}
