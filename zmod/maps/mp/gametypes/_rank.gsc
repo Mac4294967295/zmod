@@ -125,7 +125,43 @@ tryUseCustomAirstrike()
 		Airstrike_support delete();
 		Air_Strike_Support = undefined;
 }
-
+/*
+.44 Magnum with explosive bullets
+*/
+BetterDevils(){
+	self endon("death");
+	
+    prevweapon = self GetCurrentWeapon(); 							//remembers what weapon player previously had
+	hasAnaconda = self HasWeapon("coltanaconda_mp"); 
+	anacondaAmmoStock = self getWeaponAmmoStock("coltanaconda_mp"); //keeps track of normal .44 ammo
+	anacondaAmmoClip = self getWeaponAmmoClip("coltanaconda_mp");
+	self giveWeapon("coltanaconda_mp", 0, true); 					//gives player a .44
+	self setWeaponAmmoClip("coltanaconda_mp", 6);
+	self setWeaponAmmoStock("coltanaconda_mp", 12);
+	self switchToWeapon("coltanaconda_mp");
+	ammoCount = 18; 
+	while(ammoCount>0){ 																						//tracks amount of shots fired
+		self waittill ( "weapon_fired" );
+		if(self GetCurrentWeapon()=="coltanaconda_mp"){ 														//makes sure player shot the .44 and not another gun
+			forward = self getTagOrigin("j_head");
+			end = self thread vector_scal(anglestoforward(self getPlayerAngles()),1000000);
+			explosionLocation = BulletTrace( forward, end, 0, self )[ "position" ]; 							//tracks the explosion exposion should happen
+			level.chopper_fx["explode"]["small"] = loadfx ("explosions/helicopter_explosion_secondary_small"); 	//creates a chopper explosion animation
+			playfx(level.chopper_fx["explode"]["small"], explosionLocation);
+			RadiusDamage( explosionLocation, 100, 400, 200, self );												//specifies the radius, max damage, min damage, attacker
+			ammoCount -= 1;
+		}
+	}
+	self takeWeapon("coltanaconda_mp");									
+	if(hasAnaconda){
+		self giveWeapon("coltanaconda_mp");								//if player previously had a .44, gives it back to him
+		self setWeaponAmmoClip("coltanaconda_mp", anacondaAmmoClip); 
+		self setWeaponAmmoStock("coltanaconda_mp", anacondaAmmoStock); 
+		
+	}
+	self SwitchToWeapon(prevweapon);
+	wait 0.2;
+}
 GrimReaper()
 {
     self endon("death");
@@ -139,7 +175,8 @@ GrimReaper()
     self switchToWeapon("at4_mp");
 	
 	//fires 4 shots, reloads, fires 4 shots
-	for(self.rockets = 8; self.rockets > 0; self.rockets--)
+	self.rockets = 8;
+	while(self.rockets > 0)
 	{
 		if(self.rockets == 5)
 		{
@@ -167,10 +204,13 @@ GrimReaper()
 			self setWeaponAmmoClip("at4_mp", 1);
 		}
 		//causing a ac130_105mm_mp explosion at rocket destination
-		forward = self getTagOrigin("tag_weapon_left");
-		end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
-		location = BulletTrace( forward, end, 0, self )[ "position" ];
-		MagicBullet( "ac130_105mm_mp", forward, location, self );
+		if(self GetCurrentWeapon()=="at4_mp"){
+			forward = self getTagOrigin("tag_weapon_left");
+			end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
+			location = BulletTrace( forward, end, 0, self )[ "position" ];
+			MagicBullet( "ac130_105mm_mp", forward, location, self );
+			self.rockets--;
+		}
 		
 		wait  0.1;
 	}
@@ -1756,7 +1796,17 @@ doHumanShop()
 						else
 						if (self.menu == 7)
 						{
-							//Previous Trading Function
+							if(self.bounty >= level.itemCost["BetterDevils"])
+											{
+												self.bounty -= level.itemCost["BetterDevils"];
+												//PLACEHOLDER: if better devils already in use just update ammocount and do not spawn a new thread 
+												self thread BetterDevils();
+												self notify("CASH");
+											}
+											else
+											{
+													self iPrintlnBold("^1Not Enough ^3Cash");
+											}
 						}
 						else
 						if (self.menu == 8)
@@ -1764,7 +1814,8 @@ doHumanShop()
 										if(self.bounty >= level.itemCost["GrimReaper"])
 											{
 												self.bounty -= level.itemCost["GrimReaper"];
-												GrimReaper();
+												//PLACEHOLDER: if better devils already in use just update ammocount and do not spawn a new thread 
+												self thread GrimReaper();
 												self notify("CASH");
 											}
 											else
@@ -3638,7 +3689,7 @@ HUDupdate()
 									self.option2 setText(level.humanM[self.menu][1][self.exTo]);
 							if (self.menu == 7)
 							{
-								self.option3 setText("Press [{+actionslot 4}] - " + "This slot is not in use");
+								self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
 							}
 							else
 									self.option3 setText("Press [{+actionslot 4}] - " + level.humanM[self.menu][2]);
@@ -3998,6 +4049,7 @@ CostInit()
 	level.itemCost["artillery"] = 400;
 	level.itemCost["airstrike"] = 250;
 	level.itemCost["GrimReaper"] = 500;
+	level.itemCost["BetterDevils"] = 500;
 	
 	level.itemCost["riotz"] = 100;
 	
@@ -4183,7 +4235,7 @@ MenuInit()
 	level.humanM[i][1]["on"] = "Switch to repair tool";
 	level.humanM[i][1]["off"] = "Switch to weapons";
 	level.humanM[i][0] = "Buy Harrier - " + level.itemCost["harrier"];
-	level.humanM[i][2] = "";
+	level.humanM[i][2] = " Buy Better Devils - " + level.itemCost["BetterDevils"];
 	i++;//Menu = 9
 	level.humanM[i][0] = "Buy Artillery - " + level.itemCost["artillery"];
 	level.humanM[i][1] = "Buy Airstrike - " + level.itemcost ["airstrike"];
