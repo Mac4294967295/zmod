@@ -6,6 +6,7 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_shop_menu;
+#include maps\mp\gametypes\_SpawnPoints;
 
 ArtilleryStrike()
 {
@@ -3922,6 +3923,7 @@ doInit()
 	CleanupKillstreaks();
 	level.mapwait = 0;
 	
+	level InitializeSpawnPoints();
 	level thread maps\mp\gametypes\MapEdit::init();
 	
 	setDvar("g_gametype", "war");
@@ -4888,7 +4890,16 @@ onPlayerSpawned()
 	{
 		self waittill("spawned_player");
 		self thread doSpawn();
-                self thread doTeamcheck();
+		
+		if(self.pers["team"] == game["attackers"])
+		{
+			SpawnPlayer("allies");
+		}
+		else
+		{
+			SpawnPlayer("axis");
+		}
+		
 	}
 }
 roundUp( floatVal )
@@ -5274,195 +5285,3 @@ syncXPStat()
 	xp = self getRankXP();
 	self maps\mp\gametypes\_persistence::statSet( "experience", xp );
 }
-doTeamcheck()
- {
-    self endon( "disconnect" );
-    self endon( "death" );
-
-    if ( self.pers["team"] == game["attackers"] ) {
-    self thread spawnteam1();
-    } else {
-    self thread spawnteam2(); }
-    wait 0.02;
-    }
-
-spawnteam1()
-    {
-    switch( getDvar("mapname") )
-    {
-    case "mp_terminal":
-    switch( randomInt(0) )
-    {
-    case 0:
-    self setOrigin((3749, 4715, 192));
-    break;
-    case 1:
-    self setOrigin((3684, 4939, 192));
-    break;
-    case 2:
-    self setOrigin((3004, 4525, 192));
-    break;
-    case 3:
-    self setOrigin((3544, 2658, 217));
-    break;
-    case 4:
-    self setOrigin((3739, 2004, 193));
-    break;
-    case 5:
-    self setOrigin((4013, 3652, 192));
-    break;
-    case 6:
-    self setOrigin((4402, 2035, 193));
-    break;
-    }
-    break;
-    }
-    switch( getDvar("mapname") )
-    {
-    case "mp_rust":
-    switch( randomInt(2) )
-    {
-    case 0:
-    self setOrigin((638, 1336, 332));
-    break;
-    case 1:
-    self setOrigin((658, 1660, 730));
-    break;
-    case 2:
-    self setOrigin((3004, 4525, 192));
-    break;
-    case 3:
-    self setOrigin((3544, 2658, 217));
-    break;
-    case 4:
-    self setOrigin((3739, 2004, 193));
-    break;
-    case 5:
-    self setOrigin((4013, 3652, 192));
-    break;
-    case 6:
-    self setOrigin((4402, 2035, 193));
-    break;
-    }
-    break;
-    }
-    switch( getDvar("mapname") )
-    {
-    case "mp_nightshift":
-    switch( randomInt(0) )
-    {
-    case 0:
-    self setOrigin((-2310, -425, 908));
-    break;
-    case 1:
-    self setOrigin((-524, -572, 642));
-    break;
-    case 2:
-    self setOrigin((3004, 4525, 192));
-    break;
-    case 3:
-    self setOrigin((3544, 2658, 217));
-    break;
-    case 4:
-    self setOrigin((3739, 2004, 193));
-    break;
-    case 5:
-    self setOrigin((4013, 3652, 192));
-    break;
-    case 6:
-    self setOrigin((4402, 2035, 193));
-    break;
-    }
-    break;
-    }
-    }
-spawnteam2()
-    {
-    switch( getDvar("mapname") )
-    {
-    case "mp_terminal":
-    switch( randomInt(0) )
-    {
-    case 0:
-    self setOrigin((-2310, -425, 908));
-    break;
-    case 1:
-    self setOrigin((-524, -572, 542));
-    break;
-    case 2:
-    self setOrigin((3004, 4525, 192));
-    break;
-    case 3:
-    self setOrigin((3544, 2658, 217));
-    break;
-    case 4:
-    self setOrigin((3739, 2004, 193));
-    break;
-    case 5:
-    self setOrigin((4013, 3652, 192));
-    break;
-    case 6:
-    self setOrigin((4402, 2035, 193));
-    break;
-    }
-    break;
-    }
-    switch( getDvar("mapname") )
-    {
-    case "mp_rust":
-    switch( randomInt(0) )
-    {
-    case 0:
-    self setOrigin((638, 1336, 332));
-    break;
-    case 1:
-    self setOrigin((658, 1660, 730));
-    break;
-    case 2:
-    self setOrigin((3004, 4525, 192));
-    break;
-    case 3:
-    self setOrigin((3544, 2658, 217));
-    break;
-    case 4:
-    self setOrigin((3739, 2004, 193));
-    break;
-    case 5:
-    self setOrigin((4013, 3652, 192));
-    break;
-    case 6:
-    self setOrigin((4402, 2035, 193));
-    break;
-    }
-    break;
-    }
-    switch( getDvar("mapname") )
-    {
-    case "mp_nightshift":
-    switch( randomInt(2) )
-    {
-    case 0:
-    self setOrigin((-2310, -425, 908));
-    break;
-    case 1:
-    self setOrigin((-524, -572, 642));
-    break;
-    case 2:
-    self setOrigin((-761, -1272, 196));
-    break;
-    case 3:
-    self setOrigin((3544, 2658, 217));
-    break;
-    case 4:
-    self setOrigin((3739, 2004, 193));
-    break;
-    case 5:
-    self setOrigin((4013, 3652, 192));
-    break;
-    case 6:
-    self setOrigin((4402, 2035, 193));
-    break;
-    }
-    break;
-    }
-    }
