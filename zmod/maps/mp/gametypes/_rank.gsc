@@ -2007,8 +2007,6 @@ giveUpgrades(){ //gives the player the upgrades which he acquired through the sh
 		self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	}
 	
-	
-
 	if(self.ZMenu["throwingknife"]["in_use"]>0)
 	{
 		self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
@@ -2046,206 +2044,199 @@ giveUpgrades(){ //gives the player the upgrades which he acquired through the sh
 	
 	self notify("MENUCHANGE_2");
 }
+doZombieShopPage0(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){ 																//do on button press
+		self.buttonPressed[ "+smoke" ] = 0;																	//"releases" pressed button
+		if(self.maxhp < 1000){ 																				//max health threshold
+			if(self.bounty >= self.ZMenu["health"]["cost"]){ 												//check if enough cash
+				self.ZMenu["health"]["in_use"] += 1; 														//signals how much health has been acquired
+				self statMaxHealthAdd(50); 																	//adds 50 health (max & current)
+				self statCashSub(self.ZMenu["health"]["cost"]); 											//subtracts the cost form current cash
+				self iPrintlnBold("^2Health Increased!"); 													//prints text
+				if(self.maxhp==1000) self.ZMenu["health"]["print_text"] = self.ZMenu["health"]["text2"];	//at Max rank update what to print in the menu
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}	
+	}
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		if(self.menu == 0){
+			if(self.ZMenu["wallhack"]["in_use"]==0){
+				if (self.bounty >= self.ZMenu["wallhack"]["cost"]){
+					self statCashSub(self.ZMenu["wallhack"]["cost"]);
+					self ThermalVisionFOFOverlayOn();
+					self.ZMenu["wallhack"]["in_use"]=1;
+					self iPrintlnBold("^2Wallhack Activated!");
+					self.ZMenu["wallhack"]["print_text"] = self.ZMenu["wallhack"]["text2"];
+				}else self iPrintlnBold("^1Not Enough ^3Cash");
+			}
+		}
+	}
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		if(self.menu == 0){
+			if(self.ZMenu["throwingknife"]["in_use"]==0){
+				if(self.bounty >= self.ZMenu["throwingknife"]["cost"]){
+					self statCashSub(self.ZMenu["throwingknife"]["cost"]);
+					self.ZMenu["throwingknife"]["in_use"]=1;
+					self thread monitorThrowingKnife();
+					self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
+					self setWeaponAmmoClip("throwingknife_mp", 1);
+					self.ZMenu["throwingknife"]["in_use"]=1;
+					self iPrintlnBold("^2Throwing Knife Purchased");
+					self.ZMenu["throwingknife"]["print_text"] = self.ZMenu["throwingknife"]["text2"];
+				}else self iPrintlnBold("^1Not Enough ^3Cash");
+			}
+		}
+	}
+}
 
+doZombieShopPage1(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		if(self.ZMenu["coldblood"]["in_use"]==0){
+			if(self.bounty >= self.ZMenu["coldblood"]["cost"]){
+				self.ZMenu["coldblood"]["in_use"] = 1;
+				self statCashSub(self.ZMenu["coldblood"]["cost"]);
+				self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
+				self maps\mp\perks\_perks::givePerk("specialty_spygame");
+				self iPrintlnBold("^2Coldblood bought!");
+				self.ZMenu["coldblood"]["print_text"] = self.ZMenu["coldblood"]["text2"];
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+	}
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		if(self.ZMenu["ninja"]["in_use"]==0){
+			if(self.bounty >= self.ZMenu["ninja"]["cost"]){
+				self.ZMenu["ninja"]["in_use"] = 1;
+				self statCashSub(self.ZMenu["ninja"]["cost"]);
+				self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
+				self maps\mp\perks\_perks::givePerk("specialty_quieter");
+				self iPrintlnBold("^2Ninja bought!");
+				self.ZMenu["ninja"]["print_text"] = self.ZMenu["ninja"]["text2"];
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+	}
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		if(self.ZMenu["movespeed"]["in_use"]<5){ //allows a max of 5 movespeed upgrades
+			if(self.bounty >= self.ZMenu["movespeed"]["cost"]){
+				self.ZMenu["movespeed"]["in_use"] += 1;						
+				self.moveSpeedScaler += 0.1;
+				statCashSub(self.ZMenu["movespeed"]["cost"]);
+				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+				self iPrintlnBold("^2Speed Bought!");
+				if(self.ZMenu["movespeed"]["in_use"]==5){
+					self.ZMenu["movespeed"]["print_text"] = self.ZMenu["movespeed"]["text2"];
+				}
+			}else self iPrintlnBold("^1Not Enough ^3Cash");		
+		}
+	}
+}
+
+doZombieShopPage2(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){			//PLACEHOLDER
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		if (self getWeaponAmmoClip("stinger_mp") == 0 && self.ZMenu["stinger"]["in_use"]==0){
+			if (self.bounty >= self.ZMenu["stinger"]["cost"]){
+				self statCashSub(self.ZMenu["stinger"]["cost"]);
+				self giveWeapon("stinger_mp", 0, false);
+				self switchToWeapon("stinger_mp");
+				self GiveStartAmmo("stinger_mp");
+				self.ZMenu["stinger"]["in_use"] = 2;
+				self thread monitorStinger();
+				self iPrintlnBold("^2Bought Stinger!"+ self.ZMenu["stinger"]["in_use"]+self.ZMenu["movespeed"]["in_use"]);
+				self.ZMenu["stinger"]["print_text"] = self.ZMenu["stinger"]["text2"];
+			}else self iPrintlnBold("^1Not Enough ^3Cash");	
+		}
+	}
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		if(self.ZMenu["commando"]["in_use"]==0){
+			if(self.bounty >= self.ZMenu["commando"]["cost"]){
+				self.ZMenu["commando"]["in_use"] = 1;
+				self statCashSub(self.ZMenu["commando"]["cost"]);
+				self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
+				self maps\mp\perks\_perks::givePerk("specialty_falldamage");
+				self iPrintlnBold("^2Commando bought!");
+				self.ZMenu["commando"]["print_text"] = self.ZMenu["commando"]["text2"];
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+	}
+}
+
+doZombieShopPage3(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		if(self.ZMenu["blastshield"]["in_use"]==1) self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
+		else if (self.bounty >= self.ZMenu["blastshield"]["cost"]){
+			self.ZMenu["blastshield"]["in_use"]=1;
+			self statCashSub(self.ZMenu["blastshield"]["cost"]);
+			self maps\mp\perks\_perkfunctions::toggleBlastShield(false);
+			self maps\mp\perks\_perks::givePerk("specialty_blastshield");
+			self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
+			self.ZMenu["blastshield"]["print_text"] = self.ZMenu["blastshield"]["text2"];
+			self iPrintlnBold("^2Bought Blast Shield!");
+		}else self iPrintlnBold("^1Not Enough ^3Cash");
+	}
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		if (self.ZMenu["riotshield"]["in_use"]==0){
+			if (self.bounty >= self.ZMenu["riotshield"]["cost"]){
+				self giveWeapon("riotshield_mp", 0, false);
+				self switchToWeapon("riotshield_mp");
+				self statCashSub(self.ZMenu["riotshield"]["cost"]);
+				self iPrintlnBold("^2Bought Riot Shield!");
+				self.ZMenu["riotshield"]["in_use"] = 1;
+				self.ZMenu["riotshield"]["print_text"] = self.ZMenu["riotshield"]["text2"];
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+	}
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		self suicide();
+	}
+}
 doZombieShop()
 {
 	self endon("disconnect");
 	self endon("death");
 	while(1)
 	{
-		//First Button
-		if(self.buttonPressed[ "+smoke" ] == 1)
-		{
-			self.buttonPressed[ "+smoke" ] = 0;
-			if(self.menu == 0)
-			{
-				if(self.maxhp < 1000)
-				{
-					if(self.bounty >= self.ZMenu["health"]["cost"]){
-						self.ZMenu["health"]["in_use"] += 1;
-						self statMaxHealthAdd(50);
-						self statCashSub(self.ZMenu["health"]["cost"]);
-						self iPrintlnBold("^2Health Increased!");
-						if(self.maxhp==1000){
-							self.ZMenu["health"]["print_text"] = self.ZMenu["health"]["text2"];
-						}
-					}else self iPrintlnBold("^1Not Enough ^3Cash");
-				}
-			}
-			if(self.menu == 1)
-			{
-				if(self.ZMenu["coldblood"]["in_use"]==0){
-					if(self.bounty >= self.ZMenu["coldblood"]["cost"]){
-						self.ZMenu["coldblood"]["in_use"] = 1;
-						self statCashSub(self.ZMenu["coldblood"]["cost"]);
-						self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
-						self maps\mp\perks\_perks::givePerk("specialty_spygame");
-						self iPrintlnBold("^2Coldblood bought!");
-						self.ZMenu["coldblood"]["print_text"] = self.ZMenu["coldblood"]["text2"];
-					}else self iPrintlnBold("^1Not Enough ^3Cash");
-					
-				}
-			}
-			
-			if (self.menu == 3)
-			{
-					if(self.ZMenu["blastshield"]["in_use"]==1)
-						self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
-					else
-						if (self.bounty >= self.ZMenu["blastshield"]["cost"]){
-							self.ZMenu["blastshield"]["in_use"]=1;
-							self statCashSub(self.ZMenu["blastshield"]["cost"]);
-							self maps\mp\perks\_perkfunctions::toggleBlastShield(false);
-							self maps\mp\perks\_perks::givePerk("specialty_blastshield");
-							self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
-							self.ZMenu["blastshield"]["print_text"] = self.ZMenu["blastshield"]["text2"];
-							self iPrintlnBold("^2Bought Blast Shield!");
-						}
-						else
-							self iPrintlnBold("^1Not Enough ^3Cash");
-			}
-			wait .1;
-			self notify("MENUCHANGE_2");
-		}	
-		//Second button
-		if(self.buttonPressed[ "+actionslot 2" ] == 1)
-		{
-			self.buttonPressed[ "+actionslot 2" ] = 0;
-			if(self.menu == 0)
-			{
-				if(self.ZMenu["wallhack"]["in_use"]==0)
-				{
-					if (self.bounty >= self.ZMenu["wallhack"]["cost"])
-					{
-						self statCashSub(self.ZMenu["wallhack"]["cost"]);
-						self ThermalVisionFOFOverlayOn();
-						self.ZMenu["wallhack"]["in_use"]=1;
-						self iPrintlnBold("^2Wallhack Activated!");
-						self.ZMenu["wallhack"]["print_text"] = self.ZMenu["wallhack"]["text2"];
-					}
-					else
-					{
-						self iPrintlnBold("^1Not Enough ^3Cash");
-					}
-				}
-			}
-			if(self.menu == 1)
-			{
-				if(self.ZMenu["ninja"]["in_use"]==0){
-					if(self.bounty >= self.ZMenu["ninja"]["cost"]){
-						self.ZMenu["ninja"]["in_use"] = 1;
-						self statCashSub(self.ZMenu["ninja"]["cost"]);
-						self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
-						self maps\mp\perks\_perks::givePerk("specialty_quieter");
-						self iPrintlnBold("^2Ninja bought!");
-						self.ZMenu["ninja"]["print_text"] = self.ZMenu["ninja"]["text2"];
-					}else self iPrintlnBold("^1Not Enough ^3Cash");
-					
-				}
-			}
-			if (self.menu == 2)
-			{
-				if (self getWeaponAmmoClip("stinger_mp") == 0 && self.ZMenu["stinger"]["in_use"]==0){
-					if (self.bounty >= self.ZMenu["stinger"]["cost"]){
-						self statCashSub(self.ZMenu["stinger"]["cost"]);
-						self giveWeapon("stinger_mp", 0, false);
-						self switchToWeapon("stinger_mp");
-						self GiveStartAmmo("stinger_mp");
-						self.ZMenu["stinger"]["in_use"] = 2;
-						//self.stinger = self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp");
-						self thread monitorStinger();
-						self iPrintlnBold("^2Bought Stinger!"+ self.ZMenu["stinger"]["in_use"]+self.ZMenu["movespeed"]["in_use"]);
-						self.ZMenu["stinger"]["print_text"] = self.ZMenu["stinger"]["text2"];
-					}else self iPrintlnBold("^1Not Enough ^3Cash");	
-				}
-			}
-			if (self.menu == 3)
-			{
-				if (self.ZMenu["riotshield"]["in_use"]==0){
-					if (self.bounty >= self.ZMenu["riotshield"]["cost"]){
-							self giveWeapon("riotshield_mp", 0, false);
-							self switchToWeapon("riotshield_mp");
-							self statCashSub(self.ZMenu["riotshield"]["cost"]);
-							self iPrintlnBold("^2Bought Riot Shield!");
-							self.ZMenu["riotshield"]["in_use"] = 1;
-							self.ZMenu["riotshield"]["print_text"] = self.ZMenu["riotshield"]["text2"];
-					}else self iPrintlnBold("^1Not Enough ^3Cash");
-				}
-			}
-			wait .1;
-			self notify("MENUCHANGE_2");
+		switch(self.menu){
+			case 0:
+			doZombieShopPage0();
+			break;
+			case 1:
+			doZombieShopPage1();
+			break;
+			case 2:
+			doZombieShopPage2();
+			break;
+			case 3:
+			doZombieShopPage3();
+			break;
+			default:
+			break;
 		}
-		//Third button
-		if(self.buttonPressed[ "+actionslot 4" ] == 1)
-		{
-			self.buttonPressed[ "+actionslot 4" ] = 0;
-			if(self.menu == 0)
-			{
-				if(self.ZMenu["throwingknife"]["in_use"]==0){
-					if(self.bounty >= self.ZMenu["throwingknife"]["cost"])
-					{
-						self statCashSub(self.ZMenu["throwingknife"]["cost"]);
-						self.ZMenu["throwingknife"]["in_use"]=1;
-						self thread monitorThrowingKnife();
-						self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
-						self setWeaponAmmoClip("throwingknife_mp", 1);
-						self.ZMenu["throwingknife"]["in_use"]=1;
-						self iPrintlnBold("^2Throwing Knife Purchased");
-						self.ZMenu["throwingknife"]["print_text"] = self.ZMenu["throwingknife"]["text2"];
-					}
-					else
-						{
-							self iPrintlnBold("^1Not Enough ^3Cash");
-						}
-				}
-				else
-				{
-					self iPrintlnBold("^1You have too many knives!");
-				}
-			}
-			if(self.menu == 1)
-			{
-				if(self.ZMenu["movespeed"]["in_use"]<5) //allows a max of 5 movespeed upgrades
-				{
-					if(self.bounty >= self.ZMenu["movespeed"]["cost"])
-					{
-						self.ZMenu["movespeed"]["in_use"] += 1;						
-						self.moveSpeedScaler += 0.1;
-						statCashSub(self.ZMenu["movespeed"]["cost"]);
-						self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-						self iPrintlnBold("^2Speed Bought!");
-						if(self.ZMenu["movespeed"]["in_use"]==5){ //at Max rank update what to print in the menu
-							self.ZMenu["movespeed"]["print_text"] = self.ZMenu["movespeed"]["text2"];
-						}
-					}
-					else self iPrintlnBold("^1Not Enough ^3Cash");		
-				}
-			}
-			
-			if (self.menu== 2){
-				if(self.ZMenu["commando"]["in_use"]==0){
-					if(self.bounty >= self.ZMenu["commando"]["cost"]){
-						self.ZMenu["commando"]["in_use"] = 1;
-						self statCashSub(self.ZMenu["commando"]["cost"]);
-						self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
-						self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-						self iPrintlnBold("^2Commando bought!");
-						self.ZMenu["commando"]["print_text"] = self.ZMenu["commando"]["text2"];
-					}else self iPrintlnBold("^1Not Enough ^3Cash");
-					
-				}
-			}
-			
-			if (self.menu == 3)
-			{
-				self suicide();
-					
-			}
-			wait .1;
-			
-		}
-		wait .1;
 		self notify("MENUCHANGE_2");
+		wait 0.1;
 	}
 }
 
