@@ -707,14 +707,10 @@ doAlphaZombie()
 	wait .1;
 	self notify("menuresponse", "changeclass", "class3");
 	self takeAllWeapons();
-	self _clearPerks();
+	//self _clearPerks();
 	self giveWeapon("usp_tactical_mp", 0, false);
 	self thread doZW();
-	self maps\mp\perks\_perks::givePerk("specialty_marathon");
-	self maps\mp\perks\_perks::givePerk("specialty_automantle");
-	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-	self maps\mp\perks\_perks::givePerk("specialty_thermal");
+	
 	self giveUpgrades();
 	self setClientDvar("g_knockback", 3500);
 
@@ -1112,7 +1108,7 @@ monitorThrowingKnife()
 		self.ZMenu["throwingknife"]["in_use"] = self getWeaponAmmoClip("throwingknife_mp");
 		wait 0.1;
 	}
-	self.ZMenu["throwingknife"]["print_text"] = self.ZMenu["throwingknife"]["text1"];
+	self.ZMenu["throwingknife"]["print_text"] = "text1";
 }
 
 killstreakUsePressed(item)
@@ -1984,7 +1980,13 @@ doHumanShop()
 	}
 }
 
-giveUpgrades(){ //gives the player the upgrades which he acquired through the shop (on respawn)
+giveUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
+	self _clearPerks();
+	self maps\mp\perks\_perks::givePerk("specialty_marathon");
+	self maps\mp\perks\_perks::givePerk("specialty_automantle");
+	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
+	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
+	self maps\mp\perks\_perks::givePerk("specialty_thermal");
 	if(self.ZMenu["health"]["in_use"]>0){
 		self.maxhealth = self.maxhp;
 		self.health = self.maxhp;
@@ -1992,6 +1994,9 @@ giveUpgrades(){ //gives the player the upgrades which he acquired through the sh
 	}
 	if(self.ZMenu["movespeed"]["in_use"]>0){
 		self.moveSpeedScaler = 1.0+self.ZMenu["movespeed"]["in_use"]*0.1;
+		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+	}else{
+		self.moveSpeedScaler = 1;
 		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 	}
 	if(self.ZMenu["coldblood"]["in_use"]>0){
@@ -2046,15 +2051,15 @@ giveUpgrades(){ //gives the player the upgrades which he acquired through the sh
 }
 doZombieShopPage0(){
 	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){ 																//do on button press
-		self.buttonPressed[ "+smoke" ] = 0;																	//"releases" pressed button
-		if(self.maxhp < 1000){ 																				//max health threshold
-			if(self.bounty >= self.ZMenu["health"]["cost"]){ 												//check if enough cash
-				self.ZMenu["health"]["in_use"] += 1; 														//signals how much health has been acquired
-				self statMaxHealthAdd(50); 																	//adds 50 health (max & current)
-				self statCashSub(self.ZMenu["health"]["cost"]); 											//subtracts the cost form current cash
-				self iPrintlnBold("^2Health Increased!"); 													//prints text
-				if(self.maxhp==1000) self.ZMenu["health"]["print_text"] = self.ZMenu["health"]["text2"];	//at Max rank update what to print in the menu
+	if(self.buttonPressed[ "+smoke" ] == 1){ 										//do on button press
+		self.buttonPressed[ "+smoke" ] = 0;											//"releases" pressed button
+		if(self.maxhp < 1000){ 														//max health threshold
+			if(self.bounty >= self.ZMenu["health"]["cost"]){ 						//check if enough cash
+				self.ZMenu["health"]["in_use"] += 1; 								//signals how much health has been acquired
+				self statMaxHealthAdd(50); 											//adds 50 health (max & current)
+				self statCashSub(self.ZMenu["health"]["cost"]); 					//subtracts the cost form current cash
+				self iPrintlnBold("^2Health Increased!"); 							//prints text
+				if(self.maxhp==1000) self.ZMenu["health"]["print_text"] = "text2";	//at Max rank update what to print in the menu
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}	
 	}
@@ -2068,7 +2073,7 @@ doZombieShopPage0(){
 					self ThermalVisionFOFOverlayOn();
 					self.ZMenu["wallhack"]["in_use"]=1;
 					self iPrintlnBold("^2Wallhack Activated!");
-					self.ZMenu["wallhack"]["print_text"] = self.ZMenu["wallhack"]["text2"];
+					self.ZMenu["wallhack"]["print_text"] = "text2";
 				}else self iPrintlnBold("^1Not Enough ^3Cash");
 			}
 		}
@@ -2086,7 +2091,7 @@ doZombieShopPage0(){
 					self setWeaponAmmoClip("throwingknife_mp", 1);
 					self.ZMenu["throwingknife"]["in_use"]=1;
 					self iPrintlnBold("^2Throwing Knife Purchased");
-					self.ZMenu["throwingknife"]["print_text"] = self.ZMenu["throwingknife"]["text2"];
+					self.ZMenu["throwingknife"]["print_text"] = "text2";
 				}else self iPrintlnBold("^1Not Enough ^3Cash");
 			}
 		}
@@ -2104,7 +2109,7 @@ doZombieShopPage1(){
 				self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
 				self maps\mp\perks\_perks::givePerk("specialty_spygame");
 				self iPrintlnBold("^2Coldblood bought!");
-				self.ZMenu["coldblood"]["print_text"] = self.ZMenu["coldblood"]["text2"];
+				self.ZMenu["coldblood"]["print_text"] = "text2";
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 	}
@@ -2118,7 +2123,7 @@ doZombieShopPage1(){
 				self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
 				self maps\mp\perks\_perks::givePerk("specialty_quieter");
 				self iPrintlnBold("^2Ninja bought!");
-				self.ZMenu["ninja"]["print_text"] = self.ZMenu["ninja"]["text2"];
+				self.ZMenu["ninja"]["print_text"] = "text2";
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 	}
@@ -2133,7 +2138,7 @@ doZombieShopPage1(){
 				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 				self iPrintlnBold("^2Speed Bought!");
 				if(self.ZMenu["movespeed"]["in_use"]==5){
-					self.ZMenu["movespeed"]["print_text"] = self.ZMenu["movespeed"]["text2"];
+					self.ZMenu["movespeed"]["print_text"] = "text2";
 				}
 			}else self iPrintlnBold("^1Not Enough ^3Cash");		
 		}
@@ -2158,7 +2163,7 @@ doZombieShopPage2(){
 				self.ZMenu["stinger"]["in_use"] = 2;
 				self thread monitorStinger();
 				self iPrintlnBold("^2Bought Stinger!"+ self.ZMenu["stinger"]["in_use"]+self.ZMenu["movespeed"]["in_use"]);
-				self.ZMenu["stinger"]["print_text"] = self.ZMenu["stinger"]["text2"];
+				self.ZMenu["stinger"]["print_text"] = "text2";
 			}else self iPrintlnBold("^1Not Enough ^3Cash");	
 		}
 	}
@@ -2172,7 +2177,7 @@ doZombieShopPage2(){
 				self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
 				self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 				self iPrintlnBold("^2Commando bought!");
-				self.ZMenu["commando"]["print_text"] = self.ZMenu["commando"]["text2"];
+				self.ZMenu["commando"]["print_text"] = "text2";
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 	}
@@ -2189,7 +2194,7 @@ doZombieShopPage3(){
 			self maps\mp\perks\_perkfunctions::toggleBlastShield(false);
 			self maps\mp\perks\_perks::givePerk("specialty_blastshield");
 			self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
-			self.ZMenu["blastshield"]["print_text"] = self.ZMenu["blastshield"]["text2"];
+			self.ZMenu["blastshield"]["print_text"] = "text2";
 			self iPrintlnBold("^2Bought Blast Shield!");
 		}else self iPrintlnBold("^1Not Enough ^3Cash");
 	}
@@ -2203,7 +2208,7 @@ doZombieShopPage3(){
 				self statCashSub(self.ZMenu["riotshield"]["cost"]);
 				self iPrintlnBold("^2Bought Riot Shield!");
 				self.ZMenu["riotshield"]["in_use"] = 1;
-				self.ZMenu["riotshield"]["print_text"] = self.ZMenu["riotshield"]["text2"];
+				self.ZMenu["riotshield"]["print_text"] = "text2";
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 	}
@@ -3016,7 +3021,7 @@ doEnding()
 		
 		player _clearPerks();
 		player initializeZMenu();
-		
+		player.moveSpeedScaler = 1;
 		player freezeControls(true);
 		player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
 		player.newcomer = 0;
@@ -3699,10 +3704,12 @@ HUDupdate()
 			self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
 			self.perkztext3.glowColor = ( 1, 0, 0 );
 			//new way of printing the menu; uses ZArray
-			self.option1 setText("Press [{+smoke}] - " + self.ZMenu[self.ZArray[self.menu][0]]["print_text"]);
-			self.option2 setText("Press [{+actionslot 2}] - " + self.ZMenu[self.ZArray[self.menu][1]]["print_text"]);
-			self.option3 setText("Press [{+actionslot 4}] - " + self.ZMenu[self.ZArray[self.menu][2]]["print_text"]);
-			
+			item0 = self.ZArray[self.menu][0]; //returns "name" of the item
+			item1 = self.ZArray[self.menu][1];
+			item2 = self.ZArray[self.menu][2];
+			self.option1 setText("Press [{+smoke}] - " + self.ZMenu[item0][self.ZMenu[item0]["print_text"]]);
+			self.option2 setText("Press [{+actionslot 2}] - " + self.ZMenu[item1][self.ZMenu[item1]["print_text"]]);
+			self.option3 setText("Press [{+actionslot 4}] - " + self.ZMenu[item2][self.ZMenu[item2]["print_text"]]);
 		}
 		
 }
