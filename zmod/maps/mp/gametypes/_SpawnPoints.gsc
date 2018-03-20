@@ -94,6 +94,18 @@ InitializeSpawnPoints()
 	LoadSpawnPoints();
 }
 
+//function that prints player cords and angle; uncomment function call in _rank to enable
+CollectSpawnCords()
+{
+	SetDvar("scr_zmod_intermission_time", "300");
+	
+	while(1)
+	{
+		iPrintLn("Coords: " + self getOrigin() + " Angles: " + self GetPlayerAngles());
+		wait 1.5;
+	}
+}
+
 //creates all spawnpoints that are defined here
 LoadSpawnPoints()
 {	

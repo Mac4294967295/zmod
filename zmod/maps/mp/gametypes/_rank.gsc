@@ -4893,6 +4893,7 @@ onJoinedSpectators()
 onPlayerSpawned()
 {
 	self endon("disconnect");
+
 	for(;;)
 	{
 		self waittill("spawned_player");
@@ -4906,7 +4907,7 @@ onPlayerSpawned()
 		{
 			SpawnPlayer("axis");
 		}
-		
+		//self CollectSpawnCords();
 	}
 }
 roundUp( floatVal )
