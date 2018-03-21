@@ -54,8 +54,8 @@ resetHMenu(){
 	initHShopItem("riotshield", 200, 0, 2, "Buy Riotshield - ", "^1Riotshield already equipped");
 	
 	initHShopItem("akimbo", 50, 1, 0, "Buy Akimbo - ", "^1Akimbo unavailable");
-	initHShopItem("fmj", 100, 1, 1, "Buy FMJ - ", "^1FMJ activated");
-	initHShopItem("reddot", 50, 1, 2, "Buy Reddot - ", "^1Unavailable");
+	initHShopItem("empty2", 100, 1, 1, "PLAcEHOLDER ", "^");
+	initHShopItem("sight", 50, 1, 2, "Unlock Sights - ", "^1Swap Sight");
 	
 	initHShopItem("silencer", 200, 2, 0, "Buy Silencer - ", "^1Unavailable");
 	initHShopItem("extendedmags", 150, 2, 1, "Buy Extended Mags - ", "^1Unavailable");
@@ -445,43 +445,39 @@ doHumanShopPage0(){
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if(getWeaponClass(self getCurrentWeapon())!="weapon_smg"){
-			if(self.bounty >= self getHItemVal("smg", "cost")){
-				self statCashSub(self getHItemVal("smg", "cost"));
-				self.randomsmg = randomInt(level.smg.size);
-				while(level.smg[self.randomsmg]+"_mp"==self getWeaponsListPrimaries()[0] || level.smg[self.randomsmg]+"_mp"==self getWeaponsListPrimaries()[1] || level.smg[self.randomsmg]+"_mp"==self getWeaponsListPrimaries()[2]){
-					self.randomsmg = (self.randomsmg+1)%level.smg.size;
+		if(!((self getHItemVal("betterdevils")==1 && self getCurrentWeapon()=="coltanaconda_mp") || (self getHItemVal("rpg")==1 && self getCurrentWeapon()=="rpg_mp") || (self getHItemVal("grimreaper")==1 && self getCurrentWeapon()=="at4_mp") || self getCurrentWeapon()=="riotshield_mp")){ //makes sure to not be able to swap weapon while one of the "special" weapons is equipped
+			if(getWeaponClass(self getCurrentWeapon())!="weapon_smg"){
+				if(self.bounty >= self getHItemVal("smg", "cost")){
+					self statCashSub(self getHItemVal("smg", "cost"));
+					self.randomsmg = randomInt(level.smg.size);
+					while(isSubStr(self getWeaponsListPrimaries()[0], level.smg[self.randomsmg]) || isSubStr(self getWeaponsListPrimaries()[1], level.smg[self.randomsmg]) || isSubStr(self getWeaponsListPrimaries()[2], level.smg[self.randomsmg])){ //makes sure to not give a weapon which the player already has
+						self.randomsmg = (self.randomsmg+1)%level.smg.size;
+					}
+					self setHItemVal("smg", "in_use", 1);
+					self setHItemVal("smg", "print_text", "text2");
+					self takeWeapon(self getCurrentWeapon());
+					self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false); 	//gives player the weapon
+					self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp"); 			//gives full ammo for new weapon
+					self switchToWeapon(level.smg[self.randomsmg] + "_mp");
+				}else self iPrintlnBold("^1Not Enough ^3Cash");
+				self notify("MENUCHANGE_2");
+			}else{
+				i = 0;
+				while(1){															//returns index in level.smg of current weapon
+					if(self getCurrentWeapon()==level.smg[i]+"_mp") break;
+					i++;
 				}
-				self setHItemVal("smg", "in_use", self.randomsmg+1);
-				self setHItemVal("smg", "print_text", "text2");
-				self takeWeapon(self getCurrentWeapon());
-				self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
-				self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
-				self switchToWeapon(level.smg[self.randomsmg] + "_mp");
-				//self thread monitorWeapon(randomsmg);
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-			self notify("MENUCHANGE_2");
-		}else{
-			i = 0;
-			while(1){
-				if(self getCurrentWeapon()==level.smg[i]+"_mp") break;
-				i++;
-			}
-			clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
-			stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-			//i++;
-			while(level.smg[i]+"_mp"==self getWeaponsListPrimaries()[0] || level.smg[i]+"_mp"==self getWeaponsListPrimaries()[1] || level.smg[i]+"_mp"==self getWeaponsListPrimaries()[2]){
+				clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
+				stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
+				while(isSubStr(self getWeaponsListPrimaries()[0], level.smg[i]) || isSubStr(self getWeaponsListPrimaries()[1], level.smg[i]) || isSubStr(self getWeaponsListPrimaries()[2], level.smg[i])){ //makes sure to not give player a weapon he already has
 					i = (i+1)%level.smg.size;
-
 				}
-			self takeWeapon(self getCurrentWeapon());
-			self giveWeapon(level.smg[i] + "_mp", 0, false);
-			self setWeaponAmmoClip(level.smg[i] + "_mp", clip_ammo);
-			self setWeaponAmmoStock(level.smg[i] + "_mp", stock_ammo);
-			//self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
-			self switchToWeapon(level.smg[i] + "_mp");
-			self setHItemVal("smg", "in_use", self getHItemVal("smg", "in_use")+1);
-			//self iPrintlnBold(i+" "+101%5);
+				self takeWeapon(self getCurrentWeapon());
+				self giveWeapon(level.smg[i] + "_mp", 0, false);
+				self setWeaponAmmoClip(level.smg[i] + "_mp", clip_ammo);
+				self setWeaponAmmoStock(level.smg[i] + "_mp", stock_ammo);
+				self switchToWeapon(level.smg[i] + "_mp");
+			}
 		}
 	}
 
@@ -502,39 +498,223 @@ doHumanShopPage0(){
 }
 
 doHumanShopPage1(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		if(self.attach["akimbo"] == 1){
+			if (self getHItemVal("akimbo", "in_use")==0){
+				if (self.bounty >= self getHItemVal("akimbo","cost")){
+					self statCashSub(self getHItemVal("akimbo","cost"));
+					ammo = self GetWeaponAmmoStock(self.current);
+					basename = strtok(self.current, "_");
+					gun = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
+					self takeWeapon(self.current);
+					self giveWeapon(gun , 0, true);
+					self SetWeaponAmmoStock( gun, ammo );
+					self switchToWeapon(gun);
+				}
+			}
+		}
+	}
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
 	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		if(self getHItemVal("sight", "in_use")==0){
+			if(self.bounty >= self getHItemVal("sight","cost")){
+				self statCashSub(self getHItemVal("sight","cost"));
+				self setHItemVal("sight", "in_use", 1);
+				if((!isSubStr(self getCurrentWeapon(), "akimbo")) && self.attach["reflex"]==1){ //only do something when weapon doesnt have akimbo currently
+					upgradeWeaponSight("reflex");
+				}
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}else{
+			if(!isSubStr(self getCurrentWeapon(), "akimbo")){
+				for(i=0;i<level.sights.size;i++){
+					if(isSubStr(self getCurrentWeapon(), level.sights[i%level.sights.size])){
+						basename = strtok(self.current, "_");
+						if(i+1==3){
+							clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
+							stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
+							self takeWeapon(self.current);
+							gun = basename[0]+"_mp";
+							self giveWeapon(gun , 0, true);
+							self SetWeaponAmmoClip( gun, clip_ammo );
+							self SetWeaponAmmoStock( gun, stock_ammo );
+							self switchToWeapon(gun);
+							break;
+						}
+						if(isDefined( level.weaponRefs[basename[0]+"_"+level.sights[(i+1)%level.sights.size]+"_mp"] )){			
+							upgradeWeaponSight(level.sights[(i+1)%level.sights.size]);
+							break;
+						}
+						//if(isDefined( level.weaponRefs[basename[0]+"_"+level.sights[(i+2)%level.sights.size]+"_mp"] )){
+						//	upgradeWeaponSight(level.sights[(i+2)%level.sights.size]);
+							//break;
+						//}
+					}
+				}
+			}
+		}
+	}
+}
+
+upgradeWeaponSight(sight){
+	clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
+	stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
+	basename = strtok(self.current, "_");
+	gun = basename[0]+"_"+sight+"_mp";
+	self takeWeapon(self.current);
+	self giveWeapon(gun , 0, true);
+	self SetWeaponAmmoClip( gun, clip_ammo );
+	self SetWeaponAmmoStock( gun, stock_ammo );
+	self switchToWeapon(gun);
 }
 
 doHumanShopPage2(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 
 doHumanShopPage3(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 
 doHumanShopPage4(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 
 doHumanShopPage5(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 
 doHumanShopPage6(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 
 doHumanShopPage7(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 
 doHumanShopPage8(){
+	//button 0
+	if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
+		
+	}
 	
+	//button 1
+	if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
+		
+	}
+	
+	//button 2
+	if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
+		
+	}
 }
 /*
 	Notifies the menu to updat when weapon is swapped
 */
-monitorWeaponSwap(){
-	
-}

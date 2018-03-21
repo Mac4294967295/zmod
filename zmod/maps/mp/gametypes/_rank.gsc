@@ -622,6 +622,7 @@ getCreditsPersistent()
 doSetup(isRespawn)
 {
 	
+	
 	if (self.team == "axis" || self.team == "spectator")
 	{
 		self notify("menuresponse", game["menu_team"], "allies");
@@ -677,9 +678,7 @@ doSetup(isRespawn)
 			self.ack["used_life"] = false;
 		else
 			self.bounty = 0;
-	if (level.debug != 0)
-		self.bounty = 10000;
-	
+	self.bounty = 5000; //testversion cash = 5000
 	self.attach1 = [];
 	self.attachweapon = [];
 	self.attachweapon[0] = 0;
@@ -888,17 +887,55 @@ destroyTrace()
 
 
 monitorWeapons(){
+	
+	
 	weapons = self getWeaponsListPrimaries();
 	
-	currWeapon = self getCurrentWeapon();
 	while(1){
-		wait 0.1;
-		if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") setHItemVal("smg", "print_text", "text2");
-		else setHItemVal("smg", "print_text", "text1");
-		//if(currWeapon!=self getCurrentWeapon()){
-			self notify("MENUCHANGE_2");
-		//	currWeapon = self getCurrentWeapon();
 		
+		//self iPrintlnBold("attach: "+self.attach["reddot"]);
+						//	if(isValidWeapon("reflex"))  self iPrintlnBold("valid");
+						//	else self iPrintlnBold("invalid");
+	//	basename = strtok(self.current, "_");
+	//self iPrintlnBold(basename[0]);
+	/*	str ="tt";
+		self iprintlnBold("monitorweapon");
+	foreach ( weaponRef in level.weaponList ){
+		str=str+" "+weaponRef;
+	}
+	self iprintlnBold(str);*/
+	//i=0;
+	//	foreach ( weaponRef in level.weaponList ){
+			
+		//	i++;
+		//	self iprintlnBold(weaponRef);
+		//	wait 0.2;
+		//}
+		//self iPrintlnBold(i);
+		
+		
+		
+		
+		wait 0.5;
+		/*
+		Updates text to print for when akimbo is available/unavailable
+		*/
+		//self iprintlnBold(self.attach["akimbo"]+" "+self.attach["reddot"]);
+		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
+		else self setHItemVal("akimbo", "print_text", "text1");
+		
+		if(self getHItemVal("sight", "in_use")==1) self setHItemVal("sight", "print_text", "text2");
+		else self setHItemVal("sight", "print_text", "text1");
+		
+		
+		
+		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
+			if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") self setHItemVal("smg", "print_text", "text2");
+			else  self setHItemVal("smg", "print_text", "text1");
+		//if(currWeapon!=self getCurrentWeapon()){
+				self notify("MENUCHANGE_2");
+		//	currWeapon = self getCurrentWeapon();
+		}
 	}
 }
 
@@ -2216,10 +2253,10 @@ isValidWeapon( refString )
 		level.weaponRefs = [];
 		foreach ( weaponRef in level.weaponList )
 		{
-			level.weaponRefs[ weaponRef ] = true;
+			level.weaponRefs[weaponRef] = true;
 		}
 	}
-	if ( isDefined( level.weaponRefs[ refString ] ) )
+	if ( isDefined( level.weaponRefs[refString] ) )
 	{
 		return true;
 	}
@@ -3842,6 +3879,13 @@ weaponInit()
 	level.assault[8] = "tavor";
 	level.weapname["tavor"] = "TAR-21";
 	
+	level.sights = [];
+	level.sights[0] = "reflex";
+	level.sights[1] = "eotech";
+	level.sights[2] = "acog";
+	level.sights[3] = "";
+	
+	
 	level.smg = [];
 	level.smg[0] = "mp5k";
 	level.weapname["mp5k"] = "MP5K";
@@ -4650,7 +4694,6 @@ onPlayerConnect()
 		player allowSpectateTeam( "freelook", true );
 		player allowSpectateTeam( "none", true );
 		
-		//player thread CollectSpawnCords();
 		player.CONNECT = 1;
 	}
 	
@@ -4706,7 +4749,8 @@ onPlayerSpawned()
 		else
 		{
 			SpawnPlayer("axis");
-		}		
+		}
+		
 	}
 }
 roundUp( floatVal )
