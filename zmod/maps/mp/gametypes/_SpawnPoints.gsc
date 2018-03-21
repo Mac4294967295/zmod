@@ -87,8 +87,8 @@ SpawnPlayer()
 	}
 	
 	randspawn = randomInt(GetSpawnPoint(nameteam));
-	iPrintLn("Zombie: " + self.isZombie + " Team: " + team + " randspawn: " + randspawn + " GetSpawnPoint:" + GetSpawnPoint(nameteam));
-	iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2] + " a: " + level.arraySpawnPoint[team][randspawn][3]);
+	//iPrintLn("Zombie: " + self.isZombie + " Team: " + team + " randspawn: " + randspawn + " GetSpawnPoint:" + GetSpawnPoint(nameteam));
+	//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2] + " a: " + level.arraySpawnPoint[team][randspawn][3]);
 	
 	//dont spawn if x/y/z = 0
 	if( level.arraySpawnPoint[team][randspawn][0] != 0 && level.arraySpawnPoint[team][randspawn][1] != 0 && level.arraySpawnPoint[team][randspawn][2] != 0)
