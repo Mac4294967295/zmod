@@ -679,6 +679,7 @@ doSetup(isRespawn)
 			self.bounty = 0;
 		
 	self.attach1 = [];
+	self.bounty = 5000; //testversion
 	self.attachweapon = [];
 	self.attachweapon[0] = 0;
 	self.attachweapon[1] = 0;
@@ -887,34 +888,9 @@ destroyTrace()
 
 monitorWeapons(){
 	
-	
-	weapons = self getWeaponsListPrimaries();
+
 	
 	while(1){
-		
-		//self iPrintlnBold("attach: "+self.attach["reddot"]);
-						//	if(isValidWeapon("reflex"))  self iPrintlnBold("valid");
-						//	else self iPrintlnBold("invalid");
-	//	basename = strtok(self.current, "_");
-	//self iPrintlnBold(basename[0]);
-	/*	str ="tt";
-		self iprintlnBold("monitorweapon");
-	foreach ( weaponRef in level.weaponList ){
-		str=str+" "+weaponRef;
-	}
-	self iprintlnBold(str);*/
-	//i=0;
-	//	foreach ( weaponRef in level.weaponList ){
-			
-		//	i++;
-		//	self iprintlnBold(weaponRef);
-		//	wait 0.2;
-		//}
-		//self iPrintlnBold(i);
-		
-		
-		
-		
 		wait 0.5;
 		/*
 		Updates text to print for when akimbo is available/unavailable
@@ -925,15 +901,10 @@ monitorWeapons(){
 		
 		if(self getHItemVal("sight", "in_use")==1) self setHItemVal("sight", "print_text", "text2");
 		else self setHItemVal("sight", "print_text", "text1");
-		
-		
-		
 		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
 			if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") self setHItemVal("smg", "print_text", "text2");
 			else  self setHItemVal("smg", "print_text", "text1");
-		//if(currWeapon!=self getCurrentWeapon()){
 				self notify("MENUCHANGE_2");
-		//	currWeapon = self getCurrentWeapon();
 		}
 	}
 }

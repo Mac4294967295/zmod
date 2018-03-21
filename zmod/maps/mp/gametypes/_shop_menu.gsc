@@ -553,10 +553,6 @@ doHumanShopPage1(){
 							upgradeWeaponSight(level.sights[(i+1)%level.sights.size]);
 							break;
 						}
-						//if(isDefined( level.weaponRefs[basename[0]+"_"+level.sights[(i+2)%level.sights.size]+"_mp"] )){
-						//	upgradeWeaponSight(level.sights[(i+2)%level.sights.size]);
-							//break;
-						//}
 					}
 				}
 			}
