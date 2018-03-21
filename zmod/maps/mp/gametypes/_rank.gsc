@@ -622,7 +622,6 @@ getCreditsPersistent()
 doSetup(isRespawn)
 {
 	
-	
 	if (self.team == "axis" || self.team == "spectator")
 	{
 		self notify("menuresponse", game["menu_team"], "allies");
@@ -678,7 +677,7 @@ doSetup(isRespawn)
 			self.ack["used_life"] = false;
 		else
 			self.bounty = 0;
-	self.bounty = 5000; //testversion cash = 5000
+		
 	self.attach1 = [];
 	self.attachweapon = [];
 	self.attachweapon[0] = 0;
@@ -697,7 +696,7 @@ doSetup(isRespawn)
 	else
 		self.creditshop = false;
 	self setClientDvar("g_knockback", 1000);
-
+	
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "Human";
 	notifySpawn.notifyText = "Survive for as long as possible!";
