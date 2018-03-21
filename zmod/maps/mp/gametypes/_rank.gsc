@@ -748,7 +748,7 @@ doAlphaZombie()
 	self giveWeapon("usp_tactical_mp", 0, false);
 	self thread doZW();
 	
-	self giveUpgrades();
+	self giveZUpgrades();
 	self setClientDvar("g_knockback", 3500);
 
 	notifySpawn = spawnstruct();
@@ -796,7 +796,7 @@ doZombie()
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	giveUpgrades();		
+	giveZUpgrades();		
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "^0Zombie";
 	notifySpawn.notifyText = "Welcome! You are hungry for ^2brains!";
@@ -887,16 +887,29 @@ destroyTrace()
 
 
 
-
+monitorWeapons(){
+	weapons = self getWeaponsListPrimaries();
+	
+	currWeapon = self getCurrentWeapon();
+	while(1){
+		wait 0.1;
+		if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") setHItemVal("smg", "print_text", "text2");
+		else setHItemVal("smg", "print_text", "text1");
+		//if(currWeapon!=self getCurrentWeapon()){
+			self notify("MENUCHANGE_2");
+		//	currWeapon = self getCurrentWeapon();
+		
+	}
+}
 
 
 monitorStinger()
 {
 	self endon("disconnect");
 	self endon("death");
-	while(self getItemVal("stinger", "in_use")>0)
+	while(self getZItemVal("stinger", "in_use")>0)
 	{
-		self setItemVal("stinger", "in_use", self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp"));
+		self setZItemVal("stinger", "in_use", self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp"));
 		self waittill ("weapon_fired");
 		self notify("MENUCHANGE_2");
 	}
@@ -1141,13 +1154,13 @@ monitorThrowingKnife()
 {
 	self endon("disconnect");
 	self endon("death");
-	while(self getItemVal("throwingknife", "in_use")>0)
+	while(self getZItemVal("throwingknife", "in_use")>0)
 	{
-		self setItemVal("throwingknife", "in_use", self getWeaponAmmoClip("throwingknife_mp"));
+		self setZItemVal("throwingknife", "in_use", self getWeaponAmmoClip("throwingknife_mp"));
 		wait 0.1;
 		self notify("MENUCHANGE_2");
 	}
-	self setItemVal("throwingknife", "print_text", "text1");
+	self setZItemVal("throwingknife", "print_text", "text1");
 }
 
 killstreakUsePressed(item)
@@ -1276,7 +1289,7 @@ switchToRepair()
 	self giveWeapon("defaultweapon_mp");
 	self switchToWeapon("defaultweapon_mp");
 }
-
+/*
 doHumanShop()
 {
 	self endon("disconnect");
@@ -1338,20 +1351,7 @@ doHumanShop()
 						else
 						if (self.menu == 0)
 						{
-							if(self.bounty >= level.itemCost["ammo"])
-							{
-								self statCashSub(level.itemCost["ammo"]);
-								primaryWeapons = self getWeaponsListPrimaries();
-								foreach ( primary in primaryWeapons )
-								{
-									self GiveMaxAmmo(primary);
-								}
-								self.nades = getDefaultNadeAmmo(self.nadetype);
-							}
-							else
-								{
-									self iPrintlnBold("^1Not Enough ^3Cash");
-								}
+							
 						}
 						else
 						if (self.menu == 1)
@@ -2030,281 +2030,7 @@ doHumanShop()
 		self notify("MENUCHANGE_2");
 	}
 }
-
-giveUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
-	self _clearPerks();
-	self maps\mp\perks\_perks::givePerk("specialty_marathon");
-	self maps\mp\perks\_perks::givePerk("specialty_automantle");
-	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	if(self getItemVal("health", "in_use")>0){
-		self.maxhealth = self.maxhp;
-		self.health = self.maxhp;
-		self notify("HEALTH");
-	}
-	if(self getItemVal("movespeed", "in_use")>0){
-		self.moveSpeedScaler = 1.0+self getItemVal("movespeed", "in_use")*0.1;
-		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	}else{
-		self.moveSpeedScaler = 1;
-		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	}
-	if(self getItemVal("coldblood", "in_use")>0){
-		self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
-		self maps\mp\perks\_perks::givePerk("specialty_spygame");
-	}
-	if(self getItemVal("ninja", "in_use")>0){
-		self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
-		self maps\mp\perks\_perks::givePerk("specialty_quieter");
-	}
-	if(self getItemVal("commando", "in_use")>0){
-		self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
-		self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-	}
-	
-	if (self getItemVal("blastshield", "in_use")==1)
-	{
-		self maps\mp\perks\_perks::givePerk("specialty_blastshield");
-	}
-	
-	if(self getItemVal("throwingknife", "in_use")>0)
-	{
-		self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
-		self setWeaponAmmoClip("throwingknife_mp", 1);
-		self thread monitorThrowingKnife();
-	}
-	
-	switch(self getItemVal("stinger", "in_use"))
-	{
-		case 1:
-		self giveWeapon("stinger_mp", 0, false);
-		self setWeaponAmmoClip("stinger_mp", 1);
-		self setWeaponAmmoStock("stinger_mp", 0);
-		self thread monitorStinger();
-		break;
-		case 2:
-		self giveWeapon("stinger_mp", 0, false);
-		self setWeaponAmmoClip("stinger_mp", 1);
-		self setWeaponAmmoStock("stinger_mp", 1);
-		self thread monitorStinger();
-		break;
-		default:
-		break;
-	}
-	
-	if(self getItemVal("riotshield", "in_use")==1){
-		self giveWeapon("riotshield_mp", 0, false);
-	}
-	
-	if(self getItemVal("wallhack", "in_use")==1){
-		self ThermalVisionFOFOverlayOn();
-	}
-	
-	self notify("MENUCHANGE_2");
-}
-doZombieShopPage0(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){ 													//do on button press
-		self.buttonPressed[ "+smoke" ] = 0;														//"releases" pressed button
-		if(self.maxhp < 1000){ 																	//max health threshold
-			if(self.bounty >= self getItemVal("health", "cost")){ 								//check if enough cash
-				self setItemVal("health", "in_use", self getItemVal("health", "in_use")+1); 	//signals how much health has been acquired
-				self statMaxHealthAdd(50); 														//adds 50 health (max & current)
-				self statCashSub(self getItemVal("health", "cost"));							//subtracts the cost form current cash
-				self iPrintlnBold("^2Health Increased!"); 										//prints text
-				if(self.maxhp==1000) self setItemVal("health", "print_text", "text2");			//at Max rank update what to print in the menu
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");		
-	}
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if(self getItemVal("wallhack", "in_use")==0){
-			if (self.bounty >= self getItemVal("wallhack", "cost")){
-				self statCashSub(self getItemVal("wallhack", "cost"));
-				self ThermalVisionFOFOverlayOn();
-				self setItemVal("wallhack", "in_use", 1);
-				self iPrintlnBold("^2Wallhack Activated!");
-				self setItemVal("wallhack", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		if(self getItemVal("throwingknife", "in_use")==0){
-			if(self.bounty >= self getItemVal("throwingknife", "cost")){
-				self statCashSub(self getItemVal("throwingknife","cost"));
-				self setItemVal("throwingknife", "in_use", 1);
-				self thread monitorThrowingKnife();
-				self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
-				self setWeaponAmmoClip("throwingknife_mp", 1);
-				self setItemVal("throwingknife", "in_use", 1);
-				self iPrintlnBold("^2Throwing Knife Purchased");
-				self setItemVal("throwingknife", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-}
-
-doZombieShopPage1(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		if(self getItemVal("coldblood", "in_use")==0){
-			if(self.bounty >= self getItemVal("coldblood", "cost")){
-				self setItemVal("coldblood", "in_use", 1);
-				self statCashSub(self getItemVal("coldblood", "cost"));
-				self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
-				self maps\mp\perks\_perks::givePerk("specialty_spygame");
-				self iPrintlnBold("^2Coldblood bought!");
-				self setItemVal("coldblood", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if(self getItemVal("ninja", "in_use")==0){
-			if(self.bounty >= self getItemVal("ninja", "cost")){
-				self statCashSub(self getItemVal("ninja", "cost"));
-				self setItemVal("ninja", "in_use", 1);
-				self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
-				self maps\mp\perks\_perks::givePerk("specialty_quieter");
-				self iPrintlnBold("^2Ninja bought!");
-				self setItemVal("ninja", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		if(self getItemVal("movespeed", "in_use")<5){ //allows a max of 5 movespeed upgrades
-			if(self.bounty >= self getItemVal("movespeed", "cost")){
-				statCashSub(self getItemVal("movespeed", "cost"));
-				self setItemVal("movespeed", "in_use", getItemVal("movespeed", "in_use")+1);						
-				self.moveSpeedScaler += 0.1;
-				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-				self iPrintlnBold("^2Speed Bought!");
-				if(self getItemVal("movespeed", "in_use")==5){
-					self setItemVal("movespeed", "print_text", "text2");
-				}
-			}else self iPrintlnBold("^1Not Enough ^3Cash");		
-		}
-		self notify("MENUCHANGE_2");
-	}
-}
-
-doZombieShopPage2(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){			//PLACEHOLDER (not assigned
-		self.buttonPressed[ "+smoke" ] = 0;
-		
-	}
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if (self getItemVal("stinger", "in_use")==0){
-			if (self.bounty >= self getItemVal("stinger", "cost")){
-				self statCashSub(self getItemVal("stinger", "cost"));
-				self giveWeapon("stinger_mp", 0, false);
-				self switchToWeapon("stinger_mp");
-				self GiveStartAmmo("stinger_mp");
-				self setItemVal("stinger", "in_use", 2);
-				self thread monitorStinger();
-				self iPrintlnBold("^2Bought Stinger!");
-				self setItemVal("stinger", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");	
-		}
-		self notify("MENUCHANGE_2");
-	}
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		if(self getItemVal("commando", "in_use")==0){
-			if(self.bounty >= self getItemVal("commando", "cost")){
-				self statCashSub(self getItemVal("commando", "cost"));
-				self setItemVal("commando", "in_use", 1);
-				self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
-				self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-				self iPrintlnBold("^2Commando bought!");
-				self setItemVal("commando", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-}
-
-doZombieShopPage3(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		if(self getItemVal("blastshield", "in_use")==1) self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
-		else if (self.bounty >= self getItemVal("blastshield", "cost")){
-			self statCashSub(self getItemVal("blastshield", "cost"));
-			self setItemVal("blastshield", "in_use", 1);
-			self maps\mp\perks\_perkfunctions::toggleBlastShield(false);
-			self maps\mp\perks\_perks::givePerk("specialty_blastshield");
-			self maps\mp\perks\_perkfunctions::toggleBlastShield(true);
-			self setItemVal("blastshield", "print_text", "text2");
-			self iPrintlnBold("^2Bought Blast Shield!");
-		}else self iPrintlnBold("^1Not Enough ^3Cash");
-		self notify("MENUCHANGE_2");
-	}
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if (self getItemVal("riotshield", "in_use")==0){
-			if (self.bounty >= self getItemVal("riotshield","cost")){
-				self statCashSub(self getItemVal("riotshield","cost"));
-				self giveWeapon("riotshield_mp", 0, false);
-				self switchToWeapon("riotshield_mp");
-				self iPrintlnBold("^2Bought Riot Shield!");
-				self setItemVal("riotshield", "in_use", 1);
-				self setItemVal("riotshield", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		self suicide();
-		self notify("MENUCHANGE_2");
-	}
-}
-doZombieShop()
-{
-	self endon("disconnect");
-	self endon("death");
-	while(1)
-	{
-		switch(self.menu){
-			case 0:
-			doZombieShopPage0();
-			break;
-			case 1:
-			doZombieShopPage1();
-			break;
-			case 2:
-			doZombieShopPage2();
-			break;
-			case 3:
-			doZombieShopPage3();
-			break;
-			default:
-			break;
-		}
-		wait 0.1;
-	}
-}
-
+*/
 doExchangeWeapons()
 {
 	switch(self.exTo)
@@ -2514,6 +2240,7 @@ doGameStarter()
 	{
 		player thread doSetup();
 		player thread initializeZMenu();
+		player thread initializeHMenu();
 		
 	}
 	wait getdvarint("scr_zmod_starting_time");
@@ -3080,7 +2807,8 @@ doEnding()
 	{
 		
 		player _clearPerks();
-		player initializeZMenu();
+		player resetZMenu();
+		player resetHMenu();
 		player.moveSpeedScaler = 1;
 		player freezeControls(true);
 		player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
@@ -3528,7 +3256,7 @@ HUDupdate()
 
 		if(self.team == "allies")
 		{
-			self HumanPerkHUDUpdate();
+			/*self HumanPerkHUDUpdate();
 			//Human menu
 			if (self.creditshop == false)
 			{
@@ -3759,6 +3487,8 @@ HUDupdate()
 				}
 			
 		}
+		*/
+		}
 		if(self.team == "axis")
 		{
 			self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
@@ -3767,10 +3497,18 @@ HUDupdate()
 			item0 = self.ZArray[self.menu][0]; //returns "name" of the item
 			item1 = self.ZArray[self.menu][1];
 			item2 = self.ZArray[self.menu][2];
-			self.option1 setText("Press [{+smoke}] - " + self getItemVal(item0, self getItemVal(item0,"print_text")));
-			self.option2 setText("Press [{+actionslot 2}] - " + self getItemVal(item1, self getItemVal(item1,"print_text")));
-			self.option3 setText("Press [{+actionslot 4}] - " + self getItemVal(item2, self getItemVal(item2,"print_text")));
+			self.option1 setText("Press [{+smoke}] - " + self getZItemVal(item0, self getZItemVal(item0,"print_text")));
+			self.option2 setText("Press [{+actionslot 2}] - " + self getZItemVal(item1, self getZItemVal(item1,"print_text")));
+			self.option3 setText("Press [{+actionslot 4}] - " + self getZItemVal(item2, self getZItemVal(item2,"print_text")));
+		}else{
+			item0 = self.HArray[self.menu][0]; //returns "name" of the item
+			item1 = self.HArray[self.menu][1];
+			item2 = self.HArray[self.menu][2];
+			self.option1 setText("Press [{+smoke}] - " + self getHItemVal(item0, self getHItemVal(item0,"print_text")));
+			self.option2 setText("Press [{+actionslot 2}] - " + self getHItemVal(item1, self getHItemVal(item1,"print_text")));
+			self.option3 setText("Press [{+actionslot 4}] - " + self getHItemVal(item2, self getHItemVal(item2,"print_text")));
 		}
+		self notify("MENUCHANGE_2");
 		
 }
 
@@ -4818,6 +4556,8 @@ onPlayerConnect()
 	{
 		level waittill( "connected", player );
 		player initializeZMenu();
+		player initializeHMenu();
+		player thread monitorWeapons();
 		player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "experience" );
 		if ( player.pers["rankxp"] < 0 )
 		{
