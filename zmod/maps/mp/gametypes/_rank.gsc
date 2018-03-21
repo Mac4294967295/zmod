@@ -886,11 +886,10 @@ destroyTrace()
 
 
 
-monitorWeapons(){
-	
-
-	
+monitorWeapons(){	
 	while(1){
+		
+		
 		wait 0.5;
 		/*
 		Updates text to print for when akimbo is available/unavailable

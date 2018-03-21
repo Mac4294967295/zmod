@@ -57,8 +57,8 @@ resetHMenu(){
 	initHShopItem("empty2", 100, 1, 1, "PLAcEHOLDER ", "^");
 	initHShopItem("sight", 50, 1, 2, "Unlock Sights - ", "^1Swap Sight");
 	
-	initHShopItem("silencer", 200, 2, 0, "Buy Silencer - ", "^1Unavailable");
-	initHShopItem("extendedmags", 150, 2, 1, "Buy Extended Mags - ", "^1Unavailable");
+	initHShopItem("empty3", 200, 2, 0, "PLACEHOLDER", "");
+	initHShopItem("extendedmags", 150, 2, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
 	initHShopItem("empty0", 50, 2, 2, "Buy PLACEHOLDER - ", "");
 	
 	initHShopItem("steadyaim", 100, 3, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");	
@@ -510,8 +510,19 @@ doHumanShopPage1(){
 					gun = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
 					self takeWeapon(self.current);
 					self giveWeapon(gun , 0, true);
-					self SetWeaponAmmoStock( gun, ammo );
-					self switchToWeapon(gun);
+					//self SetWeaponAmmoStock( gun, ammo );
+					//self switchToWeapon(gun);
+					
+					if(self getHItemVal("extendedmags", "in_use")==1){
+						weap = addXMagsToWeapon(gun);
+						self switchToWeapon(weap);
+						//self SetWeaponAmmoClip( weap, clip_ammo );
+						self SetWeaponAmmoStock( weap, ammo );
+					}else{
+						self switchToWeapon(gun);
+					//	self SetWeaponAmmoClip( gun, clip_ammo );
+						self SetWeaponAmmoStock( gun, ammo );
+					}
 				}
 			}
 		}
@@ -539,6 +550,8 @@ doHumanShopPage1(){
 					if(isSubStr(self getCurrentWeapon(), level.sights[i%level.sights.size])){
 						basename = strtok(self.current, "_");
 						if(i+1==3){
+							upgradeWeaponSight("");
+							/*
 							clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
 							stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
 							self takeWeapon(self.current);
@@ -547,6 +560,7 @@ doHumanShopPage1(){
 							self SetWeaponAmmoClip( gun, clip_ammo );
 							self SetWeaponAmmoStock( gun, stock_ammo );
 							self switchToWeapon(gun);
+							*/
 							break;
 						}
 						if(isDefined( level.weaponRefs[basename[0]+"_"+level.sights[(i+1)%level.sights.size]+"_mp"] )){			
@@ -559,17 +573,51 @@ doHumanShopPage1(){
 		}
 	}
 }
-
+/*
+Upgrades current gun with sight 
+*/
 upgradeWeaponSight(sight){
 	clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
 	stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
+	if(sight!="") sight = sight+"_";
 	basename = strtok(self.current, "_");
-	gun = basename[0]+"_"+sight+"_mp";
+	gun = basename[0]+"_"+sight+"mp";
 	self takeWeapon(self.current);
 	self giveWeapon(gun , 0, true);
-	self SetWeaponAmmoClip( gun, clip_ammo );
-	self SetWeaponAmmoStock( gun, stock_ammo );
-	self switchToWeapon(gun);
+	if(self getHItemVal("extendedmags", "in_use")==1){
+		weap = addXMagsToWeapon(gun);
+		self switchToWeapon(weap);
+		self SetWeaponAmmoClip( weap, clip_ammo );
+		self SetWeaponAmmoStock( weap, stock_ammo );
+	}else{
+		self switchToWeapon(gun);
+		self SetWeaponAmmoClip( gun, clip_ammo );
+		self SetWeaponAmmoStock( gun, stock_ammo );
+	}
+}
+
+addXMagsToWeapon(weapon){
+	
+	ammo = self GetWeaponAmmoStock(weapon);
+	basename = strtok(weapon, "_");
+	gun="";
+	for(i=0;i<basename.size-1;i++){
+		gun=gun+basename[i]+"_";
+	}
+	gun = gun+"xmags_mp";
+	if(isDefined(level.weaponRefs[gun])){
+		self takeWeapon(weapon);
+	self giveWeapon(gun, 0, true);
+	self setWeaponAmmoStock(gun, ammo);
+	return gun;
+	}else{
+		return weapon;
+	}
+	//self iPrintlnBold(weapon);
+	self takeWeapon(weapon);
+	self giveWeapon(gun, 0, true);
+	self setWeaponAmmoStock(gun, ammo);
+	return gun;
 }
 
 doHumanShopPage2(){
@@ -582,7 +630,19 @@ doHumanShopPage2(){
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
+		if (self getHItemVal("extendedmags", "in_use")==0){
+			if (self.bounty >= self getHItemVal("extendedmags","cost")){
+				self statCashSub(self getHItemVal("extendedmags","cost"));
+				self setHItemVal("extendedmags", "in_use", 1);
+				basename = strtok(self getCurrentWeapon(), "_");
+				foreach(weapon in self getWeaponsListPrimaries()){
+					string = addXMagsToWeapon(weapon);
+					if(isSubStr(string, basename[0])){
+						self switchToWeapon(string);
+					}
+				}	
+			}
+		}
 	}
 	
 	//button 2
