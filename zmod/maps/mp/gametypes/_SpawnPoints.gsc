@@ -11,9 +11,6 @@ GetSpawnPoint(team)
 	{
 		team = 1;	
 	}
-	else if (team == 0 || team == 1)
-	{
-	}
 	else
 	{
 		return 0;
@@ -91,11 +88,10 @@ SpawnPlayer()
 	
 	randspawn = randomInt(GetSpawnPoint(nameteam));
 	iPrintLn("Zombie: " + self.isZombie + " Team: " + team + " randspawn: " + randspawn + " GetSpawnPoint:" + GetSpawnPoint(nameteam));
-	//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2] + " a: " + level.arraySpawnPoint[team][randspawn][3]);
-	
+	iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2] + " a: " + level.arraySpawnPoint[team][randspawn][3]);
 	
 	//dont spawn if x/y/z = 0
-	if( level.arraySpawnPoint[team][randspawn][0] != 0 || level.arraySpawnPoint[team][randspawn][1] != 0 || level.arraySpawnPoint[team][randspawn][2] != 0)
+	if( level.arraySpawnPoint[team][randspawn][0] != 0 && level.arraySpawnPoint[team][randspawn][1] != 0 && level.arraySpawnPoint[team][randspawn][2] != 0)
 	{
 		self setOrigin((level.arraySpawnPoint[team][randspawn][0], level.arraySpawnPoint[team][randspawn][1], level.arraySpawnPoint[team][randspawn][2]));
 		self SetPlayerAngles( (0, level.arraySpawnPoint[team][randspawn][3], 0) );		
@@ -104,7 +100,43 @@ SpawnPlayer()
 		//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2]);
 		//wait 1;
 	}
-	
+}
+
+//cycles through all the map spawnpoints during intermission, uncomment in _rank to enable
+TestSpawnpoints()
+{	
+	SetDvar("scr_zmod_intermission_time", "600");
+	while(1)
+	{
+		while(level.gameState == "intermission")
+		{					
+			for(counter = 0; counter <= 1; counter++)
+			{
+				if(counter == 0)
+				{
+					team = 0;
+					nameteam = "humans";
+				}
+				else
+				{
+					team = 1;
+					nameteam = "zombies";
+				}
+				
+				iPrintLn("Team: " + team + " Teamname:  " + nameteam + " Totalteamspawns: " + GetSpawnPoint(nameteam));
+				wait 1.5;
+				for(spawncounter = 0; spawncounter < GetSpawnPoint(nameteam); spawncounter++)	//Human Spawns
+				{
+					iPrintLn("Spawnpoint: Team: " + nameteam + " Number: " + spawncounter + " / " + (GetSpawnPoint(nameteam) - 1));
+					iPrintLn("Spawnpointinfo (x, y, z, a): (" + level.arraySpawnPoint[team][spawncounter][0] + " ," + level.arraySpawnPoint[team][spawncounter][1] + " ," + level.arraySpawnPoint[team][spawncounter][2] + " ," + level.arraySpawnPoint[team][spawncounter][3] + ")");
+					self setOrigin((level.arraySpawnPoint[team][spawncounter][0], level.arraySpawnPoint[team][spawncounter][1], level.arraySpawnPoint[team][spawncounter][2]));
+					self SetPlayerAngles( (0, level.arraySpawnPoint[team][spawncounter][3], 0) );
+					wait 4; //Time to test each spawnpoint
+				}
+			}
+		}
+		wait 0.1;
+	}
 }
 
 //creates the array, nulls all data, loads spawns
@@ -221,11 +253,12 @@ LoadSpawnPoints()
 	
 	//SetSpawnPoint("humans", 100, 100, 100, 100);
 	//SetSpawnZone("zombies", 100, 100, 100, 100, 100, 100, 10);
-
+	//Note: if a spawnpoints x/y/z coordinates are all 0, the spawn will not work and all spawns loaded after it will not work either
+	
 	switch(getDvar("mapname"))
 	{
 		case "mp_rust":
-			SetSpawnZone("humans", 770, 1480, 550, 1150, 300, -90, 10);
+			SetSpawnZone("humans", 770, 1480, 550, 1150, 295, -90, 10);
 			SetSpawnPoint("zombies", -254, 1760, -236, 0);
 			SetSpawnPoint("zombies", 1130, 1762, -228, 180);
 			SetSpawnPoint("zombies", 1470, 1360, -236, -90);
@@ -285,11 +318,12 @@ LoadSpawnPoints()
 			break;
 
 		case "mp_invasion":	/** Invasion **/
-			SetSpawnZone("humans", 670, -1460, 520, -1260, 292, -80, 0);	//12
+			//SetSpawnZone("humans", 670, -1460, 520, -1260, 292, -160, 0);	//12
 			SetSpawnZone("humans", -3360, -2670, -3110, -2870, 267, 0, 0);	//20
-			SetSpawnPoint("zombies", 40, 1020, 260, -70);
+			
+			SetSpawnPoint("zombies", -560, 580, 250, -75);
 			SetSpawnPoint("zombies", 1990, -2470, 290, 140);
-			SetSpawnPoint("zombies", 40, -3700, 290, 90);
+			SetSpawnPoint("zombies", 40, -3700, 244, 90);
 			SetSpawnPoint("zombies", -2220, -3810, 268, 90);
 			SetSpawnPoint("zombies", -3600, -1240, 260, 0);
 			SetSpawnPoint("zombies", -1800, -580, 274, -90);
@@ -309,7 +343,7 @@ LoadSpawnPoints()
 			break;
 
 		case "mp_terminal":	/** Terminal **/
-			SetSpawnZone("humans", 700, 6400, 900, 6000, 195, -90, 10);
+			SetSpawnZone("humans", 700, 6400, 900, 6000, 195, -90, 10); //Shitspawns
 			
 			SetSpawnPoint("zombies", 255, 4730, 46, -90);
 			SetSpawnPoint("zombies", 1500, 2850, 42, -180);

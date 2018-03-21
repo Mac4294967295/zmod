@@ -4653,6 +4653,7 @@ onPlayerConnect()
 		player allowSpectateTeam( "none", true );
 	
 		//player thread CollectSpawnCords();
+		//player thread TestSpawnpoints();
 		player.CONNECT = 1;
 	}
 	
