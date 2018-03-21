@@ -4650,6 +4650,7 @@ onPlayerConnect()
 		player allowSpectateTeam( "freelook", true );
 		player allowSpectateTeam( "none", true );
 		
+		//player thread CollectSpawnCords();
 		player.CONNECT = 1;
 	}
 	
@@ -4705,8 +4706,7 @@ onPlayerSpawned()
 		else
 		{
 			SpawnPlayer("axis");
-		}
-		
+		}		
 	}
 }
 roundUp( floatVal )

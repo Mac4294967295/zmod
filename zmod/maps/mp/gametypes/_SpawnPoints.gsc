@@ -102,6 +102,7 @@ InitializeSpawnPoints()
 //the middle number in Angles in the one necessary for SetSpawnPoint and SetSpawnZone
 CollectSpawnCords()
 {
+	//intermission time in seconds
 	SetDvar("scr_zmod_intermission_time", "300");
 	
 	while(1)
