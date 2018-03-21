@@ -537,25 +537,6 @@ init_player_extra()
 		self.savedStat["score"] = 0;
 }
 
-isValidWeaponForTrade(weap)
-{
-		switch(getWeaponClass(weap))
-		{
-			case "weapon_lmg":
-			case "weapon_assault":
-			case "weapon_smg":
-			case "weapon_shotgun":
-			case "weapon_machine_pistol":
-			case "weapon_pistol":
-			case "weapon_sniper":
-			case "weapon_riot":
-				return true;
-			default:
-				return false;
-		}
-		return false;
-}
-
 dropDead()
 {
 	foreach (player in level.players)
