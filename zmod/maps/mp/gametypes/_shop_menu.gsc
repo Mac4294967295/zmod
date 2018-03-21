@@ -458,13 +458,24 @@ doHumanShopPage0(){
 					self takeWeapon(self getCurrentWeapon());
 					self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false); 	//gives player the weapon
 					self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp"); 			//gives full ammo for new weapon
-					self switchToWeapon(level.smg[self.randomsmg] + "_mp");
+					//self switchToWeapon(level.smg[self.randomsmg] + "_mp");
+					
+					
+					if(self getHItemVal("extendedmags", "in_use")==1){
+						weap = addXMagsToWeapon(level.smg[self.randomsmg] + "_mp");
+						self switchToWeapon(weap);
+						//self SetWeaponAmmoClip( weap, clip_ammo );
+						
+					}else self switchToWeapon(level.smg[self.randomsmg] + "_mp");
+					//	self SetWeaponAmmoClip( gun, clip_ammo );
+						
 				}else self iPrintlnBold("^1Not Enough ^3Cash");
 				self notify("MENUCHANGE_2");
 			}else{
 				i = 0;
-				while(1){															//returns index in level.smg of current weapon
-					if(self getCurrentWeapon()==level.smg[i]+"_mp") break;
+				while(1){														//returns index in level.smg of current weapon
+					basename = strtok(self getCurrentWeapon(), "_");
+					if(basename[0]==level.smg[i]) break;
 					i++;
 				}
 				clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
@@ -473,10 +484,24 @@ doHumanShopPage0(){
 					i = (i+1)%level.smg.size;
 				}
 				self takeWeapon(self getCurrentWeapon());
-				self giveWeapon(level.smg[i] + "_mp", 0, false);
-				self setWeaponAmmoClip(level.smg[i] + "_mp", clip_ammo);
-				self setWeaponAmmoStock(level.smg[i] + "_mp", stock_ammo);
-				self switchToWeapon(level.smg[i] + "_mp");
+				//self giveWeapon(level.smg[i] + "_mp", 0, false);
+				//self setWeaponAmmoClip(level.smg[i] + "_mp", clip_ammo);
+				//self setWeaponAmmoStock(level.smg[i] + "_mp", stock_ammo);
+				//self switchToWeapon(level.smg[i] + "_mp");
+				
+				
+				if(self getHItemVal("extendedmags", "in_use")==1){
+					weap = addXMagsToWeapon(level.smg[i] + "_mp");
+					self giveWeapon(weap, 0, false);
+					self switchToWeapon(weap);
+					self SetWeaponAmmoClip( weap, clip_ammo );
+					self SetWeaponAmmoStock( weap, stock_ammo );
+				}else{
+					self giveWeapon(level.smg[i] + "_mp", 0, false);
+					self switchToWeapon(level.smg[i] + "_mp");
+					self SetWeaponAmmoClip( level.smg[i] + "_mp", clip_ammo );
+					self SetWeaponAmmoStock( level.smg[i] + "_mp", stock_ammo );
+				}
 			}
 		}
 	}
