@@ -713,7 +713,8 @@ trailerpark()
 
 
 Derail()
-{
+{	//Crashes game, too many entities
+	/*
 	//Funky Edit Start
 	
 	//All Forces
@@ -759,7 +760,7 @@ Derail()
 	CreateElevator((-3718, -1810, 887), (-1065, -3657, 103));
 	CreateElevator((-674, -1014, 567), (-786, -1124, 302));
 
-
+	*/
 
 //CreateElevator((, , ), (, , -));
 //CreateWalls((, , ), (, , ));

@@ -12,7 +12,6 @@ ArtilleryStrike()
 {
 	self endon("disconnect");
 	
-	
 	//Coordinates Selection for the Location of the Artillery Strike
 	self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
 	self.selectingLocation = true;
@@ -698,7 +697,7 @@ doSetup(isRespawn)
 	else
 		self.creditshop = false;
 	self setClientDvar("g_knockback", 1000);
-
+	
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "Human";
 	notifySpawn.notifyText = "Survive for as long as possible!";
@@ -787,6 +786,7 @@ doZombie()
 	}
 	wait .1;
 	self notify("menuresponse", "changeclass", "class3");
+	
 	self takeAllWeapons();
 	self _clearPerks();
 	self giveWeapon("usp_tactical_mp", 0, false);
@@ -3078,7 +3078,8 @@ doEnding()
 	
 	foreach(player in level.players)
 	{
-		
+		//Reset Zombies
+		player.isZombie = 0;
 		player _clearPerks();
 		player initializeZMenu();
 		player.moveSpeedScaler = 1;
@@ -3843,7 +3844,7 @@ doPerksSetup()
 
 doSpawn()
 {
-	
+	self SpawnPlayer();
 	self.combo = 0;
 	if (self.newcomer == 1)
 	{
@@ -3886,13 +3887,14 @@ doSpawn()
 			{
 				self thread doAlphaZombie();
 			}
+
 		
 	}
 	else
-		{
-			self thread doSetup(false); //Called when human joins on intermission
-		}
-	
+	{
+		self thread doSetup(false); //Called when human joins on intermission
+	}
+			
 	self thread doDvars();
 	self.menu = 0;
 	self thread CreatePlayerHUD();
@@ -4909,7 +4911,7 @@ onPlayerConnect()
 		player allowSpectateTeam( "axis", true );
 		player allowSpectateTeam( "freelook", true );
 		player allowSpectateTeam( "none", true );
-		
+	
 		//player thread CollectSpawnCords();
 		player.CONNECT = 1;
 	}
@@ -4958,15 +4960,6 @@ onPlayerSpawned()
 	{
 		self waittill("spawned_player");
 		self thread doSpawn();
-		
-		if(self.pers["team"] == game["attackers"])
-		{
-			SpawnPlayer("allies");
-		}
-		else
-		{
-			SpawnPlayer("axis");
-		}		
 	}
 }
 roundUp( floatVal )

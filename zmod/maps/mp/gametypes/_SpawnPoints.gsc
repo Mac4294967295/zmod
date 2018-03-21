@@ -3,13 +3,16 @@
 //Returns the number of the next spawn that is nulled, don't set spawns on 0/0/0
 GetSpawnPoint(team)
 {
-	if(team == "allies")
+	if(team == "humans")
 	{
 		team = 0;
 	}
-	else if(team == "axis")
+	else if(team == "zombies")
 	{
 		team = 1;	
+	}
+	else if (team == 0 || team == 1)
+	{
 	}
 	else
 	{
@@ -45,14 +48,15 @@ NullSpawnPoints()
 SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
 {	
 	spawnpoint = GetSpawnPoint(team);
-
+	//iPrintLn("Spawnpoint: " + spawnpoint + "Team: " + team);
+	
 	if(spawnpoint < getdvarInt("max_spawnpoints_perteam") - 1)
 	{
-		if(team == "allies")
+		if(team == "humans")
 		{
 			team = 0;
 		}
-		else if(team == "axis")
+		else if(team == "zombies")
 		{
 			team = 1;
 		}
@@ -61,37 +65,52 @@ SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
 		level.arraySpawnPoint[team][spawnpoint][1] = y_cord;
 		level.arraySpawnPoint[team][spawnpoint][2] = z_cord;
 		level.arraySpawnPoint[team][spawnpoint][3] = angle;
+		
+		//iPrintLn("X: " + level.arraySpawnPoint[team][spawnpoint][0] + " Y: " + level.arraySpawnPoint[team][spawnpoint][1] + " Z: " + level.arraySpawnPoint[team][spawnpoint][2] + " A: " + level.arraySpawnPoint[team][spawnpoint][3]);
+		//wait 2;
 	}
 }
 
 //spawns player on random team spawnpoint
-SpawnPlayer(team)
+SpawnPlayer()
 {	
-	if(team == "allies")
+	//iPrintLn("I AM A : " + self.isZombie);
+	team = 0;
+	nameteam = 0;
+	
+	if(self.isZombie == 0)
 	{
 		team = 0;
+		nameteam = "humans";
 	}
-	else if(team == "axis")
+	else if(self.isZombie != 0)
 	{
 		team = 1;
+		nameteam = "zombies";
 	}
-	randspawn = randomInt(GetSpawnPoint(self.pers["team"]));
-	self setOrigin((level.arraySpawnPoint[team][randspawn][0], level.arraySpawnPoint[team][randspawn][1], level.arraySpawnPoint[team][randspawn][2]));
-	self SetPlayerAngles( (0, level.arraySpawnPoint[team][randspawn][3], 0) );
-	/*
-	iPrintLn("Spawned");
-	iPrintLn("Entry x: " + level.arraySpawnPoint[team][randspawn][0]);
-	iPrintLn("Entry y: " + level.arraySpawnPoint[team][randspawn][1]);
-	iPrintLn("Entry z: " + level.arraySpawnPoint[team][randspawn][2]);
 	
-	iPrintLn("randspawn " + randspawn + " / GetSpawn " + GetSpawnPoint(self.pers["team"]));
-	*/
+	randspawn = randomInt(GetSpawnPoint(nameteam));
+	iPrintLn("Zombie: " + self.isZombie + " Team: " + team + " randspawn: " + randspawn + " GetSpawnPoint:" + GetSpawnPoint(nameteam));
+	//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2] + " a: " + level.arraySpawnPoint[team][randspawn][3]);
+	
+	
+	//dont spawn if x/y/z = 0
+	if( level.arraySpawnPoint[team][randspawn][0] != 0 || level.arraySpawnPoint[team][randspawn][1] != 0 || level.arraySpawnPoint[team][randspawn][2] != 0)
+	{
+		self setOrigin((level.arraySpawnPoint[team][randspawn][0], level.arraySpawnPoint[team][randspawn][1], level.arraySpawnPoint[team][randspawn][2]));
+		self SetPlayerAngles( (0, level.arraySpawnPoint[team][randspawn][3], 0) );		
+		//iPrintLn("Zombie: " + self.isZombie + " Team: " + team);
+		//iPrintLn("randspawn " + randspawn + " / GetSpawn " + GetSpawnPoint(team));
+		//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2]);
+		//wait 1;
+	}
+	
 }
 
 //creates the array, nulls all data, loads spawns
 InitializeSpawnPoints()
 {	
-	//[Attackers/Defenders][Spawnpoint#][x_cord / y_cord / z_cord / angle]
+	//[humans/Zombie][Spawnpoint#][x_cord / y_cord / z_cord / angle]
 	setup_dvar("max_spawnpoints_perteam", "50");
 	level.arraySpawnPoint[2][getdvarInt("max_spawnpoints_perteam")][4] = [];
 	NullSpawnPoints();
@@ -196,25 +215,139 @@ SetSpawnZone(team, point1_x, point1_y, point2_x, point2_y, height, angle, numspa
 //loads all spawnpoints/zones of the current map
 LoadSpawnPoints()
 {	
-	//SetSpawnPoint creates a single spawnpoint for a team on a coordinate; parameters (without []): SetSpawnPoint("[allies/axis]", [x_coordinate], [y_coordinate], [z_coordinate], [player angle/view direction]);
-	//SetSpawnZone creates one or multiple spawnpoints for a team on a 2D plain between 2 points; parameters (without []): SetSpawnZone([allies/axis]", [x_coordinate point 1], [y_coordinate point 1], [x_coordinate point 2], [y_coordinate point 2], [z_coordinate], [player angle/view direction], [number of spawns (0 = max possible)]);
+	//SetSpawnPoint creates a single spawnpoint for a team on a coordinate; parameters (without []): SetSpawnPoint("[humans/zombies]", [x_coordinate], [y_coordinate], [z_coordinate], [player angle/view direction]);
+	//SetSpawnZone creates one or multiple spawnpoints for a team on a 2D plain between 2 points; parameters (without []): SetSpawnZone([humans/zombies]", [x_coordinate point 1], [y_coordinate point 1], [x_coordinate point 2], [y_coordinate point 2], [z_coordinate], [player angle/view direction], [number of spawns (0 = max possible)]);
 	//Use CollectSpawnCords() to collect coordinates / angles
 	
+	//SetSpawnPoint("humans", 100, 100, 100, 100);
+	//SetSpawnZone("zombies", 100, 100, 100, 100, 100, 100, 10);
+
 	switch(getDvar("mapname"))
 	{
 		case "mp_rust":
-			
-			SetSpawnZone("allies", 770, 1480, 550, 1150, 300, -90, 10);
-			
-			SetSpawnPoint("axis", -254, 1760, -236, 0);
-			SetSpawnPoint("axis", 1130, 1762, -228, 180);
-			SetSpawnPoint("axis", 1470, 1360, -236, -90);
-			SetSpawnPoint("axis", 1400, -160, -228, 180);
-			SetSpawnPoint("axis", 570, -20, -217, -90);
-			SetSpawnPoint("axis", -260, -70, -234, -32);
-			SetSpawnPoint("axis", -420, 940, -223, -90);
+			SetSpawnZone("humans", 770, 1480, 550, 1150, 300, -90, 10);
+			SetSpawnPoint("zombies", -254, 1760, -236, 0);
+			SetSpawnPoint("zombies", 1130, 1762, -228, 180);
+			SetSpawnPoint("zombies", 1470, 1360, -236, -90);
+			SetSpawnPoint("zombies", 1400, -160, -228, 180);
+			SetSpawnPoint("zombies", 570, -20, -217, -90);
+			SetSpawnPoint("zombies", -260, -70, -234, -32);
+			SetSpawnPoint("zombies", -420, 940, -223, -90);
 			
 			break; 
+		
+		case "mp_afghan":	/** Afghan **/
+			//Shit map edit		
+			break;
+
+		case "mp_boneyard":	/** Scrapyard **/
+			//Shit map edit	
+			break;
+
+		case "mp_trailerpark":	/** trailerpark **/
+			//no map
+			break;
+
+		case "mp_brecourt":	/** Wasteland **/
+			//Shit map edit
+			break;
+
+		case "mp_checkpoint":	/** Karachi **/
+			//Great Potential, Shit map edit
+			break;
+
+		case "mp_derail":	/** Derail **/
+			//good potential, broken map edit
+			break;
+
+		case "mp_estate":	/** Estate **/
+			//Great Potential, Shit map edit
+			break;
+
+		case "mp_favela":	/** Favela **/
+			//Great Potential, Shit map edit
+			break;
+
+		case "mp_fuel2":	/** Fuel **/
+			//no map
+			break;
+
+		case "mp_highrise":	/** HighRise **/
+			//Shit map edit	
+			break;	
+
+		case "mp_nightshift":	/** Skidrow **/
+			//Shit map edit
+			break;
+
+		case "mp_storm":	/** Storm **/
+			//no map
+			break;
+
+		case "mp_invasion":	/** Invasion **/
+			SetSpawnZone("humans", 670, -1460, 520, -1260, 292, -80, 0);	//12
+			SetSpawnZone("humans", -3360, -2670, -3110, -2870, 267, 0, 0);	//20
+			SetSpawnPoint("zombies", 40, 1020, 260, -70);
+			SetSpawnPoint("zombies", 1990, -2470, 290, 140);
+			SetSpawnPoint("zombies", 40, -3700, 290, 90);
+			SetSpawnPoint("zombies", -2220, -3810, 268, 90);
+			SetSpawnPoint("zombies", -3600, -1240, 260, 0);
+			SetSpawnPoint("zombies", -1800, -580, 274, -90);
+			SetSpawnPoint("zombies", -50, -2500, 260, 135);
+			break;
+
+		case "mp_quarry":	/** Quarry **/
+			
+			break;
+
+		case "mp_rundown":	/** Rundown **/
+			
+			break;
+
+		case "mp_subbase":	/** SubBase **/
+			
+			break;
+
+		case "mp_terminal":	/** Terminal **/
+			SetSpawnZone("humans", 700, 6400, 900, 6000, 195, -90, 10);
+			
+			SetSpawnPoint("zombies", 255, 4730, 46, -90);
+			SetSpawnPoint("zombies", 1500, 2850, 42, -180);
+			SetSpawnPoint("zombies", 2070, 2980, 42, 0);
+			SetSpawnPoint("zombies", -250, 4870, 195, 60);
+			SetSpawnPoint("zombies", 1000, 5200, 195, 0);
+			SetSpawnPoint("zombies", 1620, 7080, 195, 180);
+			SetSpawnPoint("zombies", 2850, 4970, 195, 180);
+			
+			break;
+
+		case "mp_underpass":	 /** Underpass **/
+			
+			break;
+
+		case "mp_abandon":	/** Carnaval **/
+			
+			break;
+
+		case "mp_compact":	/** Salvage **/
+			
+			break;			
+
+		case "mp_complex":	/** Bailout **/
+			
+			break;	
+
+		case "mp_crash":	/** Crash **/
+			
+			break;	
+
+		case "mp_strike":	/** Strike **/
+			
+			break;	
+
+		case "mp_vacant":	/** Vacant **/
+			
+			break;					
 		
 		default:
 			break;
