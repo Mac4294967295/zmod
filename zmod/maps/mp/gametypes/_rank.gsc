@@ -264,17 +264,9 @@ doRoundWaitEnd()
 chaz_init()
 {
 	level thread doRoundWaitEnd();
-	level.debug = 0;
-	setup_dvar("scr_zmod_debug", "0");
-	if (getDvarInt("scr_zmod_debug") != 0)
-		level.debug = 1;
 		
 	setup_dvar("scr_zmod_round_gap", "5");
 	
-	if (level.debug)
-		level.enablekillcam = false;
-	else
-		level.enablekillcam = true;
 	setup_dvar("scr_zmod_alpha_count", "0");
 	setup_dvar("scr_zmod_autoadjust", "1");
 	setup_dvar("scr_zmod_survival", "1");
@@ -657,9 +649,7 @@ doSetup(isRespawn)
 			self.ack["used_life"] = false;
 		else
 			self.bounty = 0;
-	if (level.debug != 0)
-		self.bounty = 10000;
-	
+		
 	self.attach1 = [];
 	self.attachweapon = [];
 	self.attachweapon[0] = 0;
@@ -750,8 +740,6 @@ doZombie()
 			self notify("menuresponse", game["menu_team"], "axis");
 			self doScoreReset();
 			self.bounty = 50;
-			if (level.debug != 0)
-				self.bounty = 10000;
 			self ThermalVisionFOFOverlayOff();
 			
 			self.ck = self.kills;
@@ -4615,10 +4603,7 @@ onPlayerConnect()
 		player.isZombie = 0;
 		player.wasAlpha = 0;
 		player.wasSurvivor = 0;
-		if (level.debug == 1)
-			player.credits = 50000;
-		else
-			player.credits = player getCreditsPersistent();
+		player.credits = player getCreditsPersistent();
 		player init_player_extra();
 		
 		player iniButtons();
@@ -4647,6 +4632,7 @@ onDisconnect()
 
 clog(msg)
 {
+	/*
 	if (level.debug == 0)
 		return;
 	if (!isDefined(msg))
@@ -4654,6 +4640,7 @@ clog(msg)
 	else
 		level.msgs[level.msgs_size] = msg;
 	level.msgs_size += 1;
+	*/
 }
 
 onJoinedTeam()
