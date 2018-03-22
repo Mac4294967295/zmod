@@ -433,7 +433,7 @@ doHumanShopPage0(){
 		if(self.bounty >= self getHItemVal("ammo", "cost")){ 								
 			self statCashSub(self getHItemVal("ammo", "cost"));
 			foreach ( primary in self getWeaponsListPrimaries()){
-				if(!((primary=="coltanaconda_mp" && self getZItemVal("betterdevils", "in_use")==1) || primary=="at4_mp" || primary=="rpg_mp")){
+				if(!((primary=="coltanaconda_mp" && self getZItemVal("betterdevils", "in_use")==1) || primary=="at4_mp" || primary=="rpg_mp")){ //makes sure to not give ammo for "special" weapons
 					self GiveMaxAmmo(primary);
 				}
 			}
@@ -458,22 +458,15 @@ doHumanShopPage0(){
 					self takeWeapon(self getCurrentWeapon());
 					self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false); 	//gives player the weapon
 					self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp"); 			//gives full ammo for new weapon
-					//self switchToWeapon(level.smg[self.randomsmg] + "_mp");
-					
-					
-					if(self getHItemVal("extendedmags", "in_use")==1){
+					if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
 						weap = addXMagsToWeapon(level.smg[self.randomsmg] + "_mp");
 						self switchToWeapon(weap);
-						//self SetWeaponAmmoClip( weap, clip_ammo );
-						
-					}else self switchToWeapon(level.smg[self.randomsmg] + "_mp");
-					//	self SetWeaponAmmoClip( gun, clip_ammo );
-						
+					}else self switchToWeapon(level.smg[self.randomsmg] + "_mp");	
 				}else self iPrintlnBold("^1Not Enough ^3Cash");
 				self notify("MENUCHANGE_2");
 			}else{
 				i = 0;
-				while(1){														//returns index in level.smg of current weapon
+				while(1){															//returns index in level.smg of current weapon
 					basename = strtok(self getCurrentWeapon(), "_");
 					if(basename[0]==level.smg[i]) break;
 					i++;
@@ -484,13 +477,7 @@ doHumanShopPage0(){
 					i = (i+1)%level.smg.size;
 				}
 				self takeWeapon(self getCurrentWeapon());
-				//self giveWeapon(level.smg[i] + "_mp", 0, false);
-				//self setWeaponAmmoClip(level.smg[i] + "_mp", clip_ammo);
-				//self setWeaponAmmoStock(level.smg[i] + "_mp", stock_ammo);
-				//self switchToWeapon(level.smg[i] + "_mp");
-				
-				
-				if(self getHItemVal("extendedmags", "in_use")==1){
+				if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
 					weap = addXMagsToWeapon(level.smg[i] + "_mp");
 					self giveWeapon(weap, 0, false);
 					self switchToWeapon(weap);
@@ -535,17 +522,12 @@ doHumanShopPage1(){
 					gun = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
 					self takeWeapon(self.current);
 					self giveWeapon(gun , 0, true);
-					//self SetWeaponAmmoStock( gun, ammo );
-					//self switchToWeapon(gun);
-					
 					if(self getHItemVal("extendedmags", "in_use")==1){
 						weap = addXMagsToWeapon(gun);
 						self switchToWeapon(weap);
-						//self SetWeaponAmmoClip( weap, clip_ammo );
 						self SetWeaponAmmoStock( weap, ammo );
 					}else{
 						self switchToWeapon(gun);
-					//	self SetWeaponAmmoClip( gun, clip_ammo );
 						self SetWeaponAmmoStock( gun, ammo );
 					}
 				}
@@ -571,28 +553,23 @@ doHumanShopPage1(){
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}else{
 			if(!isSubStr(self getCurrentWeapon(), "akimbo")){
+				indexOfSight = 0;
+				for(indexOfSight=0;indexOfSight<level.sights.size;indexOfSight++){				//sets indexOfSight to current sight index in level.sights[]
+					if(isSubStr(self getCurrentWeapon(), level.sights[indexOfSight])) break;
+				}
+				indexOfSight++;
+				
+				
 				for(i=0;i<level.sights.size;i++){
-					if(isSubStr(self getCurrentWeapon(), level.sights[i%level.sights.size])){
-						basename = strtok(self.current, "_");
-						if(i+1==3){
-							upgradeWeaponSight("");
-							/*
-							clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
-							stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-							self takeWeapon(self.current);
-							gun = basename[0]+"_mp";
-							self giveWeapon(gun , 0, true);
-							self SetWeaponAmmoClip( gun, clip_ammo );
-							self SetWeaponAmmoStock( gun, stock_ammo );
-							self switchToWeapon(gun);
-							*/
-							break;
-						}
-						if(isDefined( level.weaponRefs[basename[0]+"_"+level.sights[(i+1)%level.sights.size]+"_mp"] )){			
-							upgradeWeaponSight(level.sights[(i+1)%level.sights.size]);
-							break;
-						}
+					indexOfSight = indexOfSight%level.sights.size;
+					basename = strtok(self getCurrentWeapon(), "_");
+					sight = level.sights[indexOfSight];
+					if(sight!="") sight=sight+"_"; 
+					if(isDefined( level.weaponRefs[basename[0]+"_"+sight+"mp"] )){			
+						upgradeWeaponSight(level.sights[indexOfSight]);
+						break;
 					}
+					indexOfSight++;
 				}
 			}
 		}
