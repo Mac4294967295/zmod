@@ -2811,7 +2811,7 @@ doEnding()
 	
 	foreach(player in level.players)
 	{
-		
+		player.isZombie = 0;
 		player _clearPerks();
 		player resetZMenu();
 		player resetHMenu();
