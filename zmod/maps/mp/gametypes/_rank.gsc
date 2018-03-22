@@ -287,7 +287,6 @@ chaz_init()
 	setup_dvar("scr_zmod_frag_ammo", "5");
 	setup_dvar("scr_zmod_claymore_ammo", "5");
 	setup_dvar("scr_zmod_c4_ammo", "5");
-	setup_dvar("scr_zmod_repair_points", "15");
 	setup_dvar("scr_zmod_intermission_time", "10");
 	setup_dvar("scr_zmod_starting_time", "10");
 	setup_dvar("scr_zmod_alpha_time", "10");
@@ -688,7 +687,7 @@ doSetup(isRespawn)
 	self.attach1[1] = "none";
 	self.attach1[2] = "none";
 	self.currentweapon = 0;
-	self thread monitorRepair();
+	//self thread monitorRepair();
 	self.maxhp = 100;
 	self.maxhealth = self.maxhp;
 	self.health = self.maxhp;
@@ -883,44 +882,6 @@ destroyTrace()
 		level.bosspoint = undefined;
 	}
 }
-
-
-
-monitorWeapons(){	
-	while(1){
-		
-		//self iprintlnbold(self getCurrentWeapon());
-		wait 0.5;
-		//self iPrintlnBold(self isOnGround());
-		/*
-		Updates text to print for when akimbo is available/unavailable
-		*/
-		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
-		else self setHItemVal("akimbo", "print_text", "text1");
-		
-		if(self getHItemVal("sight", "in_use")==1) self setHItemVal("sight", "print_text", "text2");
-		else self setHItemVal("sight", "print_text", "text1");
-		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
-			if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") self setHItemVal("smg", "print_text", "text2");
-			else  self setHItemVal("smg", "print_text", "text1");
-				self notify("MENUCHANGE_2");
-		}
-	}
-}
-
-
-monitorStinger()
-{
-	self endon("disconnect");
-	self endon("death");
-	while(self getZItemVal("stinger", "in_use")>0)
-	{
-		self setZItemVal("stinger", "in_use", self getWeaponAmmoClip("stinger_mp") + self getWeaponAmmoStock("stinger_mp"));
-		self waittill ("weapon_fired");
-		self notify("MENUCHANGE_2");
-	}
-}
-
 
 doZW()
 {
@@ -1175,14 +1136,14 @@ switchToLast()
 {
 	self switchToWeapon(self.lastweap);
 }
-
+/*
 monitorRepair()
 {
 	self endon("disconnect");
 	self endon("death");
 	while (true)
 	{
-		if (self getCurrentWeapon() == "defaultweapon_mp" && self.rp > 0)
+		if (self getCurrentWeapon() == "defaultweapon_mp" && self getHItemVal("repair", "in_use") > 0)
 		{
 			self.isRepairing = true;
 			self setWeaponAmmoClip("defaultweapon_mp", 0);
@@ -1196,7 +1157,7 @@ monitorRepair()
 		}
 		wait 0.8;
 	}
-}
+}*/
 
 switchToRepair()
 {
@@ -1555,11 +1516,11 @@ doHumanShop()
 						else
 						if (self.menu == 7)
 						{
-							if (self.rp <= 0)
+							if (self getHItemVal("repair", "in_use") <= 0)
 								if (self.bounty >= level.itemCost["repair"])
 								{
 										self statCashSub(level.itemCost["repair"]);
-										self.rp = getDvarInt("scr_zmod_repair_points");
+										self getHItemVal("repair", "in_use") = getDvarInt("scr_zmod_repair_points");
 										self iPrintlnBold("^2Bought Door Repair Tool!");
 										self switchToRepair();
 								}
@@ -3314,7 +3275,7 @@ HUDupdate()
 							{
 								if (self.menu == 7)
 								{
-									if (self.rp <= 0)
+									if (self getHItemVal("repair", "in_use") <= 0)
 										which1 = "buy";
 									else
 										if (self.isRepairing)

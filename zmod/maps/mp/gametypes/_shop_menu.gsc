@@ -774,15 +774,16 @@ doHumanShopPage7(){
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if (self.rp <= 0){
+		if (self getHItemVal("repair", "in_use") <= 0){
 			if (self.bounty >= level.itemCost["repair"]){
 				self statCashSub(level.itemCost["repair"]);
-				self.rp = getDvarInt("scr_zmod_repair_points");
+				self setHItemVal("repair", "in_use", 15);
 				self iPrintlnBold("^2Bought Door Repair Tool!");
-				self switchToRepair();
+				self giveWeapon("defaultweapon_mp");
+				self switchToWeapon("defaultweapon_mp");
+				self thread monitorRepair();
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}else if (self.isRepairing)	self switchToLast();
-			else self switchToRepair();
+		}
 	}
 	
 	//button 2
@@ -914,4 +915,52 @@ isUsingKillstreak(){
 buyKillstreak(item, cost){
 	if (self.bounty >= cost) self thread killstreakUsePressed(item, cost);
 	else self iPrintlnBold("^1Not Enough ^3Cash");
+}
+
+/*
+Updates the isRepairing boolean; signals if player is currently able to repair (has repair tool as weapon and has "ammo" left in the tool
+*/
+monitorRepair(){
+	self endon("disconnect");
+	self endon("death");
+	prevWeapon = self getCurrentWeapon();
+	while(1){
+		if(self getHItemVal("repair", "in_use") > 0){
+			if (self getCurrentWeapon() == "defaultweapon_mp") self.isRepairing = true;
+			else self.isRepairing = false;
+
+		}else{
+			//wait 1.3;
+			self.isRepairing=false;
+			self takeWeapon("defaultweapon_mp");
+			self switchToWeapon(prevWeapon);
+			break;
+		}
+		wait 1.3;
+	}
+}
+
+
+monitorWeapons(){	
+	self endon("disconnect");
+	self endon("death");
+	while(1){
+		
+		//self iprintlnbold(self getCurrentWeapon());
+		wait 0.5;
+		//self iPrintlnBold(self isOnGround());
+		/*
+		Updates text to print for when akimbo is available/unavailable
+		*/
+		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
+		else self setHItemVal("akimbo", "print_text", "text1");
+		
+		if(self getHItemVal("sight", "in_use")==1) self setHItemVal("sight", "print_text", "text2");
+		else self setHItemVal("sight", "print_text", "text1");
+		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
+			if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") self setHItemVal("smg", "print_text", "text2");
+			else  self setHItemVal("smg", "print_text", "text1");
+				self notify("MENUCHANGE_2");
+		}
+	}
 }

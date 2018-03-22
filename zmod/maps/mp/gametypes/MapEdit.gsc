@@ -355,16 +355,17 @@ DoorRepairLoop(open, close)
 		
 		self waittill ( "triggeruse" , player );
 		if (player.team == "allies" && player.isRepairing)
-			if (player.rp > 0)
+			if (player maps\mp\gametypes\_shop_menu::getHItemVal("repair", "in_use") > 0)
 			{
+				iPrintlnBold("doorrepairloop");
 				if (self.hp >= self.maxhp)
 				{
 					player iPrintlnBold("^3DOOR IS AT MAX!");
 					continue;
 				}
-				player.rp--;
+				player maps\mp\gametypes\_shop_menu::setHItemVal("repair", "in_use", player maps\mp\gametypes\_shop_menu::getHItemVal("repair", "in_use")-1);
 				self.hp++;
-				player iPrintlnBold("DOOR REPAIRED! HP: " + self.hp + "/" + self.maxhp + " LEFT: " + player.rp);
+				player iPrintlnBold("DOOR REPAIRED! HP: " + self.hp + "/" + self.maxhp + " LEFT: " + player maps\mp\gametypes\_shop_menu::getHItemVal("repair", "in_use"));
 				//If door is broken, immediately close it
 				if (self.state == "broken")
 				{
@@ -374,12 +375,6 @@ DoorRepairLoop(open, close)
 					player SayAll("^5Door ^2FIXED!");
 				}
 				//Remove their tool if they're out
-				if (player.rp <= 0)
-				{
-					//player takeWeapon("defaultweapon_mp");
-					//player maps\mp\gametypes\_rank::switchToLast();
-					player notify("delayedweapswitch");
-				}
 				continue;
 			}
 		wait 0.2;
