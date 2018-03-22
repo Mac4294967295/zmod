@@ -889,9 +889,9 @@ destroyTrace()
 monitorWeapons(){	
 	while(1){
 		
-		
+		//self iprintlnbold(self getCurrentWeapon());
 		wait 0.5;
-		
+		//self iPrintlnBold(self isOnGround());
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/
@@ -1169,107 +1169,17 @@ monitorThrowingKnife()
 	self setZItemVal("throwingknife", "print_text", "text1");
 }
 
-killstreakUsePressed(item)
-{
-	streakName = item;
-	lifeId = -1;
 
-	assert( isDefined( streakName ) );
-	assert( isDefined( level.killstreakFuncs[ streakName ] ) );
-
-	if ( !self isOnGround() && ( maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) || maps\mp\killstreaks\_killstreaks::isCarryKillstreak( streakName ) ) )
-		return ( 1 );
-
-	if ( self isUsingRemote() )
-		return ( 2 );
-
-	if ( isDefined( self.selectingLocation ) )
-		return ( 3 );
-		
-	if ( maps\mp\killstreaks\_killstreaks::deadlyKillstreak( streakName ) && level.killstreakRoundDelay && getGametypeNumLives() )
-	{
-		if ( level.gracePeriod - level.inGracePeriod < level.killstreakRoundDelay )
-		{
-			self iPrintLnBold( &"MP_UNAVAILABLE_FOR_N", (level.killstreakRoundDelay - (level.gracePeriod - level.inGracePeriod)) );
-			return ( 4 );
-		}
-	}
-
-	if ( (level.teamBased && level.teamEMPed[self.team]) || (!level.teamBased && isDefined( level.empPlayer ) && level.empPlayer != self) )
-	{
-		self iPrintLnBold( &"MP_UNAVAILABLE_WHEN_EMP" );
-		return ( 5 );
-	}
-
-	if ( self IsUsingTurret() && ( maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) || maps\mp\killstreaks\_killstreaks::isCarryKillstreak( streakName ) ) )
-	{
-		self iPrintLnBold( &"MP_UNAVAILABLE_USING_TURRET" );
-		return ( 6 );
-	}
-
-	if ( isDefined( self.lastStand )  && maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) )
-	{
-		self iPrintLnBold( &"MP_UNAVILABLE_IN_LASTSTAND" );
-		return ( 7 );
-	}
-	
-	if ( !self isWeaponEnabled() )
-		return ( 8 );
-	
-	if ( !self [[ level.killstreakFuncs[ streakName ] ]]( lifeId ) )
-		return ( 9 );
-
-	return ( 0 );
-}
-
-tryUsekillstreak(name, cost, item)
-{
-	ret = self killstreakUsePressed(item);
-	if (ret == 0)
-	{
-		self statCashSub(cost);
-		self iPrintlnBold("^2Bought " + name + "!");
-		self notify("CASH");
-	}
-}
-
-buyKillstreak(name, cost, item)
-{
-		if (self.bounty >= cost)
-		{
-				self thread tryUsekillstreak(name, cost, item);
-		}
-		else
-				{
-					self iPrintlnBold("^1Not Enough ^3Cash");
-				}
-}
 
 switchToLast()
 {
 	self switchToWeapon(self.lastweap);
 }
 
-waitWeapSwitchRepair()
-{
-	self endon("disconnect");
-	self endon("death");
-	for (;;)
-	{
-		self waittill("delayedweapswitch");
-		wait 1.3;
-		if (self getCurrentWeapon() == "defaultweapon_mp"){
-			self takeWeapon("defaultweapon_mp");
-			self switchToLast();
-		}
-	}
-}
-
 monitorRepair()
 {
 	self endon("disconnect");
 	self endon("death");
-	self thread waitWeapSwitchRepair();
 	while (true)
 	{
 		if (self getCurrentWeapon() == "defaultweapon_mp" && self.rp > 0)

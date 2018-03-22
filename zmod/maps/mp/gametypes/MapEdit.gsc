@@ -483,7 +483,7 @@ DoorUse(range)
 											txt = "Press ^3[{+activate}] ^7to ^2Open ^7the door";
 								}
 								else
-											txt = "3^Cant use door!";
+											txt = "";
 						}
 						else
 						{

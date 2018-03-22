@@ -55,7 +55,7 @@ resetHMenu(){
 	
 	initHShopItem("akimbo", 50, 1, 0, "Buy Akimbo - ", "^1Akimbo unavailable");
 	initHShopItem("empty2", 100, 1, 1, "PLAcEHOLDER ", "^");
-	initHShopItem("sight", 50, 1, 2, "Unlock Sights - ", "^1Swap Sight");
+	initHShopItem("sight", 50, 1, 2, "Unlock Sights - ", "Swap Sight");
 	
 	initHShopItem("empty3", 200, 2, 0, "PLACEHOLDER", "");
 	initHShopItem("extendedmags", 150, 2, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
@@ -67,22 +67,22 @@ resetHMenu(){
 	
 	initHShopItem("empty1", 200, 4, 0, "PLACEHOLDER", "");
 	initHShopItem("acog", 50, 4, 1, "Buy ACOG - ", "^1Unavailable");
-	initHShopItem("predator", 150, 4, 2, "Buy Predator - ", "");
+	initHShopItem("predator_missile", 150, 4, 2, "Buy Predator - ", "");
 	
 	initHShopItem("nuke", 3550, 5, 0, "Buy Nuke - ", "");
 	initHShopItem("sniper", 100, 5, 1, "Buy Sniper Rifle - ", "^1Unavailable");
 	initHShopItem("ac130", 1000, 5, 2, "Buy AC-130 - ", "");
 	
 	initHShopItem("sentry", 450, 6, 0, "Buy Sentry - ", "");
-	initHShopItem("pavelow", 500, 6, 1, "Buy Pavelow - ", "");
-	initHShopItem("chopper", 800, 6, 2, "Buy Chopper - ", "");
+	initHShopItem("helicopter_flares", 500, 6, 1, "Buy Pavelow - ", ""); //pavelow
+	initHShopItem("chopper", 800, 6, 2, "Buy Chopper - ", ""); //helicopter_minigun
 	
-	initHShopItem("harrier", 450, 7, 0, "Buy Harrier - ", "");
+	initHShopItem("harrier_airstrike", 450, 7, 0, "Buy Harrier - ", ""); //harrier
 	initHShopItem("repair", 250, 7, 1, "Buy Repair Tool  - ", "^1Unavailable");
 	initHShopItem("betterdevils", 500, 7, 2, "Buy Better Devils - ", "");
 	
 	initHShopItem("artillery", 400, 8, 0, "Buy Artillery Strike - ", "");
-	initHShopItem("stealthbomber", 250, 8, 1, "Buy Stealth Bomber - ", "");
+	initHShopItem("stealth_airstrike", 250, 8, 1, "Buy Stealth Bomber - ", ""); //stealthbomber
 	initHShopItem("grimreaper", 500, 8, 2, "Buy Grimreaper - ", "");
 }
 /*
@@ -719,7 +719,8 @@ doHumanShopPage4(){
 	//button 2
 	if(self.buttonPressed[ "+actionslot 4" ] == 1){
 		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
+		//predator
+		buyKillstreak("predator_missile", self getHItemVal("predator_missile", "cost"));
 	}
 }
 
@@ -727,7 +728,7 @@ doHumanShopPage5(){
 	//button 0
 	if(self.buttonPressed[ "+smoke" ] == 1){
 		self.buttonPressed[ "+smoke" ] = 0;
-		
+		buyKillstreak("nuke", self getHItemVal("nuke", "cost"));
 	}
 	
 	//button 1
@@ -739,7 +740,7 @@ doHumanShopPage5(){
 	//button 2
 	if(self.buttonPressed[ "+actionslot 4" ] == 1){
 		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
+		buyKillstreak("ac130", self getHItemVal("ac130", "cost"));
 	}
 }
 
@@ -747,19 +748,19 @@ doHumanShopPage6(){
 	//button 0
 	if(self.buttonPressed[ "+smoke" ] == 1){
 		self.buttonPressed[ "+smoke" ] = 0;
-		
+		buyKillstreak("sentry", self getHItemVal("sentry", "cost"));
 	}
 	
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
+		buyKillstreak("helicopter_flares", self getHItemVal("helicopter_flares", "cost"));
 	}
 	
 	//button 2
 	if(self.buttonPressed[ "+actionslot 4" ] == 1){
 		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
+		buyKillstreak("helicopter_minigun", self getHItemVal("helicopter_minigun", "cost"));
 	}
 }
 
@@ -767,19 +768,27 @@ doHumanShopPage7(){
 	//button 0
 	if(self.buttonPressed[ "+smoke" ] == 1){
 		self.buttonPressed[ "+smoke" ] = 0;
-		
+		buyKillstreak("harrier_airstrike", self getHItemVal("harrier_airstrike", "cost"));
 	}
 	
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
+		if (self.rp <= 0){
+			if (self.bounty >= level.itemCost["repair"]){
+				self statCashSub(level.itemCost["repair"]);
+				self.rp = getDvarInt("scr_zmod_repair_points");
+				self iPrintlnBold("^2Bought Door Repair Tool!");
+				self switchToRepair();
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}else if (self.isRepairing)	self switchToLast();
+			else self switchToRepair();
 	}
 	
 	//button 2
 	if(self.buttonPressed[ "+actionslot 4" ] == 1){
 		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
+		//betterdevils
 	}
 }
 
@@ -787,19 +796,19 @@ doHumanShopPage8(){
 	//button 0
 	if(self.buttonPressed[ "+smoke" ] == 1){
 		self.buttonPressed[ "+smoke" ] = 0;
-		
+		//artillery
 	}
 	
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
+		//stealth bomber
 	}
 	
 	//button 2
 	if(self.buttonPressed[ "+actionslot 4" ] == 1){
 		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
+		//grimreaper
 	}
 }
 
@@ -838,3 +847,71 @@ monitorHWeaponAmmo(weapon)
 	self setHItemVal(weapon, "print_text", "text1");
 }
 
+killstreakUsePressed(item, cost)
+{
+	streakName = item;
+	lifeId = -1;
+
+//	assert( isDefined( streakName ) );
+//	assert( isDefined( level.killstreakFuncs[ streakName ] ) );
+
+	if ( !self isOnGround() && ( maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) || maps\mp\killstreaks\_killstreaks::isCarryKillstreak( streakName ) ) )
+		return ( 1 );
+
+	if ( self isUsingRemote() )
+		return ( 2 );
+
+	if ( isDefined( self.selectingLocation ) )
+		return ( 3 );
+		
+	if ( maps\mp\killstreaks\_killstreaks::deadlyKillstreak( streakName ) && level.killstreakRoundDelay && getGametypeNumLives() )
+	{
+		if ( level.gracePeriod - level.inGracePeriod < level.killstreakRoundDelay )
+		{
+			self iPrintLnBold( &"MP_UNAVAILABLE_FOR_N", (level.killstreakRoundDelay - (level.gracePeriod - level.inGracePeriod)) );
+			return ( 4 );
+		}
+	}
+
+	if ( (level.teamBased && level.teamEMPed[self.team]) || (!level.teamBased && isDefined( level.empPlayer ) && level.empPlayer != self) )
+	{
+		self iPrintLnBold( &"MP_UNAVAILABLE_WHEN_EMP" );
+		return ( 5 );
+	}
+
+	if ( self IsUsingTurret() && ( maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) || maps\mp\killstreaks\_killstreaks::isCarryKillstreak( streakName ) ) )
+	{
+		self iPrintLnBold( &"MP_UNAVAILABLE_USING_TURRET" );
+		return ( 6 );
+	}
+
+	if ( isDefined( self.lastStand )  && maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) )
+	{
+		self iPrintLnBold( &"MP_UNAVILABLE_IN_LASTSTAND" );
+		return ( 7 );
+	}
+	
+	if ( !self common_scripts\utility::isWeaponEnabled() )
+		return ( 8 );
+	
+	if ( !self [[ level.killstreakFuncs[ streakName ] ]]( lifeId ) )
+		return ( 9 );
+
+	self statCashSub(cost);
+	return ( 0 );
+}
+
+isUsingKillstreak(){
+
+	if ( self isUsingRemote() )
+		return true;
+
+	if ( isDefined( self.selectingLocation ) )
+		return true;
+	if(self IsUsingTurret()) return true;
+	return false;
+}
+buyKillstreak(item, cost){
+	if (self.bounty >= cost) self thread killstreakUsePressed(item, cost);
+	else self iPrintlnBold("^1Not Enough ^3Cash");
+}
