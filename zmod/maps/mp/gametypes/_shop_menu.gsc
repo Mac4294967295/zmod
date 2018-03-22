@@ -162,13 +162,13 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 		self giveWeapon("stinger_mp", 0, false);
 		self setWeaponAmmoClip("stinger_mp", 1);
 		self setWeaponAmmoStock("stinger_mp", 0);
-		self thread monitorStinger();
+		self thread monitorZWeaponAmmo("stinger");
 		break;
 		case 2:
 		self giveWeapon("stinger_mp", 0, false);
 		self setWeaponAmmoClip("stinger_mp", 1);
 		self setWeaponAmmoStock("stinger_mp", 1);
-		self thread monitorStinger();
+		self thread monitorZWeaponAmmo("stinger");
 		break;
 		default:
 		break;
@@ -298,8 +298,8 @@ doZombieShopPage2(){
 				self switchToWeapon("stinger_mp");
 				self GiveStartAmmo("stinger_mp");
 				self setZItemVal("stinger", "in_use", 2);
-				self thread monitorStinger();
-				self iPrintlnBold("^2Bought Stinger!");
+				self thread monitorZWeaponAmmo("stinger");
+				self switchToWeapon("stinger_mp");
 				self setZItemVal("stinger", "print_text", "text2");
 			}else self iPrintlnBold("^1Not Enough ^3Cash");	
 		}
@@ -517,12 +517,12 @@ doHumanShopPage1(){
 			if (self getHItemVal("akimbo", "in_use")==0){
 				if (self.bounty >= self getHItemVal("akimbo","cost")){
 					self statCashSub(self getHItemVal("akimbo","cost"));
-					ammo = self GetWeaponAmmoStock(self.current);
-					basename = strtok(self.current, "_");
+					ammo = self GetWeaponAmmoStock(self getCurrentWeapon());
+					basename = strtok(self getCurrentWeapon(), "_");
 					gun = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
 					self takeWeapon(self.current);
 					self giveWeapon(gun , 0, true);
-					if(self getHItemVal("extendedmags", "in_use")==1){
+					if(self getHItemVal("extendedmags", "in_use")==1){ //makes sure to give extended mags to new gun if xmags were acquired before
 						weap = addXMagsToWeapon(gun);
 						self switchToWeapon(weap);
 						self SetWeaponAmmoStock( weap, ammo );
@@ -557,15 +557,15 @@ doHumanShopPage1(){
 				for(indexOfSight=0;indexOfSight<level.sights.size;indexOfSight++){				//sets indexOfSight to current sight index in level.sights[]
 					if(isSubStr(self getCurrentWeapon(), level.sights[indexOfSight])) break;
 				}
-				indexOfSight++;
+				indexOfSight++;																	//adds 1 to go to next sight
 				
 				
 				for(i=0;i<level.sights.size;i++){
-					indexOfSight = indexOfSight%level.sights.size;
+					indexOfSight = indexOfSight%level.sights.size;								//loops back to start of array if end is reached
 					basename = strtok(self getCurrentWeapon(), "_");
-					sight = level.sights[indexOfSight];
-					if(sight!="") sight=sight+"_"; 
-					if(isDefined( level.weaponRefs[basename[0]+"_"+sight+"mp"] )){			
+					sight = level.sights[indexOfSight];											//name of sight which will be appended to the weapon name
+					if(sight!="") sight=sight+"_";
+					if(isDefined( level.weaponRefs[basename[0]+"_"+sight+"mp"] )){				//checks if sight is mountable on gun
 						upgradeWeaponSight(level.sights[indexOfSight]);
 						break;
 					}
@@ -658,19 +658,48 @@ doHumanShopPage3(){
 	//button 0
 	if(self.buttonPressed[ "+smoke" ] == 1){
 		self.buttonPressed[ "+smoke" ] = 0;
-		
+		if(self getHItemVal("steadyaim", "in_use")==0){
+			if(self.bounty >= self getHItemVal("steadyaim", "cost")){
+				self setHItemVal("steadyaim", "in_use", 1);
+				self statCashSub(self getHItemVal("steadyaim", "cost"));
+				self maps\mp\perks\_perks::givePerk("specialty_bulletaccuracy");
+				self maps\mp\perks\_perks::givePerk("specialty_holdbreath");
+				self setHItemVal("steadyaim", "print_text", "text2");
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+		self notify("MENUCHANGE_2");
 	}
 	
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
+		if(self getHItemVal("sleightofhand", "in_use")==0){
+			if(self.bounty >= self getHItemVal("sleightofhand", "cost")){
+				self setHItemVal("sleightofhand", "in_use", 1);
+				self statCashSub(self getHItemVal("sleightofhand", "cost"));
+				self maps\mp\perks\_perks::givePerk("specialty_fastreload");
+				self maps\mp\perks\_perks::givePerk("specialty_quickdraw");
+				self setHItemVal("sleightofhand", "print_text", "text2");
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+		self notify("MENUCHANGE_2");
 	}
 	
 	//button 2
 	if(self.buttonPressed[ "+actionslot 4" ] == 1){
 		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
+		if(self getHItemVal("rpg", "in_use")==0){
+			if(self.bounty >= self getHItemVal("rpg", "cost")){
+				self setHItemVal("rpg", "in_use", 2);
+				self statCashSub(self getHItemVal("rpg", "cost"));
+				self setHItemVal("rpg", "print_text", "text2");
+				self giveWeapon("rpg_mp", 0, false);
+				self setWeaponAmmoStock("rpg_mp", 1);
+				self switchToWeapon("rpg_mp");
+				monitorHWeaponAmmo("rpg");
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}
+		self notify("MENUCHANGE_2");
 	}
 }
 
@@ -773,6 +802,39 @@ doHumanShopPage8(){
 		
 	}
 }
-/*
-	Notifies the menu to updat when weapon is swapped
-*/
+
+monitorZWeaponAmmo(weapon)
+{
+	self endon("disconnect");
+	self endon("death");
+	prevWeapon = self getCurrentWeapon();
+	while(self getZItemVal(weapon, "in_use")>0)
+	{
+		self setZItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
+		self waittill ("weapon_fired");
+		wait 0.1;
+		self notify("MENUCHANGE_2");
+	}
+	self setZItemVal(weapon, "in_use", 0);
+	self takeWeapon(weapon+"_mp");
+	self switchToWeapon(prevWeapon);
+	self setZItemVal(weapon, "print_text", "text1");
+}
+monitorHWeaponAmmo(weapon)
+{
+	self endon("disconnect");
+	self endon("death");
+	prevWeapon = self getCurrentWeapon();
+	while(self getHItemVal(weapon, "in_use")>0)
+	{
+		self setHItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
+		self waittill ("weapon_fired");
+		wait 0.1;
+		self notify("MENUCHANGE_2");
+	}
+	self setHItemVal(weapon, "in_use", 0);
+	self takeWeapon(weapon+"_mp");
+	self switchToWeapon(prevWeapon);
+	self setHItemVal(weapon, "print_text", "text1");
+}
+

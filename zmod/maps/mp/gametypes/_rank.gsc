@@ -891,10 +891,10 @@ monitorWeapons(){
 		
 		
 		wait 0.5;
+		
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/
-		//self iprintlnBold(self.attach["akimbo"]+" "+self.attach["reddot"]);
 		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
 		else self setHItemVal("akimbo", "print_text", "text1");
 		
