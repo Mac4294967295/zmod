@@ -333,7 +333,9 @@ monitorWeapons(){
 		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
 		else self setHItemVal("akimbo", "print_text", "text1");
 		
-		if(self getHItemVal("sight", "in_use")==1) self setHItemVal("sight", "print_text", "text2");
+		if(self getHItemVal("sight", "in_use")==1){
+			self setHItemVal("sight", "print_text", "text2");
+		}
 		else self setHItemVal("sight", "print_text", "text1");
 		
 		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing

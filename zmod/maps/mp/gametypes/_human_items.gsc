@@ -6,7 +6,7 @@ ammo(){
 	if(self.bounty >= self getHItemVal("ammo", "cost")){ 								
 		self statCashSub(self getHItemVal("ammo", "cost"));
 		foreach ( primary in self getWeaponsListPrimaries()){
-			if(!((primary=="coltanaconda_mp" && self getZItemVal("betterdevils", "in_use")==1) || primary=="at4_mp" || primary=="rpg_mp")){ //makes sure to not give ammo for "special" weapons
+			if(!isWeaponSpecial(primary)){ //makes sure to not give ammo for "special" weapons
 				self GiveMaxAmmo(primary);
 			}
 		}
@@ -36,30 +36,16 @@ sight(){
 			if(self.bounty >= self getHItemVal("sight","cost")){
 				self statCashSub(self getHItemVal("sight","cost"));
 				self setHItemVal("sight", "in_use", 1);
-				if((!isSubStr(self getCurrentWeapon(), "akimbo")) && self.attach["reflex"]==1){ //only do something when weapon doesnt have akimbo currently
-					upgradeWeaponSight("reflex");
+				if((!isSubStr(self getCurrentWeapon(), "akimbo"))){ //only do something when weapon doesnt have akimbo currently
+					upgradeWeaponSight();
 				}
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}else{
 			if(!isSubStr(self getCurrentWeapon(), "akimbo")){
-				indexOfSight = 0;
-				for(indexOfSight=0;indexOfSight<level.sights.size;indexOfSight++){				//sets indexOfSight to current sight index in level.sights[]
-					if(isSubStr(self getCurrentWeapon(), level.sights[indexOfSight])) break;
-				}
-				indexOfSight++;																	//adds 1 to go to next sight
+																					//adds 1 to go to next sight
 				
 				
-				for(i=0;i<level.sights.size;i++){
-					indexOfSight = indexOfSight%level.sights.size;								//loops back to start of array if end is reached
-					basename = strtok(self getCurrentWeapon(), "_");
-					sight = level.sights[indexOfSight];											//name of sight which will be appended to the weapon name
-					if(sight!="") sight=sight+"_";
-					if(isDefined( level.weaponRefs[basename[0]+"_"+sight+"mp"] )){				//checks if sight is mountable on gun
-						upgradeWeaponSight(level.sights[indexOfSight]);
-						break;
-					}
-					indexOfSight++;
-				}
+				upgradeWeaponSight();
 			}
 		}
 	}
@@ -97,7 +83,7 @@ hriotshield(){
 		if (self getHItemVal("riotshield", "in_use")==0){
 			if (self.bounty >= self getHItemVal("riotshield","cost")){
 				self statCashSub(self getHItemVal("riotshield","cost"));
-				self giveWeapon("riotshield_mp", 0, false);
+				self giveWeapon("riotshield_mp", 0, true);
 				self switchToWeapon("riotshield_mp");
 				self setHItemVal("riotshield", "in_use", 1);
 				self setHItemVal("riotshield", "print_text", "text2");
@@ -180,7 +166,7 @@ rpg(){
 				self setHItemVal("rpg", "in_use", 2);
 				self statCashSub(self getHItemVal("rpg", "cost"));
 				self setHItemVal("rpg", "print_text", "text2");
-				self giveWeapon("rpg_mp", 0, false);
+				self giveWeapon("rpg_mp", 0, true);
 				self setWeaponAmmoStock("rpg_mp", 1);
 				self switchToWeapon("rpg_mp");
 				self thread monitorHWeaponAmmo("rpg");
@@ -223,10 +209,18 @@ nuke(){
 stealth_airstrike(){
 	buyKillstreak("stealth_airstrike", self getHItemVal("stealth_airstrike", "cost"));
 }
+
+betterdevils(){
+	self thread doBetterdevils();
+}
+
+grimreaper(){
+	self thread doGrimreaper();
+}
 /*
 .44 Magnum with explosive bullets
 */
-betterdevils(){
+doBetterdevils(){
 	self endon("death");
 	if(!isUsingKillstreak()){
 		if (self.bounty >= self getHItemVal("betterdevils", "cost")){
@@ -266,7 +260,7 @@ betterdevils(){
 	}
 }
 
-grimreaper(){
+doGrimreaper(){
 	self endon("death");
 	if(!isUsingKillstreak()){
 		if (self.bounty >= self getHItemVal("betterdevils", "cost")){
@@ -386,31 +380,45 @@ artillery(){
 }
 
 /*
-Upgrades current gun with sight 
+Upgrades current gun with next possible sight 
 */
-upgradeWeaponSight(sight){
+upgradeWeaponSight(){
 	clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
 	stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-	if(sight!="") sight = sight+"_";
-	basename = strtok(self.current, "_");
-	gun = basename[0]+"_"+sight+"mp";
-	self takeWeapon(self.current);
-	self giveWeapon(gun , 0, true);
-	if(self getHItemVal("extendedmags", "in_use")==1){
-		weap = addXMagsToWeapon(gun);
-		self switchToWeapon(weap);
-		self SetWeaponAmmoClip( weap, clip_ammo );
-		self SetWeaponAmmoStock( weap, stock_ammo );
-	}else{
-		self switchToWeapon(gun);
-		self SetWeaponAmmoClip( gun, clip_ammo );
-		self SetWeaponAmmoStock( gun, stock_ammo );
+	indexOfSight = 0;
+	for(indexOfSight=0;indexOfSight<level.sights.size;indexOfSight++){				//sets indexOfSight to current sight index in level.sights[]
+		if(isSubStr(self getCurrentWeapon(), level.sights[indexOfSight])) break;
+	}
+	indexOfSight++;
+	for(i=0;i<level.sights.size;i++){
+		indexOfSight = indexOfSight%level.sights.size;								//loops back to start of array if end is reached
+		basename = strtok(self getCurrentWeapon(), "_");
+		sight = level.sights[indexOfSight];											//name of sight which will be appended to the weapon name
+		if(sight!="") sight=sight+"_";
+		if(isDefined( level.weaponRefs[basename[0]+"_"+sight+"mp"] )){				//checks if sight is mountable on gun
+			basename = strtok(self getCurrentWeapon(), "_");
+			gun = basename[0]+"_"+sight+"mp";
+			self takeWeapon(self getCurrentWeapon());
+			self giveWeapon(gun , 0, true);
+			if(self getHItemVal("extendedmags", "in_use")==1){
+				weap = addXMagsToWeapon(gun);
+				self switchToWeapon(weap);
+				self SetWeaponAmmoClip( weap, clip_ammo );
+				self SetWeaponAmmoStock( weap, stock_ammo );
+			}else{
+				self switchToWeapon(gun);
+				self SetWeaponAmmoClip( gun, clip_ammo );
+				self SetWeaponAmmoStock( gun, stock_ammo );
+			}
+			break;
+		}
+		indexOfSight++;
 	}
 }
 
 addXMagsToWeapon(weapon){
 	
-	if(!isUsingKillstreak() && !isCurrWeaponSpecial()){
+	if(!isUsingKillstreak() && !isWeaponSpecial(weapon)){
 		ammo = self GetWeaponAmmoStock(weapon);
 		basename = strtok(weapon, "_");
 		gun="";
@@ -420,17 +428,17 @@ addXMagsToWeapon(weapon){
 		gun = gun+"xmags_mp";
 		if(isDefined(level.weaponRefs[gun])){
 			self takeWeapon(weapon);
-		self giveWeapon(gun, 0, true);
-		self setWeaponAmmoStock(gun, ammo);
-		return gun;
+			self giveWeapon(gun, 0, true);
+			self setWeaponAmmoStock(gun, ammo);
+			return gun;
 		}else{
 			return weapon;
 		}
 		//self iPrintlnBold(weapon);
-		self takeWeapon(weapon);
-		self giveWeapon(gun, 0, true);
-		self setWeaponAmmoStock(gun, ammo);
-		return gun;
+		//self takeWeapon(weapon);
+		//self giveWeapon(gun, 0, true);
+		//self setWeaponAmmoStock(gun, ammo);
+		//return gun;
 	}
 }
 
@@ -554,7 +562,7 @@ gives the player the next possible weapon in the specified weaponclass
 */
 exchangeWeapon(weaponclass){
 																				//makes sure to not be able to swap weapon while one of the "special" weapons is equipped
-	if(!isCurrWeaponSpecial() && !isUsingKillstreak()){
+	if(!isWeaponSpecial(self getCurrentWeapon()) && !isUsingKillstreak()){
 		//self iPrintLnBold("curr weap is not spec");
 		weaponClassArray = getWeaponArr(weaponclass); 							//array of basenames of guns of class weaponclass
 		modweaponclass = getWeaponClass(self getCurrentWeapon());
@@ -573,7 +581,7 @@ exchangeWeapon(weaponclass){
 				self setHItemVal(weaponclass, "in_use", 1);
 				self setHItemVal(weaponclass, "print_text", "text2");
 				self takeWeapon(self getCurrentWeapon());
-				self giveWeapon(randWeapon + "_mp", 0, false); 					//gives player the weapon
+				self giveWeapon(randWeapon + "_mp", 0, true); 					//gives player the weapon
 				self GiveMaxAmmo(randWeapon + "_mp"); 							//gives full ammo for new weapon
 				if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
 					weap = addXMagsToWeapon(randWeapon + "_mp");
@@ -588,21 +596,33 @@ exchangeWeapon(weaponclass){
 				if(basename[0]==weaponClassArray[i]) break;
 				i++;
 			}
+			//self iPrintLnBold("currWeap: "+weaponClassArray[i]);
 			clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
 			stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-																				//makes sure to not give player a weapon he already has
-			while(isSubStr(self getWeaponsListPrimaries()[0], weaponClassArray[i]) || isSubStr(self getWeaponsListPrimaries()[1], weaponClassArray[i]) || isSubStr(self getWeaponsListPrimaries()[2], weaponClassArray[i])){ 
-				i = (i+1)%weaponClassArray.size;
+			//makes sure to not give player a weapon he already has																
+			for(j=0;j<weaponClassArray.size;j++){
+				boolean = true;
+				foreach(weapon in self getWeaponsListPrimaries()){
+					if(isSubStr(weapon, weaponClassArray[i])){ 
+						boolean = false;
+					}
+				}
+				if(boolean){
+					break;
+				}else{
+					i=(i+1)%weaponClassArray.size;
+				}
 			}
 			self takeWeapon(self getCurrentWeapon());
 			if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
 				weap = addXMagsToWeapon(weaponClassArray[i] + "_mp");
-				self giveWeapon(weap, 0, false);
+				self iPrintLnBold("given weap: "+weap);
+				self giveWeapon(weap, 0, true);
 				self switchToWeapon(weap);
 				self SetWeaponAmmoClip( weap, clip_ammo );
 				self SetWeaponAmmoStock( weap, stock_ammo );
 			}else{
-				self giveWeapon(weaponClassArray[i] + "_mp", 0, false);
+				self giveWeapon(weaponClassArray[i] + "_mp", 0, true);
 				self switchToWeapon(weaponClassArray[i] + "_mp");
 				self SetWeaponAmmoClip( weaponClassArray[i] + "_mp", clip_ammo );
 				self SetWeaponAmmoStock( weaponClassArray[i] + "_mp", stock_ammo );
@@ -665,10 +685,11 @@ getWeaponArr(weaponclass){
 /*
 returns true if the current weapon is a "special" weapon (betterdevils,grimreaper, rpg, riotshield)
 */
-isCurrWeaponSpecial(){
+isWeaponSpecial(weapon){
 	return
-	((self getHItemVal("betterdevils", "in_use")==1 && self getCurrentWeapon()=="coltanaconda_mp") ||
-	(self getHItemVal("rpg", "in_use")==1 && self getCurrentWeapon()=="rpg_mp") ||
-	(self getHItemVal("grimreaper", "in_use")==1 && self getCurrentWeapon()=="at4_mp") ||
-	self getCurrentWeapon()=="riotshield_mp");
+	((self getHItemVal("betterdevils", "in_use")!=0 && weapon=="coltanaconda_mp") ||
+	(self getHItemVal("rpg", "in_use")!=0 && weapon=="rpg_mp") ||
+	(self getHItemVal("grimreaper", "in_use")!=0 && weapon=="at4_mp") ||
+	weapon=="riotshield_mp"||
+	(self getHItemVal("repair", "in_use")!=0 && weapon =="defaultweapon_mp"));
 }
