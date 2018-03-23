@@ -33,6 +33,17 @@ initHShopItem(name, cost, page, pos, text1, text2){
 	//level.ZFuncArray[page][pos] = ::name;
 }
 
+initCShopItem(name, cost, page, pos, text1, text2){
+	self.CMenu[name]["cost"] = cost;
+	self.CMenu[name]["page"] = page;
+	self.CMenu[name]["pos"] = pos;
+	self.CMenu[name]["text1"] = text1 + cost;
+	self.CMenu[name]["text2"] = text2;
+	self.CMenu[name]["print_text"] = "text1";
+	self.CMenu[name]["in_use"] = 0;
+	self.CArray[page][pos] = name; //initializes ZArray
+	//level.ZFuncArray[page][pos] = ::name;
+}
 /*
 (re)sets the items and its variables
 */
@@ -94,7 +105,43 @@ initializeItemFuncArray(){
 	level.HFuncArray[8][0]=::betterdevils;
 	level.HFuncArray[8][1]=::grimreaper;
 }
+/*
+resets all the "in_use" variables of the items
+*/
 resetZMenu(){
+	for(i=0;i<self.ZArray.size;i++){
+		for(j=0;j<self.ZArray[0].size;j++){
+			self setZItemVal(self.ZArray[i][j], "in_use", 0);
+		}
+	}
+}
+/*
+resets all the "in_use" variables of the items
+*/
+resetHMenu(){
+	for(i=0;i<self.HArray.size;i++){
+		for(j=0;j<self.HArray[0].size;j++){
+			self setHItemVal(self.HArray[i][j], "in_use", 0);
+		}
+	}
+}
+
+initializeCMenu(){
+	self.CMenu[100][7] = [];
+	self.CArray[4][3] = []; //stores name of shop item in regard to position; is used for printing the menu
+	initCShopItem("life", 300, 0, 0, "[Human] Buy Extra Life - ", "");
+	initCShopItem("tacticalinsertion", 250, 0, 1, "[Human] Buy Tactical Insertion for extra lives - ", "^1Tactical Insertion equipped");
+	initCShopItem("finalstand", 500, 0, 2, "[Human] Unlock Finalstand - ", "^1Finalstand unlocked");
+	initCShopItem("antialpha", 200, 1, 0, "Buy Anti-Alpha ", "^1Anti-Alpha activated");
+	initCShopItem("cash", 200, 1, 0, "Buy 200 Starting Cash ", "^1Starting Cash acquired");
+	
+}
+/*
+builds the array.
+*/
+initializeZMenu(){
+	self.ZMenu[100][7] = [];
+	self.ZArray[4][3] = []; //stores name of shop item in regard to position; is used for printing the menu
 	initZShopItem("health", 50, 0, 0, "Buy Health - ", "^1Max Health achieved");
 	initZShopItem("wallhack", 200, 0, 1, "Buy Wallhack - ", "^1Wallhack activated");
 	initZShopItem("throwingknife", 300, 0, 2, "Buy a Throwing Knife - ", "^1Throwing Knife equipped");
@@ -111,7 +158,9 @@ resetZMenu(){
 	initZShopItem("riotshield", 300, 3, 1, "Buy Riotshield - ", "^1 Riotshield equipped");
 	initZShopItem("suicide", "", 3, 2, "Suicide", "");
 }
-resetHMenu(){
+initializeHMenu(){
+	self.HMenu[100][7] = [];
+	self.HArray[9][3] = []; //stores name of shop item in regard to position; is used for printing the menu
 	initHShopItem("ammo", 100, 0, 0, "Buy Ammo - ", "^1current weapon ammo full");
 	initHShopItem("extendedmags", 150, 0, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
 	initHShopItem("sight", 50, 0, 2, "Unlock Sights - ", "Swap Sight");
@@ -146,45 +195,6 @@ resetHMenu(){
 	
 	initHShopItem("betterdevils", 500, 8, 0, "Buy Better Devils - ", "");
 	initHShopItem("grimreaper", 500, 8, 1, "Buy Grimreaper - ", "");
-	//initHShopItem("empty2", 100, 1, 1, "PLAcEHOLDER ", "^");
-	
-	
-	//initHShopItem("empty3", 200, 2, 0, "PLACEHOLDER", "");
-	
-	//initHShopItem("empty0", 50, 2, 2, "Buy PLACEHOLDER - ", "");
-	
-	
-	
-	//initHShopItem("empty1", 200, 4, 0, "PLACEHOLDER", "");
-	
-	
-	
-
-	
-	
-
-
-	
-	
-	
-	
-	
-	
-	
-	
-}
-/*
-builds the array.
-*/
-initializeZMenu(){
-	self.ZMenu[100][7] = [];
-	self.ZArray[10][3] = []; //stores name of shop item in regard to position; is used for printing the menu
-	resetZMenu();
-}
-initializeHMenu(){
-	self.HMenu[100][7] = [];
-	self.HArray[10][3] = []; //stores name of shop item in regard to position; is used for printing the menu
-	resetHMenu();
 }
 getZItemVal(item_name, var){
 	return self.ZMenu[item_name][var];
@@ -199,79 +209,29 @@ setHItemVal(item_name, var, value){
 	self.Hmenu[item_name][var] = value;
 }
 
-
-giveZUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
-	self _clearPerks();
-	self maps\mp\perks\_perks::givePerk("specialty_marathon");
-	self maps\mp\perks\_perks::givePerk("specialty_automantle");
-	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	if(self getZItemVal("health", "in_use")>0){
-		self.maxhealth = self.maxhp;
-		self.health = self.maxhp;
-		self notify("HEALTH");
-	}
-	if(self getZItemVal("movespeed", "in_use")>0){
-		self.moveSpeedScaler = 1.0+self getZItemVal("movespeed", "in_use")*0.1;
-		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	}else{
-		self.moveSpeedScaler = 1;
-		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	}
-	if(self getZItemVal("coldblood", "in_use")>0){
-		self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
-		self maps\mp\perks\_perks::givePerk("specialty_spygame");
-	}
-	if(self getZItemVal("ninja", "in_use")>0){
-		self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
-		self maps\mp\perks\_perks::givePerk("specialty_quieter");
-	}
-	if(self getZItemVal("commando", "in_use")>0){
-		self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
-		self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-	}
-	
-	if (self getZItemVal("blastshield", "in_use")==1)
+doCreditShop()
+{
+	self endon("disconnect");
+	self endon("death");
+	while(1)
 	{
-		self maps\mp\perks\_perks::givePerk("specialty_blastshield");
+		if(self.buttonPressed[ "+smoke" ] == 1){ 													
+		self.buttonPressed[ "+smoke" ] = 0;			
+			self [[level.CFuncArray[self.menu][0]]]();
+		}
+		if(self.buttonPressed[ "+actionslot 2" ] == 1){ 													
+		self.buttonPressed[ "+actionslot 2" ] = 0;			
+			self [[level.CFuncArray[self.menu][1]]]();
+		}
+		if(self.buttonPressed[ "+actionslot 4" ] == 1){ 													
+		self.buttonPressed[ "+actionslot 4" ] = 0;			
+			self [[level.CFuncArray[self.menu][2]]]();
+		}
+		
+		wait 0.1;
 	}
-	
-	if(self getZItemVal("throwingknife", "in_use")>0)
-	{
-		self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
-		self setWeaponAmmoClip("throwingknife_mp", 1);
-		self thread monitorThrowingKnife();
-	}
-	
-	switch(self getZItemVal("stinger", "in_use"))
-	{
-		case 1:
-		self giveWeapon("stinger_mp", 0, false);
-		self setWeaponAmmoClip("stinger_mp", 1);
-		self setWeaponAmmoStock("stinger_mp", 0);
-		self thread monitorZWeaponAmmo("stinger");
-		break;
-		case 2:
-		self giveWeapon("stinger_mp", 0, false);
-		self setWeaponAmmoClip("stinger_mp", 1);
-		self setWeaponAmmoStock("stinger_mp", 1);
-		self thread monitorZWeaponAmmo("stinger");
-		break;
-		default:
-		break;
-	}
-	
-	if(self getZItemVal("riotshield", "in_use")==1){
-		self giveWeapon("riotshield_mp", 0, false);
-	}
-	
-	if(self getZItemVal("wallhack", "in_use")==1){
-		self ThermalVisionFOFOverlayOn();
-	}
-	
-	self notify("MENUCHANGE_2");
 }
+
 
 doZombieShop()
 {
@@ -352,20 +312,3 @@ monitorWeapons(){
 }
 
 
-monitorZWeaponAmmo(weapon)
-{
-	self endon("disconnect");
-	self endon("death");
-	prevWeapon = self getCurrentWeapon();
-	while(self getZItemVal(weapon, "in_use")>0)
-	{
-		self setZItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
-		self waittill ("weapon_fired");
-		wait 0.1;
-		self notify("MENUCHANGE_2");
-	}
-	self setZItemVal(weapon, "in_use", 0);
-	self takeWeapon(weapon+"_mp");
-	self switchToWeapon(prevWeapon);
-	self setZItemVal(weapon, "print_text", "text1");
-}

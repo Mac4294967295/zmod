@@ -602,7 +602,7 @@ doAlphaZombie()
 	self giveWeapon("usp_tactical_mp", 0, false);
 	self thread doZW();
 	
-	self giveZUpgrades();
+	self maps\mp\gametypes\_zombie_items::giveZUpgrades();
 	self setClientDvar("g_knockback", 3500);
 
 	notifySpawn = spawnstruct();
@@ -650,7 +650,7 @@ doZombie()
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	giveZUpgrades();		
+	self maps\mp\gametypes\_zombie_items::giveZUpgrades();		
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "^0Zombie";
 	notifySpawn.notifyText = "Welcome! You are hungry for ^2brains!";

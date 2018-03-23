@@ -31,7 +31,7 @@ extendedmags(){
 }
 
 sight(){
-	if(!isUsingKillstreak()){
+	if(!isUsingKillstreak() &&!isWeaponSpecial(self getCurrentWeapon())){
 		if(self getHItemVal("sight", "in_use")==0){
 			if(self.bounty >= self getHItemVal("sight","cost")){
 				self statCashSub(self getHItemVal("sight","cost"));
@@ -94,7 +94,7 @@ hriotshield(){
 }
 
 akimbo(){
-	if(!isUsingKillstreak()){
+	if(!isUsingKillstreak() && !isWeaponSpecial(self getCurrentWeapon())){
 		if(self.attach["akimbo"] == 1){
 			if (self getHItemVal("akimbo", "in_use")==0){
 				if (self.bounty >= self getHItemVal("akimbo","cost")){

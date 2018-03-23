@@ -143,3 +143,94 @@ zriotshield(){
 		}
 		self notify("MENUCHANGE_2");
 }
+
+giveZUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
+	self _clearPerks();
+	self maps\mp\perks\_perks::givePerk("specialty_marathon");
+	self maps\mp\perks\_perks::givePerk("specialty_automantle");
+	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
+	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
+	self maps\mp\perks\_perks::givePerk("specialty_thermal");
+	if(self getZItemVal("health", "in_use")>0){
+		self.maxhealth = self.maxhp;
+		self.health = self.maxhp;
+		self notify("HEALTH");
+	}
+	if(self getZItemVal("movespeed", "in_use")>0){
+		self.moveSpeedScaler = 1.0+self getZItemVal("movespeed", "in_use")*0.1;
+		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+	}else{
+		self.moveSpeedScaler = 1;
+		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+	}
+	if(self getZItemVal("coldblood", "in_use")>0){
+		self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
+		self maps\mp\perks\_perks::givePerk("specialty_spygame");
+	}
+	if(self getZItemVal("ninja", "in_use")>0){
+		self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
+		self maps\mp\perks\_perks::givePerk("specialty_quieter");
+	}
+	if(self getZItemVal("commando", "in_use")>0){
+		self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
+		self maps\mp\perks\_perks::givePerk("specialty_falldamage");
+	}
+	
+	if (self getZItemVal("blastshield", "in_use")==1)
+	{
+		self maps\mp\perks\_perks::givePerk("specialty_blastshield");
+	}
+	
+	if(self getZItemVal("throwingknife", "in_use")>0)
+	{
+		self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
+		self setWeaponAmmoClip("throwingknife_mp", 1);
+		self thread monitorThrowingKnife();
+	}
+	
+	switch(self getZItemVal("stinger", "in_use"))
+	{
+		case 1:
+		self giveWeapon("stinger_mp", 0, false);
+		self setWeaponAmmoClip("stinger_mp", 1);
+		self setWeaponAmmoStock("stinger_mp", 0);
+		self thread monitorZWeaponAmmo("stinger");
+		break;
+		case 2:
+		self giveWeapon("stinger_mp", 0, false);
+		self setWeaponAmmoClip("stinger_mp", 1);
+		self setWeaponAmmoStock("stinger_mp", 1);
+		self thread monitorZWeaponAmmo("stinger");
+		break;
+		default:
+		break;
+	}
+	
+	if(self getZItemVal("riotshield", "in_use")==1){
+		self giveWeapon("riotshield_mp", 0, false);
+	}
+	
+	if(self getZItemVal("wallhack", "in_use")==1){
+		self ThermalVisionFOFOverlayOn();
+	}
+	
+	self notify("MENUCHANGE_2");
+}
+
+monitorZWeaponAmmo(weapon)
+{
+	self endon("disconnect");
+	self endon("death");
+	prevWeapon = self getCurrentWeapon();
+	while(self getZItemVal(weapon, "in_use")>0)
+	{
+		self setZItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
+		self waittill ("weapon_fired");
+		wait 0.1;
+		self notify("MENUCHANGE_2");
+	}
+	self setZItemVal(weapon, "in_use", 0);
+	self takeWeapon(weapon+"_mp");
+	self switchToWeapon(prevWeapon);
+	self setZItemVal(weapon, "print_text", "text1");
+}
