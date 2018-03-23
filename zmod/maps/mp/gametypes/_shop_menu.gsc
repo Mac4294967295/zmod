@@ -445,52 +445,7 @@ doHumanShopPage0(){
 	//button 1
 	if(self.buttonPressed[ "+actionslot 2" ] == 1){
 		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if(!((self getHItemVal("betterdevils")==1 && self getCurrentWeapon()=="coltanaconda_mp") || (self getHItemVal("rpg")==1 && self getCurrentWeapon()=="rpg_mp") || (self getHItemVal("grimreaper")==1 && self getCurrentWeapon()=="at4_mp") || self getCurrentWeapon()=="riotshield_mp")){ //makes sure to not be able to swap weapon while one of the "special" weapons is equipped
-			if(getWeaponClass(self getCurrentWeapon())!="weapon_smg"){
-				if(self.bounty >= self getHItemVal("smg", "cost")){
-					self statCashSub(self getHItemVal("smg", "cost"));
-					self.randomsmg = randomInt(level.smg.size);
-					while(isSubStr(self getWeaponsListPrimaries()[0], level.smg[self.randomsmg]) || isSubStr(self getWeaponsListPrimaries()[1], level.smg[self.randomsmg]) || isSubStr(self getWeaponsListPrimaries()[2], level.smg[self.randomsmg])){ //makes sure to not give a weapon which the player already has
-						self.randomsmg = (self.randomsmg+1)%level.smg.size;
-					}
-					self setHItemVal("smg", "in_use", 1);
-					self setHItemVal("smg", "print_text", "text2");
-					self takeWeapon(self getCurrentWeapon());
-					self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false); 	//gives player the weapon
-					self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp"); 			//gives full ammo for new weapon
-					if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
-						weap = addXMagsToWeapon(level.smg[self.randomsmg] + "_mp");
-						self switchToWeapon(weap);
-					}else self switchToWeapon(level.smg[self.randomsmg] + "_mp");	
-				}else self iPrintlnBold("^1Not Enough ^3Cash");
-				self notify("MENUCHANGE_2");
-			}else{
-				i = 0;
-				while(1){															//returns index in level.smg of current weapon
-					basename = strtok(self getCurrentWeapon(), "_");
-					if(basename[0]==level.smg[i]) break;
-					i++;
-				}
-				clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
-				stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-				while(isSubStr(self getWeaponsListPrimaries()[0], level.smg[i]) || isSubStr(self getWeaponsListPrimaries()[1], level.smg[i]) || isSubStr(self getWeaponsListPrimaries()[2], level.smg[i])){ //makes sure to not give player a weapon he already has
-					i = (i+1)%level.smg.size;
-				}
-				self takeWeapon(self getCurrentWeapon());
-				if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
-					weap = addXMagsToWeapon(level.smg[i] + "_mp");
-					self giveWeapon(weap, 0, false);
-					self switchToWeapon(weap);
-					self SetWeaponAmmoClip( weap, clip_ammo );
-					self SetWeaponAmmoStock( weap, stock_ammo );
-				}else{
-					self giveWeapon(level.smg[i] + "_mp", 0, false);
-					self switchToWeapon(level.smg[i] + "_mp");
-					self SetWeaponAmmoClip( level.smg[i] + "_mp", clip_ammo );
-					self SetWeaponAmmoStock( level.smg[i] + "_mp", stock_ammo );
-				}
-			}
-		}
+		exchangeWeapon("smg");
 	}
 
 	//button 2
@@ -957,10 +912,134 @@ monitorWeapons(){
 		
 		if(self getHItemVal("sight", "in_use")==1) self setHItemVal("sight", "print_text", "text2");
 		else self setHItemVal("sight", "print_text", "text1");
+		
 		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
-			if(getWeaponClass(self getCurrentWeapon())=="weapon_smg") self setHItemVal("smg", "print_text", "text2");
-			else  self setHItemVal("smg", "print_text", "text1");
-				self notify("MENUCHANGE_2");
+			foreach(weaponclass in level.weaponclasses){
+			basename = strtok(weaponclass, "_");
+				if(getWeaponClass(self getCurrentWeapon())==weaponclass) self setHItemVal(basename[1], "print_text", "text2");
+				else  self setHItemVal(basename[1], "print_text", "text1");
+					self notify("MENUCHANGE_2");
+			}
 		}
 	}
+}
+/*
+gives the player the next possible weapon in the specified weaponclass
+*/
+exchangeWeapon(weaponclass){
+																				//makes sure to not be able to swap weapon while one of the "special" weapons is equipped
+	if(!isCurrWeaponSpecial()){ 
+		weaponClassArray = getWeaponArr(weaponclass); 							//array of basenames of guns of class weaponclass
+		if(getWeaponClass(self getCurrentWeapon())!="weapon_"+weaponclass){
+			if(self.bounty >= self getHItemVal(weaponclass, "cost")){
+				self statCashSub(self getHItemVal(weaponclass, "cost"));
+				rand = randomInt(weaponClassArray.size); 						//number representing index of weapon in weaponClassArray
+				randWeapon = weaponClassArray[rand];
+																				//makes sure to not give a weapon which the player already has
+				while(isSubStr(self getWeaponsListPrimaries()[0], randWeapon) || isSubStr(self getWeaponsListPrimaries()[1], randWeapon) || isSubStr(self getWeaponsListPrimaries()[2], randWeapon)){ 
+					rand = (rand+1)%weaponClassArray.size;
+					randWeapon = weaponClassArray[rand];
+				}
+				randWeapon = weaponClassArray[rand];
+				self setHItemVal(weaponclass, "in_use", 1);
+				self setHItemVal(weaponclass, "print_text", "text2");
+				self takeWeapon(self getCurrentWeapon());
+				self giveWeapon(randWeapon + "_mp", 0, false); 					//gives player the weapon
+				self GiveMaxAmmo(randWeapon + "_mp"); 							//gives full ammo for new weapon
+				if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
+					weap = addXMagsToWeapon(randWeapon + "_mp");
+					self switchToWeapon(weap);
+				}else self switchToWeapon(randWeapon + "_mp");	
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+			self notify("MENUCHANGE_2");
+		}else{
+			i = 0;
+			while(1){															//returns index in weaponClassArray of current weapon
+				basename = strtok(self getCurrentWeapon(), "_");
+				if(basename[0]==weaponClassArray[i]) break;
+				i++;
+			}
+			clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
+			stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
+																				//makes sure to not give player a weapon he already has
+			while(isSubStr(self getWeaponsListPrimaries()[0], weaponClassArray[i]) || isSubStr(self getWeaponsListPrimaries()[1], weaponClassArray[i]) || isSubStr(self getWeaponsListPrimaries()[2], weaponClassArray[i])){ 
+				i = (i+1)%weaponClassArray.size;
+			}
+			self takeWeapon(self getCurrentWeapon());
+			if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
+				weap = addXMagsToWeapon(weaponClassArray[i] + "_mp");
+				self giveWeapon(weap, 0, false);
+				self switchToWeapon(weap);
+				self SetWeaponAmmoClip( weap, clip_ammo );
+				self SetWeaponAmmoStock( weap, stock_ammo );
+			}else{
+				self giveWeapon(weaponClassArray[i] + "_mp", 0, false);
+				self switchToWeapon(weaponClassArray[i] + "_mp");
+				self SetWeaponAmmoClip( weaponClassArray[i] + "_mp", clip_ammo );
+				self SetWeaponAmmoStock( weaponClassArray[i] + "_mp", stock_ammo );
+			}
+		}
+	}
+}
+
+getWeaponArr(weaponclass){
+	weaponArray = [];
+	switch(weaponclass){
+		case "pistol": weaponArray = level.hand;
+		break;
+		
+		case "smg": weaponArray = level.smg;
+		break;
+		
+		case "assault": weaponArray = level.assault;
+		break;
+		
+		case "projectile": weaponArray = level.explosives;
+		break;
+		
+		case "sniper": weaponArray = level.rifle;
+		break;
+		
+		case "shotgun": weaponArray = level.shot;
+		break;
+		
+		case "lmg": weaponArray = level.lmg;
+		break;
+		
+		default:
+		break;
+	}
+	return weaponArray;
+}
+
+	
+	
+	/*
+	switch( weaponclass )
+	{
+		case "weapon_pistol":
+		case "weapon_smg":
+		case "weapon_assault":
+		case "weapon_projectile":
+		case "weapon_sniper":
+		case "weapon_shotgun":
+		case "weapon_lmg":
+			
+			break;
+		case "weapon_grenade":
+		case "weapon_explosive":
+			
+			break;
+		default:
+			break;
+	}*/
+/*
+returns true if the current weapon is a "special" weapon (betterdevils,grimreaper, rpg, riotshield)
+*/
+isCurrWeaponSpecial(){
+	return
+	((self getHItemVal("betterdevils")==1 && self getCurrentWeapon()=="coltanaconda_mp") ||
+	(self getHItemVal("rpg")==1 && self getCurrentWeapon()=="rpg_mp") ||
+	(self getHItemVal("grimreaper")==1 && self getCurrentWeapon()=="at4_mp") ||
+	self getCurrentWeapon()=="riotshield_mp");
 }

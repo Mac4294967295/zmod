@@ -1908,6 +1908,7 @@ doHumanShop()
 	}
 }
 */
+/*
 doExchangeWeapons()
 {
 	switch(self.exTo)
@@ -1993,6 +1994,7 @@ doExchangeWeapons()
 	}
 	
 }
+*/
 
 buildWeaponName( baseName, attachment1, attachment2 )
 {
@@ -3724,7 +3726,6 @@ weaponInit()
 	level.sights[1] = "eotech";
 	level.sights[2] = "acog";
 	level.sights[3] = "";
-	
 	
 	level.smg = [];
 	level.smg[0] = "mp5k";
