@@ -3606,6 +3606,7 @@ doInit()
 	CleanupKillstreaks();
 	level.mapwait = 0;
 	
+	level initializeItemFuncArray();
 	level InitializeSpawnPoints();
 	level thread maps\mp\gametypes\MapEdit::init();
 	
