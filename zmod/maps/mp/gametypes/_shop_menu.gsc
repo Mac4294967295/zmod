@@ -339,7 +339,9 @@ monitorWeapons(){
 		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
 			foreach(weaponclass in level.weaponclasses){
 			basename = strtok(weaponclass, "_");
-				if(getWeaponClass(self getCurrentWeapon())==weaponclass) self setHItemVal(basename[1], "print_text", "text2");
+			modweaponclass = getWeaponClass(self getCurrentWeapon());
+			if(modweaponclass=="weapon_machine_pistol") modweaponclass="weapon_pistol";
+				if(modweaponclass==weaponclass) self setHItemVal(basename[1], "print_text", "text2");
 				else  self setHItemVal(basename[1], "print_text", "text1");
 					self notify("MENUCHANGE_2");
 			}

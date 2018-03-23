@@ -3620,13 +3620,15 @@ weaponInit()
 	
 	level.hand = [];
 	level.hand[0] = "beretta";
-	level.weapname["beretta"] = "M9";
 	level.hand[1] = "usp";
-	level.weapname["usp"] = "USP .45";
 	level.hand[2] = "deserteagle";
-	level.weapname["deserteagle"] = "D. EAGLE";
 	level.hand[3] = "coltanaconda";
-	level.weapname["coltanaconda"] = ".44 MAGNUM";
+	level.hand[4] = "glock";
+	level.hand[5] = "beretta393";
+	level.hand[6] = "pp2000";
+	level.hand[7] = "tmp";
+	
+
 	
 	level.rifle = [];
 	level.rifle[0] = "wa2000";
