@@ -234,3 +234,16 @@ monitorZWeaponAmmo(weapon)
 	self switchToWeapon(prevWeapon);
 	self setZItemVal(weapon, "print_text", "text1");
 }
+
+monitorThrowingKnife()
+{
+	self endon("disconnect");
+	self endon("death");
+	while(self getZItemVal("throwingknife", "in_use")>0)
+	{
+		self setZItemVal("throwingknife", "in_use", self getWeaponAmmoClip("throwingknife_mp"));
+		wait 0.1;
+		self notify("MENUCHANGE_2");
+	}
+	self setZItemVal("throwingknife", "print_text", "text1");
+}

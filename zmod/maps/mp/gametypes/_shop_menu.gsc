@@ -209,11 +209,19 @@ setHItemVal(item_name, var, value){
 	self.Hmenu[item_name][var] = value;
 }
 
+doShop(){
+	if(level.showcreditshop){
+		self thread doCreditShop();
+	}else if(self.isZombie==0){
+		self thread doHumanShop();
+	}else self thread doZombieShop();
+}
+
 doCreditShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	while(1)
+	while(level.showcreditshop)
 	{
 		if(self.buttonPressed[ "+smoke" ] == 1){ 													
 		self.buttonPressed[ "+smoke" ] = 0;			
@@ -230,6 +238,7 @@ doCreditShop()
 		
 		wait 0.1;
 	}
+	doHumanShop(); //at end of creditshop call humanshop
 }
 
 
@@ -237,8 +246,21 @@ doZombieShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	while(1)
+	while(self.isZombie!=0)
 	{
+		self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
+		self.perkztext3.glowColor = ( 1, 0, 0 );
+		//new way of printing the menu; uses ZArray
+		item0 = self.ZArray[self.menu][0]; //returns "name" of the item
+		item1 = self.ZArray[self.menu][1];
+		item2 = self.ZArray[self.menu][2];
+		self.option1 setText("Press [{+smoke}] - " + self getZItemVal(item0, self getZItemVal(item0,"print_text")));
+		self.option2 setText("Press [{+actionslot 2}] - " + self getZItemVal(item1, self getZItemVal(item1,"print_text")));
+		self.option3 setText("Press [{+actionslot 4}] - " + self getZItemVal(item2, self getZItemVal(item2,"print_text")));
+		
+		
+		
+		
 		if(self.buttonPressed[ "+smoke" ] == 1){ 													
 		self.buttonPressed[ "+smoke" ] = 0;			
 			self [[level.ZFuncArray[self.menu][0]]]();
@@ -260,8 +282,17 @@ doHumanShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	while(1)
+	while(self.isZombie==0)
 	{
+		item0 = self.HArray[self.menu][0]; //returns "name" of the item
+		item1 = self.HArray[self.menu][1];
+		item2 = self.HArray[self.menu][2];
+		self.option1 setText("Press [{+smoke}] - " + self getHItemVal(item0, self getHItemVal(item0,"print_text")));
+		self.option2 setText("Press [{+actionslot 2}] - " + self getHItemVal(item1, self getHItemVal(item1,"print_text")));
+		self.option3 setText("Press [{+actionslot 4}] - " + self getHItemVal(item2, self getHItemVal(item2,"print_text")));
+		
+		
+		
 		if(self.buttonPressed[ "+smoke" ] == 1){ 													
 		self.buttonPressed[ "+smoke" ] = 0;			
 			self [[level.HFuncArray[self.menu][0]]]();
@@ -281,9 +312,9 @@ doHumanShop()
 
 monitorWeapons(){	
 	self endon("disconnect");
-	self endon("death");
 	while(1){
-		
+		//self iprintlnbold("creditshopprint");
+		self iPrintlnBold(level.showcreditshop);
 		//self iprintlnbold(self getCurrentWeapon());
 		wait 0.5;
 		//self iPrintlnBold(self isOnGround());
