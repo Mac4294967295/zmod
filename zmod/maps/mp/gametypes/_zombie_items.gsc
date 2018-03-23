@@ -131,7 +131,7 @@ blastshield(){
 		self notify("MENUCHANGE_2");
 }
 
-riotshield(){
+zriotshield(){
 	if (self getZItemVal("riotshield", "in_use")==0){
 			if (self.bounty >= self getZItemVal("riotshield","cost")){
 				self statCashSub(self getZItemVal("riotshield","cost"));

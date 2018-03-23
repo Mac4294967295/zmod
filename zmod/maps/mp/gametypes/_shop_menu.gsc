@@ -2,6 +2,7 @@
 #include maps\mp\_utility;
 #include common_scripts\utility;
 #include maps\mp\gametypes\_zombie_items;
+#include maps\mp\gametypes\_human_items;
 /*
 Initializes shop items:
 name: reference to the item
@@ -37,6 +38,7 @@ initHShopItem(name, cost, page, pos, text1, text2){
 */
 initializeItemFuncArray(){
 	level.ZFuncArray[10][3] = [];
+	
 	level.ZFuncArray[0][0]=::health;
 	level.ZFuncArray[0][1]=::wallhack;
 	level.ZFuncArray[0][2]=::throwingknife;
@@ -50,9 +52,47 @@ initializeItemFuncArray(){
 	level.ZFuncArray[2][2]=::commando;
 	
 	level.ZFuncArray[3][0]=::blastshield;
-	level.ZFuncArray[3][1]=::riotshield;
+	level.ZFuncArray[3][1]=::zriotshield;
 	level.ZFuncArray[3][2]=::_suicide;
-	//level.ZFuncArray[self getZItemVal("health", "page")][self getZItemVal("health", "pos")] = ::health;
+	
+	
+	
+	level.HFuncArray[10][3] = [];
+	
+	level.HFuncArray[0][0]=::ammo;
+	level.HFuncArray[0][1]=::extendedmags;
+	level.HFuncArray[0][2]=::sight;
+	
+	level.HFuncArray[1][0]=::smg;
+	level.HFuncArray[1][1]=::assault;
+	level.HFuncArray[1][2]=::lmg;
+	
+	level.HFuncArray[2][0]=::pistol;
+	level.HFuncArray[2][1]=::shotgun;
+	level.HFuncArray[2][2]=::sniper;
+	
+	level.HFuncArray[3][0]=::hriotshield;
+	level.HFuncArray[3][1]=::akimbo;
+	level.HFuncArray[3][2]=::repair;
+	
+	level.HFuncArray[4][0]=::steadyaim;
+	level.HFuncArray[4][1]=::sleightofhand;
+	level.HFuncArray[4][2]=::rpg;
+	
+	level.HFuncArray[5][0]=::predator_missile;
+	level.HFuncArray[5][1]=::harrier_airstrike;
+	level.HFuncArray[5][2]=::helicopter_flares;
+	
+	level.HFuncArray[6][0]=::sentry;
+	level.HFuncArray[6][1]=::helicopter_minigun;
+	level.HFuncArray[6][2]=::ac130;
+	
+	level.HFuncArray[7][0]=::stealth_airstrike;
+	level.HFuncArray[7][1]=::artillery;
+	level.HFuncArray[7][2]=::nuke;
+	
+	level.HFuncArray[8][0]=::betterdevils;
+	level.HFuncArray[8][1]=::grimreaper;
 }
 resetZMenu(){
 	initZShopItem("health", 50, 0, 0, "Buy Health - ", "^1Max Health achieved");
@@ -73,40 +113,65 @@ resetZMenu(){
 }
 resetHMenu(){
 	initHShopItem("ammo", 100, 0, 0, "Buy Ammo - ", "^1current weapon ammo full");
-	initHShopItem("smg", 150, 0, 1, "Exchange current weapon for SMG - ", "Swap SMG");
-	initHShopItem("riotshield", 200, 0, 2, "Buy Riotshield - ", "^1Riotshield already equipped");
+	initHShopItem("extendedmags", 150, 0, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
+	initHShopItem("sight", 50, 0, 2, "Unlock Sights - ", "Swap Sight");
 	
-	initHShopItem("akimbo", 50, 1, 0, "Buy Akimbo - ", "^1Akimbo unavailable");
-	initHShopItem("empty2", 100, 1, 1, "PLAcEHOLDER ", "^");
-	initHShopItem("sight", 50, 1, 2, "Unlock Sights - ", "Swap Sight");
+	initHShopItem("smg", 150, 1, 0, "Exchange current weapon for SMG - ", "Swap SMG");
+	initHShopItem("assault", 150, 1, 1, "Exchange current weapon for AR - ", "Swap AR");
+	initHShopItem("lmg", 150, 1, 2, "Exchange current weapon for LMG - ", "Swap LMG");
 	
-	initHShopItem("empty3", 200, 2, 0, "PLACEHOLDER", "");
-	initHShopItem("extendedmags", 150, 2, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
-	initHShopItem("empty0", 50, 2, 2, "Buy PLACEHOLDER - ", "");
+	initHShopItem("pistol", 150, 2, 0, "Exchange current weapon for Pistol - ", "Swap Pistol");
+	initHShopItem("shotgun", 150, 2, 1, "Exchange current weapon for Shotgun - ", "Swap Shotgun");
+	initHShopItem("sniper", 150, 2, 2, "Exchange current weapon for Sniper - ", "Swap Sniper");
 	
-	initHShopItem("steadyaim", 100, 3, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");	
-	initHShopItem("sleightofhand", 150, 3, 1, "Buy Sleight of Hand - ", "^1Sleight of Hand equipped");
-	initHShopItem("rpg", 50, 3, 2, "Buy RPG - ", "^1Unavailable");
+	initHShopItem("riotshield", 200, 3, 0, "Buy Riotshield - ", "^1Riotshield already equipped");
+	initHShopItem("akimbo", 50, 3, 1, "Buy Akimbo - ", "^1Akimbo unavailable");
+	initHShopItem("repair", 250, 3, 2, "Buy Repair Tool  - ", "^1Unavailable");
 	
-	initHShopItem("empty1", 200, 4, 0, "PLACEHOLDER", "");
-	initHShopItem("acog", 50, 4, 1, "Buy ACOG - ", "^1Unavailable");
-	initHShopItem("predator_missile", 150, 4, 2, "Buy Predator - ", "");
+	initHShopItem("steadyaim", 100, 4, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");	
+	initHShopItem("sleightofhand", 150, 4, 1, "Buy Sleight of Hand - ", "^1Sleight of Hand equipped");
+	initHShopItem("rpg", 50, 4, 2, "Buy RPG - ", "^1Unavailable");
 	
-	initHShopItem("nuke", 3550, 5, 0, "Buy Nuke - ", "");
-	initHShopItem("sniper", 100, 5, 1, "Buy Sniper Rifle - ", "^1Unavailable");
-	initHShopItem("ac130", 1000, 5, 2, "Buy AC-130 - ", "");
+	initHShopItem("predator_missile", 150, 5, 0, "Buy Predator - ", "");
+	initHShopItem("harrier_airstrike", 450, 5, 1, "Buy Harrier - ", ""); //harrier
+	initHShopItem("helicopter_flares", 500, 5, 2, "Buy Pavelow - ", ""); //pavelow
 	
 	initHShopItem("sentry", 450, 6, 0, "Buy Sentry - ", "");
-	initHShopItem("helicopter_flares", 500, 6, 1, "Buy Pavelow - ", ""); //pavelow
-	initHShopItem("chopper", 800, 6, 2, "Buy Chopper - ", ""); //helicopter_minigun
+	initHShopItem("helicopter_minigun", 800, 6, 1, "Buy Chopper - ", ""); //helicopter_minigun
+	initHShopItem("ac130", 1000, 6, 2, "Buy AC-130 - ", "");
 	
-	initHShopItem("harrier_airstrike", 450, 7, 0, "Buy Harrier - ", ""); //harrier
-	initHShopItem("repair", 250, 7, 1, "Buy Repair Tool  - ", "^1Unavailable");
-	initHShopItem("betterdevils", 500, 7, 2, "Buy Better Devils - ", "");
+	initHShopItem("stealth_airstrike", 250, 7, 0, "Buy Stealth Bomber - ", ""); //stealthbomber
+	initHShopItem("artillery", 400, 7, 1, "Buy Artillery Strike - ", "");
+	initHShopItem("nuke", 3550, 7, 2, "Buy Nuke - ", "");
 	
-	initHShopItem("artillery", 400, 8, 0, "Buy Artillery Strike - ", "");
-	initHShopItem("stealth_airstrike", 250, 8, 1, "Buy Stealth Bomber - ", ""); //stealthbomber
-	initHShopItem("grimreaper", 500, 8, 2, "Buy Grimreaper - ", "");
+	initHShopItem("betterdevils", 500, 8, 0, "Buy Better Devils - ", "");
+	initHShopItem("grimreaper", 500, 8, 1, "Buy Grimreaper - ", "");
+	//initHShopItem("empty2", 100, 1, 1, "PLAcEHOLDER ", "^");
+	
+	
+	//initHShopItem("empty3", 200, 2, 0, "PLACEHOLDER", "");
+	
+	//initHShopItem("empty0", 50, 2, 2, "Buy PLACEHOLDER - ", "");
+	
+	
+	
+	//initHShopItem("empty1", 200, 4, 0, "PLACEHOLDER", "");
+	
+	
+	
+
+	
+	
+
+
+	
+	
+	
+	
+	
+	
+	
+	
 }
 /*
 builds the array.
@@ -237,510 +302,22 @@ doHumanShop()
 	self endon("death");
 	while(1)
 	{
-		switch(self.menu){
-			case 0:
-			doHumanShopPage0();
-			break;
-			case 1:
-			doHumanShopPage1();
-			break;
-			case 2:
-			doHumanShopPage2();
-			break;
-			case 3:
-			doHumanShopPage3();
-			break;
-			case 4:
-			doHumanShopPage4();
-			break;
-			case 5:
-			doHumanShopPage5();
-			break;
-			case 6:
-			doHumanShopPage6();
-			break;
-			case 7:
-			doHumanShopPage7();
-			break;
-			case 8:
-			doHumanShopPage8();
-			break;
-			default:
-			break;
+		if(self.buttonPressed[ "+smoke" ] == 1){ 													
+		self.buttonPressed[ "+smoke" ] = 0;			
+			self [[level.HFuncArray[self.menu][0]]]();
 		}
+		if(self.buttonPressed[ "+actionslot 2" ] == 1){ 													
+		self.buttonPressed[ "+actionslot 2" ] = 0;			
+			self [[level.HFuncArray[self.menu][1]]]();
+		}
+		if(self.buttonPressed[ "+actionslot 4" ] == 1){ 													
+		self.buttonPressed[ "+actionslot 4" ] = 0;			
+			self [[level.HFuncArray[self.menu][2]]]();
+		}
+		
 		wait 0.1;
 	}
 }
-
-doHumanShopPage0(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){ 													
-		self.buttonPressed[ "+smoke" ] = 0;																													
-		if(self.bounty >= self getHItemVal("ammo", "cost")){ 								
-			self statCashSub(self getHItemVal("ammo", "cost"));
-			foreach ( primary in self getWeaponsListPrimaries()){
-				if(!((primary=="coltanaconda_mp" && self getZItemVal("betterdevils", "in_use")==1) || primary=="at4_mp" || primary=="rpg_mp")){ //makes sure to not give ammo for "special" weapons
-					self GiveMaxAmmo(primary);
-				}
-			}
-		self.nades = getDefaultNadeAmmo(self.nadetype);
-		}else self iPrintlnBold("^1Not Enough ^3Cash");		
-		self notify("MENUCHANGE_2");		
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		exchangeWeapon("smg");
-	}
-
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		if (self getHItemVal("riotshield", "in_use")==0){
-			if (self.bounty >= self getHItemVal("riotshield","cost")){
-				self statCashSub(self getHItemVal("riotshield","cost"));
-				self giveWeapon("riotshield_mp", 0, false);
-				self switchToWeapon("riotshield_mp");
-				self setHItemVal("riotshield", "in_use", 1);
-				self setHItemVal("riotshield", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-}
-
-doHumanShopPage1(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		if(self.attach["akimbo"] == 1){
-			if (self getHItemVal("akimbo", "in_use")==0){
-				if (self.bounty >= self getHItemVal("akimbo","cost")){
-					self statCashSub(self getHItemVal("akimbo","cost"));
-					ammo = self GetWeaponAmmoStock(self getCurrentWeapon());
-					basename = strtok(self getCurrentWeapon(), "_");
-					gun = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
-					self takeWeapon(self.current);
-					self giveWeapon(gun , 0, true);
-					if(self getHItemVal("extendedmags", "in_use")==1){ //makes sure to give extended mags to new gun if xmags were acquired before
-						weap = addXMagsToWeapon(gun);
-						self switchToWeapon(weap);
-						self SetWeaponAmmoStock( weap, ammo );
-					}else{
-						self switchToWeapon(gun);
-						self SetWeaponAmmoStock( gun, ammo );
-					}
-				}
-			}
-		}
-	}
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		if(self getHItemVal("sight", "in_use")==0){
-			if(self.bounty >= self getHItemVal("sight","cost")){
-				self statCashSub(self getHItemVal("sight","cost"));
-				self setHItemVal("sight", "in_use", 1);
-				if((!isSubStr(self getCurrentWeapon(), "akimbo")) && self.attach["reflex"]==1){ //only do something when weapon doesnt have akimbo currently
-					upgradeWeaponSight("reflex");
-				}
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}else{
-			if(!isSubStr(self getCurrentWeapon(), "akimbo")){
-				indexOfSight = 0;
-				for(indexOfSight=0;indexOfSight<level.sights.size;indexOfSight++){				//sets indexOfSight to current sight index in level.sights[]
-					if(isSubStr(self getCurrentWeapon(), level.sights[indexOfSight])) break;
-				}
-				indexOfSight++;																	//adds 1 to go to next sight
-				
-				
-				for(i=0;i<level.sights.size;i++){
-					indexOfSight = indexOfSight%level.sights.size;								//loops back to start of array if end is reached
-					basename = strtok(self getCurrentWeapon(), "_");
-					sight = level.sights[indexOfSight];											//name of sight which will be appended to the weapon name
-					if(sight!="") sight=sight+"_";
-					if(isDefined( level.weaponRefs[basename[0]+"_"+sight+"mp"] )){				//checks if sight is mountable on gun
-						upgradeWeaponSight(level.sights[indexOfSight]);
-						break;
-					}
-					indexOfSight++;
-				}
-			}
-		}
-	}
-}
-/*
-Upgrades current gun with sight 
-*/
-upgradeWeaponSight(sight){
-	clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
-	stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-	if(sight!="") sight = sight+"_";
-	basename = strtok(self.current, "_");
-	gun = basename[0]+"_"+sight+"mp";
-	self takeWeapon(self.current);
-	self giveWeapon(gun , 0, true);
-	if(self getHItemVal("extendedmags", "in_use")==1){
-		weap = addXMagsToWeapon(gun);
-		self switchToWeapon(weap);
-		self SetWeaponAmmoClip( weap, clip_ammo );
-		self SetWeaponAmmoStock( weap, stock_ammo );
-	}else{
-		self switchToWeapon(gun);
-		self SetWeaponAmmoClip( gun, clip_ammo );
-		self SetWeaponAmmoStock( gun, stock_ammo );
-	}
-}
-
-addXMagsToWeapon(weapon){
-	
-	ammo = self GetWeaponAmmoStock(weapon);
-	basename = strtok(weapon, "_");
-	gun="";
-	for(i=0;i<basename.size-1;i++){
-		gun=gun+basename[i]+"_";
-	}
-	gun = gun+"xmags_mp";
-	if(isDefined(level.weaponRefs[gun])){
-		self takeWeapon(weapon);
-	self giveWeapon(gun, 0, true);
-	self setWeaponAmmoStock(gun, ammo);
-	return gun;
-	}else{
-		return weapon;
-	}
-	//self iPrintlnBold(weapon);
-	self takeWeapon(weapon);
-	self giveWeapon(gun, 0, true);
-	self setWeaponAmmoStock(gun, ammo);
-	return gun;
-}
-
-doHumanShopPage2(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if (self getHItemVal("extendedmags", "in_use")==0){
-			if (self.bounty >= self getHItemVal("extendedmags","cost")){
-				self statCashSub(self getHItemVal("extendedmags","cost"));
-				self setHItemVal("extendedmags", "in_use", 1);
-				basename = strtok(self getCurrentWeapon(), "_");
-				foreach(weapon in self getWeaponsListPrimaries()){
-					string = addXMagsToWeapon(weapon);
-					if(isSubStr(string, basename[0])){
-						self switchToWeapon(string);
-					}
-				}	
-			}
-		}
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		
-	}
-}
-
-doHumanShopPage3(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		if(self getHItemVal("steadyaim", "in_use")==0){
-			if(self.bounty >= self getHItemVal("steadyaim", "cost")){
-				self setHItemVal("steadyaim", "in_use", 1);
-				self statCashSub(self getHItemVal("steadyaim", "cost"));
-				self maps\mp\perks\_perks::givePerk("specialty_bulletaccuracy");
-				self maps\mp\perks\_perks::givePerk("specialty_holdbreath");
-				self setHItemVal("steadyaim", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if(self getHItemVal("sleightofhand", "in_use")==0){
-			if(self.bounty >= self getHItemVal("sleightofhand", "cost")){
-				self setHItemVal("sleightofhand", "in_use", 1);
-				self statCashSub(self getHItemVal("sleightofhand", "cost"));
-				self maps\mp\perks\_perks::givePerk("specialty_fastreload");
-				self maps\mp\perks\_perks::givePerk("specialty_quickdraw");
-				self setHItemVal("sleightofhand", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		if(self getHItemVal("rpg", "in_use")==0){
-			if(self.bounty >= self getHItemVal("rpg", "cost")){
-				self setHItemVal("rpg", "in_use", 2);
-				self statCashSub(self getHItemVal("rpg", "cost"));
-				self setHItemVal("rpg", "print_text", "text2");
-				self giveWeapon("rpg_mp", 0, false);
-				self setWeaponAmmoStock("rpg_mp", 1);
-				self switchToWeapon("rpg_mp");
-				monitorHWeaponAmmo("rpg");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-		self notify("MENUCHANGE_2");
-	}
-}
-
-doHumanShopPage4(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		//predator
-		buyKillstreak("predator_missile", self getHItemVal("predator_missile", "cost"));
-	}
-}
-
-doHumanShopPage5(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		buyKillstreak("nuke", self getHItemVal("nuke", "cost"));
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		buyKillstreak("ac130", self getHItemVal("ac130", "cost"));
-	}
-}
-
-doHumanShopPage6(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		buyKillstreak("sentry", self getHItemVal("sentry", "cost"));
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		buyKillstreak("helicopter_flares", self getHItemVal("helicopter_flares", "cost"));
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		buyKillstreak("helicopter_minigun", self getHItemVal("helicopter_minigun", "cost"));
-	}
-}
-
-doHumanShopPage7(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		buyKillstreak("harrier_airstrike", self getHItemVal("harrier_airstrike", "cost"));
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		if (self getHItemVal("repair", "in_use") <= 0){
-			if (self.bounty >= level.itemCost["repair"]){
-				self statCashSub(level.itemCost["repair"]);
-				self setHItemVal("repair", "in_use", 15);
-				self iPrintlnBold("^2Bought Door Repair Tool!");
-				self giveWeapon("defaultweapon_mp");
-				self switchToWeapon("defaultweapon_mp");
-				self thread monitorRepair();
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-		}
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		//betterdevils
-	}
-}
-
-doHumanShopPage8(){
-	//button 0
-	if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-		//artillery
-	}
-	
-	//button 1
-	if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-		//stealth bomber
-	}
-	
-	//button 2
-	if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-		//grimreaper
-	}
-}
-
-monitorZWeaponAmmo(weapon)
-{
-	self endon("disconnect");
-	self endon("death");
-	prevWeapon = self getCurrentWeapon();
-	while(self getZItemVal(weapon, "in_use")>0)
-	{
-		self setZItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
-		self waittill ("weapon_fired");
-		wait 0.1;
-		self notify("MENUCHANGE_2");
-	}
-	self setZItemVal(weapon, "in_use", 0);
-	self takeWeapon(weapon+"_mp");
-	self switchToWeapon(prevWeapon);
-	self setZItemVal(weapon, "print_text", "text1");
-}
-monitorHWeaponAmmo(weapon)
-{
-	self endon("disconnect");
-	self endon("death");
-	prevWeapon = self getCurrentWeapon();
-	while(self getHItemVal(weapon, "in_use")>0)
-	{
-		self setHItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
-		self waittill ("weapon_fired");
-		wait 0.1;
-		self notify("MENUCHANGE_2");
-	}
-	self setHItemVal(weapon, "in_use", 0);
-	self takeWeapon(weapon+"_mp");
-	self switchToWeapon(prevWeapon);
-	self setHItemVal(weapon, "print_text", "text1");
-}
-
-killstreakUsePressed(item, cost)
-{
-	streakName = item;
-	lifeId = -1;
-
-//	assert( isDefined( streakName ) );
-//	assert( isDefined( level.killstreakFuncs[ streakName ] ) );
-
-	if ( !self isOnGround() && ( maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) || maps\mp\killstreaks\_killstreaks::isCarryKillstreak( streakName ) ) )
-		return ( 1 );
-
-	if ( self isUsingRemote() )
-		return ( 2 );
-
-	if ( isDefined( self.selectingLocation ) )
-		return ( 3 );
-		
-	if ( maps\mp\killstreaks\_killstreaks::deadlyKillstreak( streakName ) && level.killstreakRoundDelay && getGametypeNumLives() )
-	{
-		if ( level.gracePeriod - level.inGracePeriod < level.killstreakRoundDelay )
-		{
-			self iPrintLnBold( &"MP_UNAVAILABLE_FOR_N", (level.killstreakRoundDelay - (level.gracePeriod - level.inGracePeriod)) );
-			return ( 4 );
-		}
-	}
-
-	if ( (level.teamBased && level.teamEMPed[self.team]) || (!level.teamBased && isDefined( level.empPlayer ) && level.empPlayer != self) )
-	{
-		self iPrintLnBold( &"MP_UNAVAILABLE_WHEN_EMP" );
-		return ( 5 );
-	}
-
-	if ( self IsUsingTurret() && ( maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) || maps\mp\killstreaks\_killstreaks::isCarryKillstreak( streakName ) ) )
-	{
-		self iPrintLnBold( &"MP_UNAVAILABLE_USING_TURRET" );
-		return ( 6 );
-	}
-
-	if ( isDefined( self.lastStand )  && maps\mp\killstreaks\_killstreaks::isRideKillstreak( streakName ) )
-	{
-		self iPrintLnBold( &"MP_UNAVILABLE_IN_LASTSTAND" );
-		return ( 7 );
-	}
-	
-	if ( !self common_scripts\utility::isWeaponEnabled() )
-		return ( 8 );
-	
-	if ( !self [[ level.killstreakFuncs[ streakName ] ]]( lifeId ) )
-		return ( 9 );
-
-	self statCashSub(cost);
-	return ( 0 );
-}
-
-isUsingKillstreak(){
-
-	if ( self isUsingRemote() )
-		return true;
-
-	if ( isDefined( self.selectingLocation ) )
-		return true;
-	if(self IsUsingTurret()) return true;
-	return false;
-}
-buyKillstreak(item, cost){
-	if (self.bounty >= cost) self thread killstreakUsePressed(item, cost);
-	else self iPrintlnBold("^1Not Enough ^3Cash");
-}
-
-/*
-Updates the isRepairing boolean; signals if player is currently able to repair (has repair tool as weapon and has "ammo" left in the tool
-*/
-monitorRepair(){
-	self endon("disconnect");
-	self endon("death");
-	prevWeapon = self getCurrentWeapon();
-	while(1){
-		if(self getHItemVal("repair", "in_use") > 0){
-			if (self getCurrentWeapon() == "defaultweapon_mp") self.isRepairing = true;
-			else self.isRepairing = false;
-
-		}else{
-			//wait 1.3;
-			self.isRepairing=false;
-			self takeWeapon("defaultweapon_mp");
-			self switchToWeapon(prevWeapon);
-			break;
-		}
-		wait 1.3;
-	}
-}
-
 
 monitorWeapons(){	
 	self endon("disconnect");
@@ -769,123 +346,22 @@ monitorWeapons(){
 		}
 	}
 }
-/*
-gives the player the next possible weapon in the specified weaponclass
-*/
-exchangeWeapon(weaponclass){
-																				//makes sure to not be able to swap weapon while one of the "special" weapons is equipped
-	if(!isCurrWeaponSpecial()){ 
-		weaponClassArray = getWeaponArr(weaponclass); 							//array of basenames of guns of class weaponclass
-		if(getWeaponClass(self getCurrentWeapon())!="weapon_"+weaponclass){
-			if(self.bounty >= self getHItemVal(weaponclass, "cost")){
-				self statCashSub(self getHItemVal(weaponclass, "cost"));
-				rand = randomInt(weaponClassArray.size); 						//number representing index of weapon in weaponClassArray
-				randWeapon = weaponClassArray[rand];
-																				//makes sure to not give a weapon which the player already has
-				while(isSubStr(self getWeaponsListPrimaries()[0], randWeapon) || isSubStr(self getWeaponsListPrimaries()[1], randWeapon) || isSubStr(self getWeaponsListPrimaries()[2], randWeapon)){ 
-					rand = (rand+1)%weaponClassArray.size;
-					randWeapon = weaponClassArray[rand];
-				}
-				randWeapon = weaponClassArray[rand];
-				self setHItemVal(weaponclass, "in_use", 1);
-				self setHItemVal(weaponclass, "print_text", "text2");
-				self takeWeapon(self getCurrentWeapon());
-				self giveWeapon(randWeapon + "_mp", 0, false); 					//gives player the weapon
-				self GiveMaxAmmo(randWeapon + "_mp"); 							//gives full ammo for new weapon
-				if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
-					weap = addXMagsToWeapon(randWeapon + "_mp");
-					self switchToWeapon(weap);
-				}else self switchToWeapon(randWeapon + "_mp");	
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
-			self notify("MENUCHANGE_2");
-		}else{
-			i = 0;
-			while(1){															//returns index in weaponClassArray of current weapon
-				basename = strtok(self getCurrentWeapon(), "_");
-				if(basename[0]==weaponClassArray[i]) break;
-				i++;
-			}
-			clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
-			stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
-																				//makes sure to not give player a weapon he already has
-			while(isSubStr(self getWeaponsListPrimaries()[0], weaponClassArray[i]) || isSubStr(self getWeaponsListPrimaries()[1], weaponClassArray[i]) || isSubStr(self getWeaponsListPrimaries()[2], weaponClassArray[i])){ 
-				i = (i+1)%weaponClassArray.size;
-			}
-			self takeWeapon(self getCurrentWeapon());
-			if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
-				weap = addXMagsToWeapon(weaponClassArray[i] + "_mp");
-				self giveWeapon(weap, 0, false);
-				self switchToWeapon(weap);
-				self SetWeaponAmmoClip( weap, clip_ammo );
-				self SetWeaponAmmoStock( weap, stock_ammo );
-			}else{
-				self giveWeapon(weaponClassArray[i] + "_mp", 0, false);
-				self switchToWeapon(weaponClassArray[i] + "_mp");
-				self SetWeaponAmmoClip( weaponClassArray[i] + "_mp", clip_ammo );
-				self SetWeaponAmmoStock( weaponClassArray[i] + "_mp", stock_ammo );
-			}
-		}
-	}
-}
 
-getWeaponArr(weaponclass){
-	weaponArray = [];
-	switch(weaponclass){
-		case "pistol": weaponArray = level.hand;
-		break;
-		
-		case "smg": weaponArray = level.smg;
-		break;
-		
-		case "assault": weaponArray = level.assault;
-		break;
-		
-		case "projectile": weaponArray = level.explosives;
-		break;
-		
-		case "sniper": weaponArray = level.rifle;
-		break;
-		
-		case "shotgun": weaponArray = level.shot;
-		break;
-		
-		case "lmg": weaponArray = level.lmg;
-		break;
-		
-		default:
-		break;
-	}
-	return weaponArray;
-}
 
-	
-	
-	/*
-	switch( weaponclass )
+monitorZWeaponAmmo(weapon)
+{
+	self endon("disconnect");
+	self endon("death");
+	prevWeapon = self getCurrentWeapon();
+	while(self getZItemVal(weapon, "in_use")>0)
 	{
-		case "weapon_pistol":
-		case "weapon_smg":
-		case "weapon_assault":
-		case "weapon_projectile":
-		case "weapon_sniper":
-		case "weapon_shotgun":
-		case "weapon_lmg":
-			
-			break;
-		case "weapon_grenade":
-		case "weapon_explosive":
-			
-			break;
-		default:
-			break;
-	}*/
-/*
-returns true if the current weapon is a "special" weapon (betterdevils,grimreaper, rpg, riotshield)
-*/
-isCurrWeaponSpecial(){
-	return
-	((self getHItemVal("betterdevils")==1 && self getCurrentWeapon()=="coltanaconda_mp") ||
-	(self getHItemVal("rpg")==1 && self getCurrentWeapon()=="rpg_mp") ||
-	(self getHItemVal("grimreaper")==1 && self getCurrentWeapon()=="at4_mp") ||
-	self getCurrentWeapon()=="riotshield_mp");
+		self setZItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
+		self waittill ("weapon_fired");
+		wait 0.1;
+		self notify("MENUCHANGE_2");
+	}
+	self setZItemVal(weapon, "in_use", 0);
+	self takeWeapon(weapon+"_mp");
+	self switchToWeapon(prevWeapon);
+	self setZItemVal(weapon, "print_text", "text1");
 }

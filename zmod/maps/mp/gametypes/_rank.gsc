@@ -8,58 +8,7 @@
 #include maps\mp\gametypes\_shop_menu;
 #include maps\mp\gametypes\_SpawnPoints;
 
-ArtilleryStrike()
-{
-	self endon("disconnect");
-	
-	
-	//Coordinates Selection for the Location of the Artillery Strike
-	self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
-	self.selectingLocation = true;
-	self waittill( "confirm_location", location, directionYaw );
-	ArtilleryPointSelection = BulletTrace( location, ( location + ( 0, 0, -100000 ) ), 0, self )[ "position" ];
-	
-	self endLocationSelection();
-	self.selectingLocation = undefined;
-	
-	self iPrintlnBold("Artillery Strike activated");
-	
-	wait 5;
-	
-	
-	//Defining the Number of Total Artillery Strikes (24-32)
-	AmountOfStrikes = randomInt(25) + 8;
-	
-	for (i = 1; i <= AmountOfStrikes; i++)
-	{
-		//Declaring x/y
-		x = RandomIntRange(-40, 40) * 10;
-		y = RandomIntRange(-40, 40) * 10;
 
-		//Declaring the ArtilleryImpactPoint relative to the ArtilleryPointSelection
-        ArtilleryImpactPoint = ArtilleryPointSelection+(x, y, 8000);
-				
-		//Random Number (1-10)
-		rand_ammo = RandomInt(9) + 1;
-		
-		//Ammunition Selection
-		// 8/10 Chance for 40mm, 2/10 for 105mm
-		if(rand_ammo <= 8)
-		{
-			ArtilleryAmmo = "ac130_40mm_mp";
-		}
-		else
-		{
-			ArtilleryAmmo = "ac130_105mm_mp";			
-		}
-		
-		//Spawns the Artillery Shot
-        MagicBullet( ArtilleryAmmo, ArtilleryImpactPoint, ArtilleryImpactPoint-(0, 0, 8000), self );		
-		
-		//Interval in seconds
-		wait RandomFloatRange(0.1, 0.8);	
-	}
-}
 
 
 tryUseCustomAirstrike()
@@ -125,101 +74,8 @@ tryUseCustomAirstrike()
 		Airstrike_support delete();
 		Air_Strike_Support = undefined;
 }
-/*
-.44 Magnum with explosive bullets
-*/
-BetterDevils(){
-	self endon("death");
-	
-    prevweapon = self GetCurrentWeapon(); 							//remembers what weapon player previously had
-	hasAnaconda = self HasWeapon("coltanaconda_mp"); 
-	anacondaAmmoStock = self getWeaponAmmoStock("coltanaconda_mp"); //keeps track of normal .44 ammo
-	anacondaAmmoClip = self getWeaponAmmoClip("coltanaconda_mp");
-	self giveWeapon("coltanaconda_mp", 0, true); 					//gives player a .44
-	self setWeaponAmmoClip("coltanaconda_mp", 6);
-	self setWeaponAmmoStock("coltanaconda_mp", 12);
-	self switchToWeapon("coltanaconda_mp");
-	ammoCount = 18; 
-	while(ammoCount>0){ 																						//tracks amount of shots fired
-		self waittill ( "weapon_fired" );
-		if(self GetCurrentWeapon()=="coltanaconda_mp"){ 														//makes sure player shot the .44 and not another gun
-			forward = self getTagOrigin("j_head");
-			end = self thread vector_scal(anglestoforward(self getPlayerAngles()),1000000);
-			explosionLocation = BulletTrace( forward, end, 0, self )[ "position" ]; 							//tracks the explosion exposion should happen
-			level.chopper_fx["explode"]["small"] = loadfx ("explosions/helicopter_explosion_secondary_small"); 	//creates a chopper explosion animation
-			playfx(level.chopper_fx["explode"]["small"], explosionLocation);
-			RadiusDamage( explosionLocation, 100, 400, 200, self );												//specifies the radius, max damage, min damage, attacker
-			ammoCount -= 1;
-		}
-	}
-	self takeWeapon("coltanaconda_mp");									
-	if(hasAnaconda){
-		self giveWeapon("coltanaconda_mp");								//if player previously had a .44, gives it back to him
-		self setWeaponAmmoClip("coltanaconda_mp", anacondaAmmoClip); 
-		self setWeaponAmmoStock("coltanaconda_mp", anacondaAmmoStock); 
-		
-	}
-	self SwitchToWeapon(prevweapon);
-	wait 0.2;
-}
-GrimReaper()
-{
-    self endon("death");
-	
-    prevweapon = self GetCurrentWeapon();
-	
-	//gives AT4, gives ammo in clip (chamber) and stock (reserve), switches to AT4
-    self giveWeapon("at4_mp", 0, true);
-	self setWeaponAmmoClip("at4_mp", 1);
-	self setWeaponAmmoStock("at4_mp", 1);
-    self switchToWeapon("at4_mp");
-	
-	//fires 4 shots, reloads, fires 4 shots
-	self.rockets = 8;
-	while(self.rockets > 0)
-	{
-		if(self.rockets == 5)
-		{
-			//no new ammunition after third shot, causing a reload on the fourth shot
-			self waittill ("weapon_fired");
-		}
-		else if(self.rockets == 4)
-		{
-			//waiting for reload to end
-			while(!(self getWeaponAmmoClip("at4_mp")))
-			{
-			wait 0.1;
-			}
-			//giving stock ammo before and giving clip and stock ammo after firing
-			self setWeaponAmmoStock("at4_mp", 1);
-			self waittill ("weapon_fired");		
-			self setWeaponAmmoStock("at4_mp", 1);	
-			self setWeaponAmmoClip("at4_mp", 1);			
-		}
-		else
-		{
-			//giving stock and clip ammo after firing 
-			self waittill ("weapon_fired");
-			self setWeaponAmmoStock("at4_mp", 1);			
-			self setWeaponAmmoClip("at4_mp", 1);
-		}
-		//causing a ac130_105mm_mp explosion at rocket destination
-		if(self GetCurrentWeapon()=="at4_mp"){
-			forward = self getTagOrigin("tag_weapon_left");
-			end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
-			location = BulletTrace( forward, end, 0, self )[ "position" ];
-			MagicBullet( "ac130_105mm_mp", forward, location, self );
-			self.rockets--;
-		}
-		
-		wait  0.1;
-	}
-	//destroy self.rockets in case the for-loop exits prematurely
-	self.rockets destroy();
-	self SwitchToWeapon(prevweapon);
-	wait 0.2;
-    self takeWeapon("at4_mp");
-}
+
+
 
 createMoney()
 {
