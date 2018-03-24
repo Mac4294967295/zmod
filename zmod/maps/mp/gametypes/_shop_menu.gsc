@@ -3,6 +3,7 @@
 #include common_scripts\utility;
 #include maps\mp\gametypes\_zombie_items;
 #include maps\mp\gametypes\_human_items;
+#include maps\mp\gametypes\_credit_items;
 /*
 Initializes shop items:
 name: reference to the item
@@ -48,6 +49,16 @@ initCShopItem(name, cost, page, pos, text1, text2){
 (re)sets the items and its variables
 */
 initializeItemFuncArray(){
+	level.CFuncArray[10][3] = [];
+	
+	level.CFuncArray[0][0]=::life;
+	level.CFuncArray[0][1]=::tacticalinsertion;
+	//level.CFuncArray[0][2]=::finalstand;
+	
+	//level.CFuncArray[1][0]=::antialpha;
+	//level.CFuncArray[1][1]=::cash;
+	
+	
 	level.ZFuncArray[10][3] = [];
 	
 	level.ZFuncArray[0][0]=::health;
@@ -131,9 +142,9 @@ initializeCMenu(){
 	self.CArray[4][3] = []; //stores name of shop item in regard to position; is used for printing the menu
 	initCShopItem("life", 300, 0, 0, "[Human] Buy Extra Life - ", "");
 	initCShopItem("tacticalinsertion", 250, 0, 1, "[Human] Buy Tactical Insertion for extra lives - ", "^1Tactical Insertion equipped");
-	initCShopItem("finalstand", 500, 0, 2, "[Human] Unlock Finalstand - ", "^1Finalstand unlocked");
+	initCShopItem("finalstand", 500, 0, 2, "[Human] Buy Finalstand - ", "^1Finalstand activated");
 	initCShopItem("antialpha", 200, 1, 0, "Buy Anti-Alpha ", "^1Anti-Alpha activated");
-	initCShopItem("cash", 200, 1, 0, "Buy 200 Starting Cash ", "^1Starting Cash acquired");
+	initCShopItem("cash", 200, 1, 1, "Buy 200 Starting Cash ", "^1Starting Cash acquired");
 	
 }
 /*
@@ -208,6 +219,12 @@ getHItemVal(item_name, var){
 setHItemVal(item_name, var, value){
 	self.Hmenu[item_name][var] = value;
 }
+getCItemVal(item_name, var){
+	return self.CMenu[item_name][var];
+}
+setCItemVal(item_name, var, value){
+	self.Cmenu[item_name][var] = value;
+}
 
 doShop(){
 	if(level.showcreditshop){
@@ -223,6 +240,16 @@ doCreditShop()
 	self endon("death");
 	while(level.showcreditshop)
 	{
+		self.perkztext3 setText("Lives: "+self getCItemVal("life", "in_use") );
+		self.perkztext3.glowColor = ( 1, 0, 0 );
+		//new way of printing the menu; uses ZArray
+		item0 = self.CArray[self.menu][0]; //returns "name" of the item
+		item1 = self.CArray[self.menu][1];
+		item2 = self.CArray[self.menu][2];
+		self iprintlnbold(self.menu);
+		self.option1 setText("Press [{+smoke}] - " + self getCItemVal(item0, self getCItemVal(item0,"print_text")));
+		self.option2 setText("Press [{+actionslot 2}] - " + self getCItemVal(item1, self getCItemVal(item1,"print_text")));
+		self.option3 setText("Press [{+actionslot 4}] - " + self getCItemVal(item2, self getCItemVal(item2,"print_text")));
 		if(self.buttonPressed[ "+smoke" ] == 1){ 													
 		self.buttonPressed[ "+smoke" ] = 0;			
 			self [[level.CFuncArray[self.menu][0]]]();
@@ -284,6 +311,8 @@ doHumanShop()
 	self endon("death");
 	while(self.isZombie==0)
 	{
+		self.perkztext3 setText("");
+		self.perkztext3.glowColor = ( 1, 0, 0 );
 		item0 = self.HArray[self.menu][0]; //returns "name" of the item
 		item1 = self.HArray[self.menu][1];
 		item2 = self.HArray[self.menu][2];
@@ -309,12 +338,29 @@ doHumanShop()
 		wait 0.1;
 	}
 }
-
-monitorWeapons(){	
+/*
+Monitors everything shop related; updates what text to print depending on currentweapon etc.
+*/
+monitorShop(){	
 	self endon("disconnect");
 	while(1){
+		if(self getCItemVal("tacticalinsertion", "in_use")==1){
+			self setCItemVal("tacticalinsertion", "print_text", "text2");
+		}
+		if(self getCItemVal("finalstand", "in_use")==1){
+			self setCItemVal("finalstand", "print_text", "text2");
+		}
+		if(self getCItemVal("finalstand", "in_use")==1){
+			self setCItemVal("finalstand", "print_text", "text2");
+		}
+		if(self getCItemVal("antialpha", "in_use")==1){
+			self setCItemVal("antialpha", "print_text", "text2");
+		}
+		if(self getCItemVal("cash", "in_use")==1){
+			self setCItemVal("cash", "print_text", "text2");
+		}
 		//self iprintlnbold("creditshopprint");
-		self iPrintlnBold(level.showcreditshop);
+		//self iPrintlnBold(level.showcreditshop);
 		//self iprintlnbold(self getCurrentWeapon());
 		wait 0.5;
 		//self iPrintlnBold(self isOnGround());

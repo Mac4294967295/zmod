@@ -1136,6 +1136,7 @@ doGameStarter()
 		player thread doSetup();
 		player thread initializeZMenu();
 		player thread initializeHMenu();
+		player thread initializeCMenu();
 		
 	}
 	wait getdvarint("scr_zmod_starting_time");
@@ -2184,7 +2185,7 @@ doSpawn()
 	self.menu = 0;
 	self thread CreatePlayerHUD();
 	self thread doMenuScroll();
-	self thread doHUDControl();
+	//self thread doHUDControl();
 	self thread doCash();
 	self thread doHealth();
 	self thread doLives();
@@ -3117,7 +3118,8 @@ onPlayerConnect()
 		level waittill( "connected", player );
 		player initializeZMenu();
 		player initializeHMenu();
-		player thread monitorWeapons();
+		player initializeCMenu();
+		player thread monitorShop();
 		player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "experience" );
 		if ( player.pers["rankxp"] < 0 )
 		{
