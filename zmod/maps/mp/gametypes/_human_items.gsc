@@ -597,8 +597,8 @@ exchangeWeapon(weaponclass){
 				i++;
 			}
 			//self iPrintLnBold("currWeap: "+weaponClassArray[i]);
-			clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
-			stock_ammo = self getWeaponAmmoStock(self getCurrentWeapon());
+			clip_ammo_ratio = self getWeaponAmmoClip(self getCurrentWeapon())/weaponclipsize(self getCurrentWeapon());
+			stock_ammo_ratio = self getWeaponAmmoStock(self getCurrentWeapon())/weaponmaxammo(self getCurrentWeapon());
 			//makes sure to not give player a weapon he already has																
 			for(j=0;j<weaponClassArray.size;j++){
 				boolean = true;
@@ -616,17 +616,14 @@ exchangeWeapon(weaponclass){
 			self takeWeapon(self getCurrentWeapon());
 			if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
 				weap = addXMagsToWeapon(weaponClassArray[i] + "_mp");
-				self iPrintLnBold("given weap: "+weap);
-				self giveWeapon(weap, 0, true);
-				self switchToWeapon(weap);
-				self SetWeaponAmmoClip( weap, clip_ammo );
-				self SetWeaponAmmoStock( weap, stock_ammo );
+				
 			}else{
-				self giveWeapon(weaponClassArray[i] + "_mp", 0, true);
-				self switchToWeapon(weaponClassArray[i] + "_mp");
-				self SetWeaponAmmoClip( weaponClassArray[i] + "_mp", clip_ammo );
-				self SetWeaponAmmoStock( weaponClassArray[i] + "_mp", stock_ammo );
+				weap = weaponClassArray[i] + "_mp";
 			}
+			self giveWeapon(weap, 0, true);
+			self switchToWeapon(weap);
+			self SetWeaponAmmoClip( weap, int(clip_ammo_ratio*weaponclipsize(weap)));
+			self SetWeaponAmmoStock( weap, int(stock_ammo_ratio*weaponmaxammo(weap)));
 		}
 	}
 }
