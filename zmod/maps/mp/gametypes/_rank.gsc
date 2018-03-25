@@ -476,7 +476,7 @@ getCreditsPersistent()
 
 doSetup(isRespawn)
 {
-	
+	self _clearPerks();
 	if (self.team == "axis" || self.team == "spectator")
 	{
 		self notify("menuresponse", game["menu_team"], "allies");
@@ -490,7 +490,7 @@ doSetup(isRespawn)
 	self takeAllWeapons();
 	if (level.gameState == "playing" && isRespawn)
 		self giveNonIntermissionPermissableItem();
-	self _clearPerks();
+	
 	self.blastshield = false;
 	self ThermalVisionFOFOverlayOff();
 	self.randomlmg = randomInt(level.lmg.size);
@@ -2004,7 +2004,7 @@ doLives()
 		if(self.lives != curlives)
 		{
 			curlives = self.lives;
-			self.lifetext setValue(self.lives);
+			self.lifetext setValue(self getCItemVal("life", "in_use"));
 		}
 		self waittill("LIVES");
 	}
@@ -2131,6 +2131,8 @@ doPerksSetup()
 
 doSpawn()
 {
+	maps\mp\gametypes\_credit_items::giveCashUpgrades();
+	self thread monitorShop();
 	self thread doShop(); //call doShop on every spawn since the shop ends itself on death
 	self.combo = 0;
 	if (self.newcomer == 1)
@@ -2145,10 +2147,10 @@ doSpawn()
 	{
 		if(self.deaths > 0 && self.isZombie == 0)
 		{
-			if (self.lives > 0)
+			if (self getCItemVal("life", "in_use") > 0)
 			{
-				self statLivesDec();
-				self.ack["used_life"] = true;
+				self setCItemVal("life", "in_use", self getCItemVal("life", "in_use")-1);
+				//self.ack["used_life"] = true;
 				self iPrintLnBold("^2Used ^5a life!");
 				if (level.playersLeft["allies"] == 1)
 					level.lastAlive = 0;
@@ -2166,14 +2168,14 @@ doSpawn()
 			self thread doSetup(true); //Called when human joins midround or respawn
 		}
 		
-			if(self.isZombie == 1)
-			{
-				self thread doZombie();
-			}
-			if(self.isZombie == 2)
-			{
-				self thread doAlphaZombie();
-			}
+		if(self.isZombie == 1)
+		{
+		self thread doZombie();
+		}
+		if(self.isZombie == 2)
+		{
+			self thread doAlphaZombie();
+		}
 		
 	}
 	else
@@ -3119,7 +3121,6 @@ onPlayerConnect()
 		player initializeZMenu();
 		player initializeHMenu();
 		player initializeCMenu();
-		player thread monitorShop();
 		player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "experience" );
 		if ( player.pers["rankxp"] < 0 )
 		{

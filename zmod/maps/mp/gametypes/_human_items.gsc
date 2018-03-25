@@ -243,7 +243,7 @@ doBetterdevils(){
 					explosionLocation = BulletTrace( forward, end, 0, self )[ "position" ]; 							//tracks the explosion exposion should happen
 					level.chopper_fx["explode"]["small"] = loadfx ("explosions/helicopter_explosion_secondary_small"); 	//creates a chopper explosion animation
 					playfx(level.chopper_fx["explode"]["small"], explosionLocation);
-					RadiusDamage( explosionLocation, 100, 400, 200, self );												//specifies the radius, max damage, min damage, attacker
+					RadiusDamage( explosionLocation, 10, 40000, 40000, self );												//specifies the radius, max damage, min damage, attacker
 					ammoCount -= 1;
 				}
 			}

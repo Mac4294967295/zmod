@@ -240,8 +240,8 @@ doCreditShop()
 	self endon("death");
 	while(level.showcreditshop)
 	{
-		self.perkztext3 setText("Lives: "+self getCItemVal("life", "in_use") );
-		self.perkztext3.glowColor = ( 1, 0, 0 );
+		//self.perkztext3 setText("Lives: "+self getCItemVal("life", "in_use") );
+		//self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
 		item0 = self.CArray[self.menu][0]; //returns "name" of the item
 		item1 = self.CArray[self.menu][1];
