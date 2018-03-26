@@ -1,7 +1,7 @@
         /* No one likes egotistical faggots. This bitch has GPL. */
 		/* big thanks to chaz for the patch and his help.*/
 		/* Edited by [UD]Funky */
-		
+
 #include common_scripts\utility;
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
@@ -16,25 +16,25 @@ tryUseCustomAirstrike()
     self notifyOnPlayerCommand( "[{+actionslot 2}]", "+actionslot 2" );
 	self endon ( "death" );
 	self endon ( "disconnect" );
-	
-	
+
+
 	self waittill ( "[{+actionslot 2}]" );
-	
+
 		self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
 		self.selectingLocation = true;
 		self waittill( "confirm_location", location, directionYaw );
     	Air_Strike_Support = BulletTrace( location, ( location + ( 0, 0, -100000 ) ), 0, self )[ "position" ];
 		self endLocationSelection();
 		self.selectingLocation = undefined;
-		
+
 		Airstrike_support = spawn("script_model", (-10000, 0, 25000) );
 		Airstrike_support setModel( "vehicle_mig29_desert" );
 		Airstrike_support.angles = (70, 0, 0);
 		Airstrike_support playLoopSound( "veh_b2_dist_loop" );
-		
-		
+
+
 		Airstrike_support moveTo( Air_Strike_Support + (0, 0, 3000), 5 );
-		
+
 		wait 4;
 		MagicBullet( "javelin_mp", Airstrike_support.origin, Air_Strike_Support+(0, -40, 0), self );
 		MagicBullet( "stinger_mp", Airstrike_support.origin, Air_Strike_Support+(0, 40, 0), self );
@@ -42,18 +42,18 @@ tryUseCustomAirstrike()
 		MagicBullet( "javelin_mp", Airstrike_support.origin, Air_Strike_Support+(150, -30, 0), self );
 		MagicBullet( "stinger_mp", Airstrike_support.origin, Air_Strike_Support+(-150, 30, 0), self );
 		wait 0.1;
-		
+
 		MagicBullet( "javelin_mp", Airstrike_support.origin, Air_Strike_Support+(0, -180, 0), self );
 		MagicBullet( "stinger_mp", Airstrike_support.origin, Air_Strike_Support+(0, 180, 0), self );
 		wait 0.1;
 		MagicBullet( "javelin_mp", Airstrike_support.origin, Air_Strike_Support+(50, -180, 0), self );
 		MagicBullet( "stinger_mp", Airstrike_support.origin, Air_Strike_Support+(-50, 180, 0), self );
 		wait 0.1;
-		
+
 		MagicBullet( "ac130_105mm_mp", Airstrike_support.origin, Air_Strike_Support+(0, -10, 0), self );
 		MagicBullet( "ac130_105mm_mp", Airstrike_support.origin, Air_Strike_Support+(0, 10, 0), self );
 		wait 0.6;
-    
+
 		Airstrike_support.angles = (50, 0, 0);
 		Airstrike_support moveTo( Airstrike_support.origin-(-50, 0, 50), 0.1 );
 		wait 0.1;
@@ -64,12 +64,12 @@ tryUseCustomAirstrike()
 		Airstrike_support moveTo( Airstrike_support.origin-(-50, 0, 50), 0.1 );
 		wait 0.1;
 		Airstrike_support.angles = (0, 0, 0);
-		
+
 		Airstrike_support moveTo( Airstrike_support.origin+(10000, 0, 0), 3 );
-		
-		
+
+
 		wait 3;
-		
+
 		Airstrike_support stoploopsound( "veh_b2_dist_loop" );
 		Airstrike_support delete();
 		Air_Strike_Support = undefined;
@@ -110,7 +110,7 @@ doRoundWaitEnd()
 	level waittill("game_ended");
 	foreach (player in level.players)
 	{
-		
+
 		player.kills = player.savedStat["kills"];
 		player.assists = player.savedStat["assists"];
 		player.deaths = player.savedStat["deaths"];
@@ -125,9 +125,9 @@ chaz_init()
 	setup_dvar("scr_zmod_debug", "0");
 	if (getDvarInt("scr_zmod_debug") != 0)
 		level.debug = 1;
-		
+
 	setup_dvar("scr_zmod_round_gap", "5");
-	
+
 	if (level.debug)
 		level.enablekillcam = false;
 	else
@@ -168,20 +168,20 @@ chaz_init()
 			explosivemax = equipmentmax[i];
 	if (getDvarInt("scr_maxPerPlayerExplosives") != explosivemax)
 		setDvar("scr_maxPerPlayerExplosives", explosivemax);
-	
+
 	level.round_type = "";
 	level.round_type_next = "";
 	level.cround = 0;
 	level.rounds = [];
 	level.rounds[0] = "survival";
 	level.rounds[1] = "megaboss";
-	
+
 	level.rounds_dvar[0] = "scr_zmod_survival";
 	level.rounds_dvar[1] = "scr_zmod_megaboss";
-	
+
 	level.round_msg = [];
 	level.round_msg[0] = "^3Get ready for ^2SURVIVAL^3 Round!";
-	
+
 	level.nadetypes = [];
 	level.nadetypes[0] = "frag_grenade_mp";
 	level.nadetypes[1] = "semtex_mp";
@@ -326,17 +326,17 @@ killedPlayer(who, weap)
 		return;
 	if (self.team == who.team)
 		return;
-	
-	
+
+
 	//Testing money on Player Killed, +5000 | Testversion
 	self statCashAdd(5000);
-	
-	
-	
+
+
+
 	if (self.isZombie != 0)
 	{
 		amount = 100 + (50 * self.combo);
-		
+
 		self statCashAdd(amount);
 		self.combo++;
 		if (self.combo > 1)
@@ -349,7 +349,7 @@ killedPlayer(who, weap)
 	{
 		who statCashAdd(50);
 		who justScorePopup("Died! +$50");
-		
+
 		earn = 50;
 		if (weap == "melee_mp")
 		{
@@ -418,15 +418,15 @@ dropDead()
 		player suicide();
 }
 
-saveus()
+/*saveus()
 {
-	w = self getNadeWeap();
+	//w = self getNadeWeap();
 		e = "[not have]";
 		if (self hasWeapon(w))
 			e = "";
 		self iprintlnbold(w + e + " clip: " + self getWeaponAmmoClip(w) + " stock: " + self getWeaponAmmoStock(w));
 }
-
+*/
 CleanupKillstreaks()
 {
 	//reset and player sentry states
@@ -450,7 +450,7 @@ CleanupKillstreaks()
 
 first_round_init()
 {
-	
+
 	if (!getDvarInt("scr_zmod_randomize_init"))
 		return;
 	c = randomInt(level.players.size);
@@ -489,8 +489,8 @@ doSetup(isRespawn)
 	self notify("menuresponse", "changeclass", "class1");
 	self takeAllWeapons();
 	if (level.gameState == "playing" && isRespawn)
-		self giveNonIntermissionPermissableItem();
-	
+	//	self giveNonIntermissionPermissableItem();
+
 	self.blastshield = false;
 	self ThermalVisionFOFOverlayOff();
 	self.randomlmg = randomInt(level.lmg.size);
@@ -501,7 +501,7 @@ doSetup(isRespawn)
 	self.randomshot = randomInt(level.shot.size);
 	self.randomhand = randomInt(level.hand.size);
 
-	
+
 	if (self.cheapnuke == true)
 		self.nuke_price = level.itemCost["nuke_cheap"];
 	else
@@ -532,7 +532,7 @@ doSetup(isRespawn)
 			self.ack["used_life"] = false;
 		else
 			self.bounty = 0;
-		
+
 	self.attach1 = [];
 	self.bounty = 5000; //testversion
 	self.attachweapon = [];
@@ -552,14 +552,14 @@ doSetup(isRespawn)
 	else
 		self.creditshop = false;
 	self setClientDvar("g_knockback", 1000);
-	
+
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "Human";
 	notifySpawn.notifyText = "Survive for as long as possible!";
 	notifySpawn.glowColor = (0.0, 0.0, 1.0);
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
 	//self thread doHumanShop();
-	
+
 	self.menu = 0;
 	self notify("CASH");
 	self notify("HEALTH");
@@ -600,8 +600,8 @@ doAlphaZombie()
 	self takeAllWeapons();
 	//self _clearPerks();
 	self giveWeapon("usp_tactical_mp", 0, false);
-	self thread doZW();
-	
+	//self thread doZW();
+
 	self maps\mp\gametypes\_zombie_items::giveZUpgrades();
 	self setClientDvar("g_knockback", 3500);
 
@@ -609,7 +609,7 @@ doAlphaZombie()
 	notifySpawn.titleText = "^0Alpha Zombie";
 	notifySpawn.notifyText = "Nom nom for ^3brains!";
 	notifySpawn.glowColor = (1.0, 0.0, 0.0);
-	
+
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
 	//self thread doZombieShop();
 	self notify("CASH");
@@ -627,7 +627,7 @@ doZombie()
 			if (level.debug != 0)
 				self.bounty = 10000;
 			self ThermalVisionFOFOverlayOff();
-			
+
 			self.ck = self.kills;
 			self.cd = self.deaths;
 			self.cs = self.suicides;
@@ -644,18 +644,18 @@ doZombie()
 	self takeAllWeapons();
 	self _clearPerks();
 	self giveWeapon("usp_tactical_mp", 0, false);
-	self thread doZW();
+	//self thread doZW();
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	self maps\mp\gametypes\_zombie_items::giveZUpgrades();		
+	self maps\mp\gametypes\_zombie_items::giveZUpgrades();
 	notifySpawn = spawnstruct();
 	notifySpawn.titleText = "^0Zombie";
 	notifySpawn.notifyText = "Welcome! You are hungry for ^2brains!";
 	notifySpawn.glowColor = (1.0, 0.0, 0.0);
-	
+
 	self thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
 	//self thread doZombieShop();
 	self notify("CASH");
@@ -674,7 +674,7 @@ roflloop()
         {
             if(self AttackButtonPressed() && self getCurrentWeapon() == "stinger_mp")
             {
-	            tagorigin = self getTagOrigin("j_shouldertwist_le");  
+	            tagorigin = self getTagOrigin("j_shouldertwist_le");
 	            firing = GetCursorPos();
 	            x = randomIntRange(-10, 10);
 	            y = randomIntRange(-10, 10);
@@ -691,7 +691,7 @@ roflloop()
     wait 0.2;
     self switchToWeapon(self.lastweap);
 }
- 
+
 GetCursorPos()
 {
         forward = self getTagOrigin("tag_eye");
@@ -699,7 +699,7 @@ GetCursorPos()
         location = BulletTrace( forward, end, 0, self)[ "position" ];
         return location;
 }
- 
+
 vector_scal(vec, scale)
 {
         vec = (vec[0] * scale, vec[1] * scale, vec[2] * scale);
@@ -738,7 +738,7 @@ destroyTrace()
 		level.bosspoint = undefined;
 	}
 }
-
+/*
 doZW()
 {
 	self endon ( "disconnect" );
@@ -749,8 +749,7 @@ doZW()
 		currentweap = self getCurrentWeapon();
 		if (currentweap == "usp_tactical_mp" || currentweap == "stinger_mp" || currentweap == "riotshield_mp")
 			{
-				self setWeaponAmmoClip("usp_tactical_mp", 0);
-				self setWeaponAmmoStock("usp_tactical_mp", 0);
+
 			}
 			else
 				{
@@ -760,7 +759,7 @@ doZW()
 		wait .5;
 	}
 }
-
+*/
 doHW()
 {
 	self endon ( "disconnect" );
@@ -803,9 +802,9 @@ doHW()
 				self.currentweapon = 3;
 				break;
 		}
-		
+
 		basename = strtok(self.current, "_");
-		
+
 		if(basename.size > 2)
 		{
 				self.attach1[self.currentweapon] = basename[1];
@@ -816,7 +815,7 @@ doHW()
 					self.attach1[self.currentweapon] = "none";
 					self.attachweapon[self.currentweapon] = 0;
 			}
-		
+
 		if (self.currentweapon == 3 || self.attachweapon[self.currentweapon] == 2)
 		{
 			self.attach["akimbo"] = 0;
@@ -828,7 +827,7 @@ doHW()
 			self.attach["reddot"] = 0;
 			self.attach["acog"] = 0;
 		}
-		
+
 		if((self.attachweapon[self.currentweapon] == 0) || (self.attachweapon[self.currentweapon] == 1))
 		{
 			akimbo = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
@@ -839,8 +838,8 @@ doHW()
 			rof = buildWeaponName(basename[0], self.attach1[self.currentweapon], "rof");
 			acog = buildWeaponName(basename[0], self.attach1[self.currentweapon], "acog");
 			reddot = buildWeaponName(basename[0], self.attach1[self.currentweapon], "reflex");
-			
-			
+
+
 			if(isValidWeapon(akimbo))
 				self.attach["akimbo"] = 1;
 			else
@@ -884,13 +883,13 @@ doPerkCheck()
 	self endon ( "death" );
 	while(1)
 	{
-					
+
 		if(self.perkz["steadyaim"] == 1)
 		{
 			if(!self _hasPerk("specialty_bulletaccuracy"))
 					self maps\mp\perks\_perks::givePerk("specialty_bulletaccuracy");
 		}
-		
+
 		if(self.perkz["steadyaim"] == 2)
 		{
 			if(!self _hasPerk("specialty_bulletaccuracy"))
@@ -898,15 +897,15 @@ doPerkCheck()
 			if(!self _hasPerk("specialty_holdbreath"))
 				self maps\mp\perks\_perks::givePerk("specialty_holdbreath");
 		}
-		
+
 		if(self.perkz["sleightofhand"] == 1)
 		{
 			if(!self _hasPerk("specialty_fastreload")) {
-				self maps\mp\perks\_perks::givePerk("specialty_fastreload"); 
+				self maps\mp\perks\_perks::givePerk("specialty_fastreload");
 				self maps\mp\perks\_perks::givePerk("specialty_quickdraw");
 			}
 		}
-		
+
 		if(self.perkz["sleightofhand"] == 2)
 		{
 			if(!self _hasPerk("specialty_fastreload"))
@@ -914,14 +913,14 @@ doPerkCheck()
 			if(!self _hasPerk("specialty_fastsnipe"))
 				self maps\mp\perks\_perks::givePerk("specialty_fastsnipe");
 		}
-		
+
 		if(self.perkz["stoppingpower"] == 1)
 		{
 			if(!self _hasPerk("specialty_bulletdamage"))
 				self maps\mp\perks\_perks::givePerk("specialty_bulletdamage");
 		}
-		
-		
+
+
 		if(self.perkz["stoppingpower"] == 2)
 		{
 			if(!self _hasPerk("specialty_bulletdamage"))
@@ -929,13 +928,13 @@ doPerkCheck()
 			if(!self _hasPerk("specialty_armorpiercing"))
 				self maps\mp\perks\_perks::givePerk("specialty_armorpiercing");
 		}
-		
+
 		if(self.perkz["coldblooded"] == 1)
 		{
 				if(!self _hasPerk("specialty_coldblooded"))
 					self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
 		}
-		
+
 		if(self.perkz["coldblooded"] == 2)
 		{
 			if(!self _hasPerk("specialty_coldblooded"))
@@ -944,13 +943,13 @@ doPerkCheck()
 				self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
 				self maps\mp\perks\_perks::givePerk("specialty_spygame");
 		}
-		
+
 		if(self.perkz["ninja"] == 1)
 		{
 			if(!self _hasPerk("specialty_heartbreaker"))
 				self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
 		}
-		
+
 		if(self.perkz["ninja"] == 2)
 		{
 			if(!self _hasPerk("specialty_heartbreaker"))
@@ -958,11 +957,11 @@ doPerkCheck()
 			if(!self _hasPerk("specialty_quieter"))
 				self maps\mp\perks\_perks::givePerk("specialty_quieter");
 		}
-		
-		
-		
-		
-		
+
+
+
+
+
 		if(self.perkz["finalstand"] == 2 || (self.humanfs && self.team == "allies"))
 		{
 			if(!self _hasPerk("specialty_finalstand"))
@@ -976,11 +975,6 @@ doPerkCheck()
 
 
 
-
-switchToLast()
-{
-	self switchToWeapon(self.lastweap);
-}
 /*
 monitorRepair()
 {
@@ -1124,7 +1118,7 @@ isValidWeapon( refString )
 
 doGameStarter()
 {
-	
+
 	level.gameState = "starting";
 	level notify("gamestatechange");
 	level.maxlives = getDvarInt("scr_zmod_max_lives");
@@ -1133,11 +1127,12 @@ doGameStarter()
 	level thread doStartTimer();
 	foreach(player in level.players)
 	{
-		player thread doSetup();
+	//	player thread doSetup();
 		player thread initializeZMenu();
 		player thread initializeHMenu();
 		player thread initializeCMenu();
-		
+		//player thread maps\mp\gametypes\_spawn::doSpawn();
+
 	}
 	wait getdvarint("scr_zmod_starting_time");
 	level thread doZombieTimer();
@@ -1162,7 +1157,7 @@ doStartTimer()
 	first_round_init();
 	foreach(player in level.players)
 	{
-		player thread doSetup();
+		//player thread doSetup();
 	}
 }
 
@@ -1204,7 +1199,7 @@ calculateCredits()
 	max = 0;
 	c = -1;
 	apply = 0;
-	
+
 	while (winners.size < winner_size)
 	{
 		max = 0;
@@ -1234,7 +1229,7 @@ calculateCredits()
 			break;
 		winners[winners.size] = c;
 		level.players[c].kills = 0;
-	}	
+	}
 	i = 0;
 	prize = (winners.size * 50) + 100;
 	foreach (w in winners)
@@ -1246,7 +1241,7 @@ calculateCredits()
 		level.players[w] iPrintlnBold("^3You earned ^5" + p + " ^3credits! You were ^2" + getPlace(i) + " place as human!");
 		prize -= 25;
 	}
-	
+
 	for (i = 0; i < level.players.size; i++)
 		level.players[i].credit_kills = 0;
 
@@ -1268,20 +1263,20 @@ calculateCredits()
 			}
 			if (there)
 				continue;
-			
+
 			if (level.players[i].kills > max)
 			{
 				c = i;
 				max = level.players[i].kills;
 				apply++;
 			}
-			
+
 		}
 		if (apply == 0)
 			break;
 		zwinners[zwinners.size] = c;
 	}
-		
+
 	i = 0;
 	prize = (zwinners.size * 100) + 100;
 	foreach (w in zwinners)
@@ -1293,7 +1288,7 @@ calculateCredits()
 		level.players[w] iPrintlnBold("^3You earned ^5" + p + " ^3credits! You were ^2" + getPlace(i) + " place as zombie!");
 		prize -= 50;
 	}
-	
+
 	for (i = 0; i < level.players.size; i++)
 		level.players[i].kills = 0;
 }
@@ -1314,11 +1309,11 @@ doIntermission()
 	dropDead();
 	foreach(player in level.players)
 		player.bounty = 0;
-	
+
 	level.ShowCreditShop = true;
 	foreach(player in level.players)
-		player thread doSetup();
-	
+		//player thread doSetup();
+
 	wait getdvarInt("scr_zmod_intermission_time");
 	level.ShowCreditShop = false;
 	level thread doZombieTimer();
@@ -1339,13 +1334,13 @@ doIntermissionTimer()
 		level.TimerText setText("^2Intermission: " + level.counter);
 		setDvar("fx_draw", 1);
 		wait 1;
-		
+
 		level.counter--;
 	}
 	level.TimerText setText("");
 	foreach(player in level.players)
 	{
-		player thread doSetup();
+		//player thread doSetup();
 	}
 }
 
@@ -1360,7 +1355,7 @@ doZombieTimer()
 		level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
 		level.TimerText setText("^1Alpha Zombie in: " + level.counter);
 		wait 1;
-		
+
 		level.counter--;
 	}
 	level.TimerText setText("");
@@ -1393,12 +1388,13 @@ chooseZombie()
 	}
 	return -1;
 }
-
+/*
 getNadeWeap()
 {
 	return level.nadetypes[self.nadetype];
 }
-
+*/
+/*
 getDefaultNadeAmmo(type)
 {
 	if (type == 0)
@@ -1414,7 +1410,8 @@ getDefaultNadeAmmo(type)
 					return getDvarInt("scr_zmod_c4_ammo");
 	return 1;
 }
-
+*/
+/*
 monitorNades()
 {
 	self endon("disconnect");
@@ -1442,7 +1439,8 @@ monitorNades()
 		wait 0.6;
 	}
 }
-
+*/
+/*
 GiveGrenade()
 {
 	type = self.nadetype;
@@ -1459,7 +1457,8 @@ GiveGrenade()
 				self setWeaponAmmoClip(weap, 1);
 		}
 }
-
+*/
+/*
 giveThreadedItems()
 {
 	self endon("disconnect");
@@ -1496,6 +1495,7 @@ initGrenade()
 	self.nades = getDefaultNadeAmmo(self.nadetype);
 	self thread monitorNades();
 }
+*/
 
 ibroadcast(msg)
 {
@@ -1553,7 +1553,7 @@ doPlaceMsgText(title, txt, time)
 	level.msgtexttitle destroy();
 	level.msgtext = level createServerFontString("objective");
 	level.msgtext setPoint( "CENTER", "CENTER");
-	
+
 	level.msgtext setText(txt);
 	level.msgtext.alpha = 0;
 	level.msgtext.fontScale = 6;
@@ -1561,8 +1561,8 @@ doPlaceMsgText(title, txt, time)
 	level.msgtext.fontScale = 1.3;
 	level.msgtext fadeOverTime(0.15);
 	level.msgtext.alpha = 1;
-	
-	
+
+
 	if (isDefined(title))
 	{
 		level.msgtexttitle = level createServerFontString("objective");
@@ -1578,7 +1578,7 @@ doPlaceMsgText(title, txt, time)
 	}
 	else
 		level.msgtexttitle = undefined;
-	
+
 	level.msgtexttime = time;
 }
 
@@ -1594,7 +1594,7 @@ doPlaceTimerText(txt)
 doPickZombie()
 {
 	doPlaceTimerText();
-	
+/*
 	times = 3;
 	if (getDvarInt("scr_zmod_alpha_count") != 0)
 		times = getDvarInt("scr_zmod_alpha_count");
@@ -1620,15 +1620,29 @@ doPickZombie()
 		times--;
 	}
 	level.TimerText setText("^1Alpha Zombies RELEASED!");
-	
+
 	level playSoundOnPlayers("mp_defeat");
-	
-	level.gameState = "playing"; 
+
+	level.gameState = "playing";
 	level notify("gamestatechange");
 	level thread doPlaying();
 	level thread doPlayingTimer();
 	level thread inGameConstants();
-	level thread giveNonIntermissionPermissableItems();
+//	level thread giveNonIntermissionPermissableItems();
+*/
+	//level.players[0].team="axis";
+	//notifySpawn = spawnstruct();
+	level.players[0] notify("menuresponse", game["menu_team"], "axis");
+	wait .1;
+	level.players[0] notify("menuresponse", "changeclass", "class3");
+	//level.players[0] thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
+	//level.players[0] suicide();
+	level.players[0].isZombie=1;
+	level.gameState = "playing";
+	level notify("gamestatechange");
+	level thread doPlaying();
+	level thread doPlayingTimer();
+	level thread inGameConstants();
 }
 
 doPlaying()
@@ -1693,12 +1707,12 @@ doEnding()
 	notifyEnding.titleText = "Round Over!";
 	notifyEnding.notifyText2 = "Next Round Will Start Soon!";
 	notifyEnding.glowColor = (0.0, 0.6, 0.3);
-	
+
 	wait 1;
 	VisionSetNaked("blacktest", 1);
-	
+
 	calculateCredits();
-	
+
 	foreach(player in level.players)
 	{
 		player.isZombie = 0;
@@ -1713,7 +1727,7 @@ doEnding()
 	CleanupKillstreaks();
 	wait 4.5;
 	VisionSetNaked(getDvar( "mapname" ), 2);
-	
+
 	foreach(player in level.players)
 	{
 		player freezeControls(false);
@@ -1739,12 +1753,14 @@ inGameConstants()
 		}
 	}
 }
+/*
 doMenuScroll()
 {
 	self endon("disconnect");
 	self endon("death");
 	while(1)
 	{
+		self iPrintLnBold(self.menu+" "+self.CMenu.size+" "+self.HMenu.size+" "+self.ZMenu.size);
 		if(self.buttonPressed[ "+actionslot 3" ] == 1)
 		{
 			self.buttonPressed[ "+actionslot 3" ] = 0;
@@ -1789,10 +1805,10 @@ doMenuScroll()
 			self notify("MENUCHANGE");
 		}
 		self checkMenu();
-		wait .045;
+		wait .15;
 	}
 }
-
+*/
 checkMenu()
 {
 	if (self.team == "allies")
@@ -1837,7 +1853,7 @@ textPulseThread(type, scale)
 {
 	self notify("textpulse"+type);
 	self endon("death");
-	
+
 	self ChangeFontScaleOverTime(0.05);
 	if (isDefined(scale))
 		self.fontScale *= scale;
@@ -1868,8 +1884,8 @@ doHealth()
 	self.healthtext.glowColor = ( 2.55, 0, 0 );
 	self.healthtext.glowAlpha = 1;
 	self.healthtext.color = ( 1.0, 1.0, 1.0 );
-	
-	
+
+
 	self.healthlabel = NewClientHudElem( self );
 	self.healthlabel.alignX = TR_HUD_LABEL_ALIGNX;
 	self.healthlabel.alignY = "top";
@@ -1886,10 +1902,10 @@ doHealth()
 	self.healthlabel.glowAlpha = 1;
 	self.healthlabel.color = ( 1.0, 1.0, 1.0 );
 	self.healthlabel setText("Max HP: ");
-	
+
 	self.healthlabel textPulseInit();
 	self.healthtext textPulseInit();
-	
+
 	while(1)
 	{
 		self.healthtext setValue(self.maxhealth);
@@ -1903,7 +1919,7 @@ doCash()
 	self endon("disconnect");
 	self endon("death");
 	self.cashlabel = NewClientHudElem( self );
-	
+
 	self.cashlabel.alignX = TR_HUD_LABEL_ALIGNX;
 	self.cashlabel.alignY = "top";
 	self.cashlabel.horzAlign = "right";
@@ -1918,7 +1934,7 @@ doCash()
 	self.cashlabel.glowAlpha = 1;
 	self.cashlabel.color = ( 1.0, 1.0, 1.0 );
 	self.cashlabel setText("Cash: ");
-	
+
 	self.cash = NewClientHudElem( self );
 	self.cash.alignX = TR_HUD_VALUE_ALIGNX;
 	self.cash.alignY = "top";
@@ -1933,12 +1949,12 @@ doCash()
 	self.cash.glow = 1;
 	self.cash.glowAlpha = 1;
 	self.cash.color = ( 1.0, 1.0, 1.0 );
-	
+
 	self.cash textPulseInit();
 	self.cashlabel textPulseInit();
-	
+
 	while(1)
-	{		
+	{
 		if (self.creditshop == false)
 		{
 			self.cashlabel.glowColor = ( 0, 1, 0 );
@@ -1962,7 +1978,7 @@ doLives()
 	self endon("disconnect");
 	self endon("death");
 	curlives = -1;
-	
+
 	self.lifetext = NewClientHudElem( self );
 	self.lifetext.alignX = TR_HUD_VALUE_ALIGNX;
 	self.lifetext.alignY = "top";
@@ -1978,7 +1994,7 @@ doLives()
 	self.lifetext.glowColor = ( 0.45, 0.45, 1 );
 	self.lifetext.glowAlpha = 1;
 	self.lifetext.color = ( 1.0, 1.0, 1.0 );
-	
+
 	self.lifelabel = NewClientHudElem( self );
 	self.lifelabel.alignX = TR_HUD_LABEL_ALIGNX;
 	self.lifelabel.alignY = "top";
@@ -1995,17 +2011,13 @@ doLives()
 	self.lifelabel.glowAlpha = 1;
 	self.lifelabel.color = ( 1.0, 1.0, 1.0 );
 	self.lifelabel setText("Lives: ");
-	
+
 	self.lifetext textPulseInit();
 	self.lifelabel textPulseInit();
-	
+
 	while(1)
 	{
-		if(self.lives != curlives)
-		{
-			curlives = self.lives;
-			self.lifetext setValue(self getCItemVal("life", "in_use"));
-		}
+		self.lifetext setValue(self getCItemVal("life", "in_use"));
 		self waittill("LIVES");
 	}
 }
@@ -2046,7 +2058,7 @@ statCreditsSub(amount)
 	else
 		self.credits = 0;
 	self notify("CASH");
-	
+
 	self.cash doTextPulse("cash", 0.6);
 }
 
@@ -2074,7 +2086,7 @@ statMaxHealthAdd(amount)
 	self notify("HEALTH");
 	self.healthtext doTextPulse("health");
 }
-
+/*
 doInfoScroll()
 {
 	self endon("disconnect");
@@ -2088,7 +2100,7 @@ doInfoScroll()
 		wait .01;
 	}
 }
-
+*/
 doScoreReset()
 {
 	self.savedStat["score"] += self.pers["score"];
@@ -2105,7 +2117,7 @@ doScoreReset()
 	self.pers["deaths"] = 0;
 	self.pers["suicides"] = 0;
 	self.score = 0;
-	
+
 	self.assists = 0;
 	self.deaths = 0;
 	self.suicides = 0;
@@ -2126,9 +2138,9 @@ doPerksSetup()
 {
 	self.perkz = [];
 	resetPerks();
-	
-}
 
+}
+/*
 doSpawn()
 {
 	maps\mp\gametypes\_credit_items::giveCashUpgrades();
@@ -2142,7 +2154,7 @@ doSpawn()
 		self.cs = self.suicides;
 		self.newcomer = 0;
 	}
-	
+
 	if(level.gameState == "playing" || level.gameState == "ending")
 	{
 		if(self.deaths > 0 && self.isZombie == 0)
@@ -2160,14 +2172,14 @@ doSpawn()
 					self.isZombie = 1;
 					self.credit_kills = self.kills;
 				}
-					
+
 		}
-		
+
 		if(self.isZombie == 0)
 		{
 			self thread doSetup(true); //Called when human joins midround or respawn
 		}
-		
+
 		if(self.isZombie == 1)
 		{
 		self thread doZombie();
@@ -2176,13 +2188,13 @@ doSpawn()
 		{
 			self thread doAlphaZombie();
 		}
-		
+
 	}
 	else
 		{
 			self thread doSetup(false); //Called when human joins on intermission
 		}
-	
+
 	self thread doDvars();
 	self.menu = 0;
 	self thread CreatePlayerHUD();
@@ -2193,7 +2205,7 @@ doSpawn()
 	self thread doLives();
 	self thread destroyOnDeath();
 	self thread doMenuInfo();
-	
+
 	//Testing money on Player Spawn, +5000 | Testversion
 	self statCashAdd(5000);
 	if(level.gamestate == "starting")
@@ -2204,7 +2216,8 @@ doSpawn()
 	if (self.ack["safe"] == false)
 		self.ack["safe"] = true;
 }
-
+*/
+/*
 doMenuInfo()
 {
 	self endon("disconnect");
@@ -2224,7 +2237,7 @@ doMenuInfo()
 		self waittill("MENUCHANGE");
 	}
 }
-
+*/
 doJoinTeam()
 {
 	if(self.CONNECT == 1)
@@ -2280,18 +2293,18 @@ doInit()
 	level thread doPlaceMsgLoop();
 	CleanupKillstreaks();
 	level.mapwait = 0;
-	
+
 	level initializeItemFuncArray();
 	level InitializeSpawnPoints();
 	level thread maps\mp\gametypes\MapEdit::init();
-	
+
 	setDvar("g_gametype", "war");
 	setDvar("ui_gametype", "war");
 	setDvar("scr_war_scorelimit", 0);
 	setDvar("scr_war_waverespawndelay", 0);
 	setDvar("scr_war_playerrespawndelay", 0);
 	wait 2;
-	
+
 	level thread doGameStarter();
 }
 
@@ -2338,15 +2351,15 @@ CostInit()
 	level.itemCost["acog"] = 50;
 	level.itemCost["repair"] = 250;
 	level.itemCost["harrier"] = 450;
-	
+
 	level.itemCost["artillery"] = 400;
 	level.itemCost["airstrike"] = 250;
 	level.itemCost["GrimReaper"] = 500;
 	level.itemCost["BetterDevils"] = 500;
-	
+
 	level.itemCost["riotz"] = 100;
-	
-	
+
+
 	level.itemCost["ch_cash"] = 400;
 	level.itemCost["cz_cash"] = 400;
 	level.itemCost["ch_fullammo"] = 250;
@@ -2376,7 +2389,7 @@ weaponInit()
 	level.weapname["m240"] = "M240";
 	level.lmg[4] = "aug";
 	level.weapname["aug"] = "AUG";
-	
+
 	level.assault = [];
 	level.assault[0] = "ak47";
 	level.weapname["ak47"] = "AK-47";
@@ -2396,13 +2409,13 @@ weaponInit()
 	level.weapname["scar"] = "SCAR-H";
 	level.assault[8] = "tavor";
 	level.weapname["tavor"] = "TAR-21";
-	
+
 	level.sights = [];
 	level.sights[0] = "reflex";
 	level.sights[1] = "eotech";
 	level.sights[2] = "acog";
 	level.sights[3] = "";
-	
+
 	level.smg = [];
 	level.smg[0] = "mp5k";
 	level.weapname["mp5k"] = "MP5K";
@@ -2414,7 +2427,7 @@ weaponInit()
 	level.weapname["kriss"] = "VECTOR";
 	level.smg[4] = "ump45";
 	level.weapname["ump45"] = "UMP45";
-	
+
 	level.shot = [];
 	level.shot[0] = "ranger";
 	level.weapname["ranger"] = "RANGER";
@@ -2428,7 +2441,7 @@ weaponInit()
 	level.weapname["m1014"] = "M1014";
 	level.shot[5] = "spas12";
 	level.weapname["spas12"] = "SPAS-12";
-	
+
 	level.machine = [];
 	level.machine[0] = "pp2000";
 	level.weapname["pp2000"] = "PP2000";
@@ -2436,7 +2449,7 @@ weaponInit()
 	level.weapname["glock"] = "G18";
 	level.machine[2] = "beretta393";
 	level.weapname["beretta393"] = "RAFFICA";
-	
+
 	level.hand = [];
 	level.hand[0] = "beretta";
 	level.hand[1] = "usp";
@@ -2446,9 +2459,9 @@ weaponInit()
 	level.hand[5] = "beretta393";
 	level.hand[6] = "pp2000";
 	level.hand[7] = "tmp";
-	
 
-	
+
+
 	level.rifle = [];
 	level.rifle[0] = "wa2000";
 	level.weapname["wa2000"] = "WA2000";
@@ -2458,7 +2471,7 @@ weaponInit()
 	level.weapname["cheytac"] = "INTERVENTION";
 	level.rifle[3] = "m21";
 	level.weapname["m21"] = "M21 EBR";
-	
+
 	level.explosives = [];
 	level.explosives[0] = "frag";
 	level.weapname["frag"] = "FRAG";
@@ -2468,9 +2481,9 @@ weaponInit()
 	level.weapname["claymore"] = "CLAYMORE";
 	level.explosives[3] = "c4";
 	level.weapname["c4"] = "C4 CHARGE";
-	
+
 	level.weapname["riotshield"] = "Riotshield";
-	
+
 	level.weaponclasses = [];
 	level.weaponclasses[0] = "weapon_lmg";
 	level.weaponclasses[1] = "weapon_assault";
@@ -2485,7 +2498,7 @@ weaponInit()
 
 MenuInit()
 {
-	
+
 	level.humanM = [];
 	i = 0;
 	level.humanM[i] = [];
@@ -2541,11 +2554,11 @@ MenuInit()
 	level.humanM[i][0] = "Buy Artillery - " + level.itemCost["artillery"];
 	level.humanM[i][1] = "Buy Airstrike - " + level.itemcost ["airstrike"];
 	level.humanM[i][2] = "Buy GrimReaper - " + level.itemCost["GrimReaper"];
-	
+
 
 	i = 0;
 	level.creditM = [];
-	
+
 	level.creditM[i] = [];
 	// i == 0
 	level.creditM[i][0]["text"] = "[Human] Buy 200 Starting Cash - " + level.itemCost["ch_cash"];
@@ -2583,7 +2596,7 @@ MenuInit()
 	level.creditM[i][0]["cost"] = level.itemCost["ch_tact"];
 	level.creditM[i][1]["text"] = "[Zombie] Unlock Riot Shield - " + level.itemCost["cz_riot"];
 	level.creditM[i][1]["cost"] = level.itemCost["cz_riot"];
-	
+
 }
 
 OverRider()
@@ -2592,7 +2605,7 @@ OverRider()
 	{
 		level notify("abort_forfeit");
 		level.prematchPeriod = 0;
-		
+
 		if (level.enablekillcam)
 			level.killcam = 1;
 		else
@@ -2727,13 +2740,13 @@ CreatePlayerHUD()
 {
 	self.HintText = self createFontString( "objective", 1.25 );
 	self.HintText setPoint( "CENTER", "CENTER", 0, 50 );
-	
+
 
 	b = -65;
 	s = 15;
 	i = 0;
 	a = 0.85;
-	
+
 	//Mac: Debug HUD
 	self.DebugHUD = NewClientHudElem( self );
 	//self.DebugHUD.alignY = "bottom";
@@ -2750,9 +2763,9 @@ CreatePlayerHUD()
 	self.DebugHUD.glowAlpha = 1;
 	self.DebugHUD.color = ( 1.0, 1.0, 1.0 );
 	self.DebugHUD setText("Movespeed-var: init");
-	
-	
-	
+
+
+
 	self.scrollleft = NewClientHudElem( self );
 	self.scrollleft.alignX = "center";
 	self.scrollleft.alignY = "bottom";
@@ -2767,7 +2780,7 @@ CreatePlayerHUD()
 	self.scrollleft.glowColor = ( 0, 0, 1 );
 	self.scrollleft.glowAlpha = 1;
 	self.scrollleft.color = ( 1.0, 1.0, 1.0 );
-	
+
 	self.scrollright = NewClientHudElem( self );
 	self.scrollright.alignX = "center";
 	self.scrollright.alignY = "bottom";
@@ -2783,10 +2796,10 @@ CreatePlayerHUD()
 	self.scrollright.glowColor = ( 0, 0, 1 );
 	self.scrollright.glowAlpha = 1;
 	self.scrollright.color = ( 1.0, 1.0, 1.0 );
-	
+
 	self.scrollright setText(">");
 	self.scrollleft setText("<");
-	
+
 	self.menutext = NewClientHudElem( self );
 	self.menutext.alignX = "center";
 	self.menutext.alignY = "bottom";
@@ -2802,7 +2815,7 @@ CreatePlayerHUD()
 	self.menutext.glowAlpha = 1;
 	self.menutext.color = ( 1.0, 1.0, 1.0 );
 	i++;
-	
+
 	self.option1 = NewClientHudElem( self );
 	self.option1.alignX = "center";
 	self.option1.alignY = "bottom";
@@ -2818,7 +2831,7 @@ CreatePlayerHUD()
 	self.option1.glowAlpha = 1;
 	self.option1.color = ( 1.0, 1.0, 1.0 );
 	i++;
-	
+
 	self.option2 = NewClientHudElem( self );
 	self.option2.alignX = "center";
 	self.option2.alignY = "bottom";
@@ -2834,7 +2847,7 @@ CreatePlayerHUD()
 	self.option2.glowAlpha = 1;
 	self.option2.color = ( 1.0, 1.0, 1.0 );
 	i++;
-	
+
 	self.option3 = NewClientHudElem( self );
 	self.option3.alignX = "center";
 	self.option3.alignY = "bottom";
@@ -2850,12 +2863,12 @@ CreatePlayerHUD()
 	self.option3.glowAlpha = 1;
 	self.option3.color = ( 1.0, 1.0, 1.0 );
 	i++;
-	
+
 	b = 50;
 	s = 15;
 	i = 0;
 	x = 40;
-	
+
 	self.perkztext1 = NewClientHudElem( self );
 	self.perkztext1.alignX = "right";
 	self.perkztext1.alignY = "top";
@@ -2939,7 +2952,7 @@ CreatePlayerHUD()
 
 CreateServerHUD()
 {
-	
+
 	level.infotext = NewHudElem();
 	level.infotext.alignX = "center";
 	level.infotext.alignY = "bottom";
@@ -3017,15 +3030,15 @@ init()
 		rankName = tableLookup( "mp/ranktable.csv", 0, rankId, 1 );
 	}
 	maps\mp\gametypes\_missions::buildChallegeInfo();
-	
+
 	chaz_init();
-	level thread patientZeroWaiter();
+	//level thread patientZeroWaiter();
 	level thread onPlayerConnect();
 	level thread doInit();
-	
-	
-}
 
+
+}
+/*
 patientZeroWaiter()
 {
 	level endon( "game_ended" );
@@ -3045,7 +3058,7 @@ patientZeroWaiter()
 			}
 		}
 }
-
+*/
 isRegisteredEvent( type )
 {
 	if ( isDefined( level.scoreInfo[type] ) )
@@ -3114,10 +3127,11 @@ getRankInfoLevel( rankId )
 
 onPlayerConnect()
 {
-	
+
 	for(;;)
 	{
 		level waittill( "connected", player );
+		player.isZombie=1;
 		player initializeZMenu();
 		player initializeHMenu();
 		player initializeCMenu();
@@ -3188,32 +3202,32 @@ onPlayerConnect()
 		{
 			player.newcomer = 0;
 		}
-		
+
 		isd = false;
-				
+
 		player.doorInRange = 0;
-		player.isZombie = 0;
 		player.wasAlpha = 0;
 		player.wasSurvivor = 0;
 		player.credits = player getCreditsPersistent();
 		player.credits = 50000;
-		player init_player_extra();
-		
+		//player init_player_extra();
+
 		player iniButtons();
+		//player thread maps\mp\gametypes\_spawn::doSpawn();
 		player thread onPlayerSpawned();
 		player thread onJoinedTeam();
 		player thread onJoinedSpectators();
 		player thread CashFix();
 		player thread onDisconnect();
-		
+
 		player allowSpectateTeam( "allies", true );
 		player allowSpectateTeam( "axis", true );
 		player allowSpectateTeam( "freelook", true );
 		player allowSpectateTeam( "none", true );
-		
+
 		player.CONNECT = 1;
 	}
-	
+
 }
 
 onDisconnect()
@@ -3251,25 +3265,18 @@ onJoinedSpectators()
 		self thread removeRankHUD();
 	}
 }
+
 onPlayerSpawned()
 {
 	self endon("disconnect");
 	for(;;)
 	{
 		self waittill("spawned_player");
-		self thread doSpawn();
-		
-		if(self.pers["team"] == game["attackers"])
-		{
-			SpawnPlayer("allies");
-		}
-		else
-		{
-			SpawnPlayer("axis");
-		}
-		
+		self thread maps\mp\gametypes\_spawn::doSpawn();
+		self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
 	}
 }
+
 roundUp( floatVal )
 {
 	if ( int( floatVal ) != floatVal )
@@ -3468,19 +3475,19 @@ fontPulseNew(player)
 	self notify ( "fontPulse" );
 	self endon ( "fontPulse" );
 	self endon( "death" );
-	
+
 	player endon("disconnect");
 	player endon("joined_team");
 	player endon("joined_spectators");
-	
+
 	self ChangeFontScaleOverTime( self.inFrames * 0.05 );
-	self.fontScale = self.maxFontScale;	
+	self.fontScale = self.maxFontScale;
 	wait (self.inFrames * 0.05);
-	
+
 	self ChangeFontScaleOverTime( self.outFrames * 0.05 );
 	self.fontScale = self.baseFontScale;
 	wait 0.3;
-	
+
 	self fadeOverTime( 0.75 );
 	self.alpha = 0;
 }

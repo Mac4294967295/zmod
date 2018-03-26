@@ -3,16 +3,16 @@
 #include maps\mp\gametypes\_shop_menu;
 
 ammo(){
-	if(self.bounty >= self getHItemVal("ammo", "cost")){ 								
+	if(self.bounty >= self getHItemVal("ammo", "cost")){
 		self statCashSub(self getHItemVal("ammo", "cost"));
 		foreach ( primary in self getWeaponsListPrimaries()){
 			if(!isWeaponSpecial(primary)){ //makes sure to not give ammo for "special" weapons
 				self GiveMaxAmmo(primary);
 			}
 		}
-		self.nades = getDefaultNadeAmmo(self.nadetype);
-	}else self iPrintlnBold("^1Not Enough ^3Cash");		
-	self notify("MENUCHANGE_2");	
+		//self.nades = getDefaultNadeAmmo(self.nadetype);
+	}else self iPrintlnBold("^1Not Enough ^3Cash");
+	self notify("MENUCHANGE_2");
 }
 extendedmags(){
 	if (self getHItemVal("extendedmags", "in_use")==0){
@@ -25,9 +25,9 @@ extendedmags(){
 				if(isSubStr(string, basename[0])){
 					self switchToWeapon(string);
 				}
-			}	
+			}
 		}
-	}	
+	}
 }
 
 sight(){
@@ -43,8 +43,8 @@ sight(){
 		}else{
 			if(!isSubStr(self getCurrentWeapon(), "akimbo")){
 																					//adds 1 to go to next sight
-				
-				
+
+
 				upgradeWeaponSight();
 			}
 		}
@@ -52,7 +52,7 @@ sight(){
 }
 
 addSightToWeapon(sight){
-	
+
 }
 smg(){
 	exchangeWeapon("smg");
@@ -227,14 +227,14 @@ doBetterdevils(){
 			self statCashSub(self getHItemVal("betterdevils", "cost"));
 			self setHItemVal("betterdevils", "in_use", 1);
 			prevweapon = self GetCurrentWeapon(); 							//remembers what weapon player previously had
-			hasAnaconda = self HasWeapon("coltanaconda_mp"); 
+			hasAnaconda = self HasWeapon("coltanaconda_mp");
 			anacondaAmmoStock = self getWeaponAmmoStock("coltanaconda_mp"); //keeps track of normal .44 ammo
 			anacondaAmmoClip = self getWeaponAmmoClip("coltanaconda_mp");
 			self giveWeapon("coltanaconda_mp", 0, true); 					//gives player a .44
 			self setWeaponAmmoClip("coltanaconda_mp", 6);
 			self setWeaponAmmoStock("coltanaconda_mp", 12);
 			self switchToWeapon("coltanaconda_mp");
-			ammoCount = 18; 
+			ammoCount = 18;
 			while(ammoCount>0){ 																						//tracks amount of shots fired
 				self waittill ( "weapon_fired" );
 				if(self GetCurrentWeapon()=="coltanaconda_mp"){ 														//makes sure player shot the .44 and not another gun
@@ -248,11 +248,11 @@ doBetterdevils(){
 				}
 			}
 			self setHItemVal("betterdevils", "in_use", 0);
-			self takeWeapon("coltanaconda_mp");									
+			self takeWeapon("coltanaconda_mp");
 			if(hasAnaconda){
 				self giveWeapon("coltanaconda_mp");								//if player previously had a .44, gives it back to him
-				self setWeaponAmmoClip("coltanaconda_mp", anacondaAmmoClip); 
-				self setWeaponAmmoStock("coltanaconda_mp", anacondaAmmoStock); 
+				self setWeaponAmmoClip("coltanaconda_mp", anacondaAmmoClip);
+				self setWeaponAmmoStock("coltanaconda_mp", anacondaAmmoStock);
 			}
 			self SwitchToWeapon(prevweapon);
 			wait 0.2;
@@ -267,13 +267,13 @@ doGrimreaper(){
 			self statCashSub(self getHItemVal("betterdevils", "cost"));
 			self setHItemVal("grimreaper", "in_use", 1);
 			prevweapon = self GetCurrentWeapon();
-	
+
 			//gives AT4, gives ammo in clip (chamber) and stock (reserve), switches to AT4
 			self giveWeapon("at4_mp", 0, true);
 			self setWeaponAmmoClip("at4_mp", 1);
 			self setWeaponAmmoStock("at4_mp", 1);
 			self switchToWeapon("at4_mp");
-	
+
 			//fires 4 shots, reloads, fires 4 shots
 			self.rockets = 8;
 			while(self.rockets > 0)
@@ -292,15 +292,15 @@ doGrimreaper(){
 					}
 					//giving stock ammo before and giving clip and stock ammo after firing
 					self setWeaponAmmoStock("at4_mp", 1);
-					self waittill ("weapon_fired");		
-					self setWeaponAmmoStock("at4_mp", 1);	
-					self setWeaponAmmoClip("at4_mp", 1);			
+					self waittill ("weapon_fired");
+					self setWeaponAmmoStock("at4_mp", 1);
+					self setWeaponAmmoClip("at4_mp", 1);
 				}
 				else
 				{
-					//giving stock and clip ammo after firing 
+					//giving stock and clip ammo after firing
 					self waittill ("weapon_fired");
-					self setWeaponAmmoStock("at4_mp", 1);			
+					self setWeaponAmmoStock("at4_mp", 1);
 					self setWeaponAmmoClip("at4_mp", 1);
 				}
 				//causing a ac130_105mm_mp explosion at rocket destination
@@ -334,18 +334,18 @@ artillery(){
 			self.selectingLocation = true;
 			self waittill( "confirm_location", location, directionYaw );
 			ArtilleryPointSelection = BulletTrace( location, ( location + ( 0, 0, -100000 ) ), 0, self )[ "position" ];
-	
+
 			self endLocationSelection();
 			self.selectingLocation = undefined;
-	
+
 			self iPrintlnBold("Artillery Strike activated");
-	
+
 			wait 5;
-	
-	
+
+
 			//Defining the Number of Total Artillery Strikes (24-32)
 			AmountOfStrikes = randomInt(25) + 8;
-	
+
 			for (i = 1; i <= AmountOfStrikes; i++)
 			{
 				//Declaring x/y
@@ -354,10 +354,10 @@ artillery(){
 
 				//Declaring the ArtilleryImpactPoint relative to the ArtilleryPointSelection
 				ArtilleryImpactPoint = ArtilleryPointSelection+(x, y, 8000);
-				
+
 				//Random Number (1-10)
 				rand_ammo = RandomInt(9) + 1;
-		
+
 				//Ammunition Selection
 				// 8/10 Chance for 40mm, 2/10 for 105mm
 				if(rand_ammo <= 8)
@@ -366,21 +366,21 @@ artillery(){
 				}
 				else
 				{
-					ArtilleryAmmo = "ac130_105mm_mp";			
+					ArtilleryAmmo = "ac130_105mm_mp";
 				}
-		
+
 				//Spawns the Artillery Shot
-				MagicBullet( ArtilleryAmmo, ArtilleryImpactPoint, ArtilleryImpactPoint-(0, 0, 8000), self );		
-		
+				MagicBullet( ArtilleryAmmo, ArtilleryImpactPoint, ArtilleryImpactPoint-(0, 0, 8000), self );
+
 				//Interval in seconds
-				wait RandomFloatRange(0.1, 0.8);	
+				wait RandomFloatRange(0.1, 0.8);
 			}
 		}
 	}
 }
 
 /*
-Upgrades current gun with next possible sight 
+Upgrades current gun with next possible sight
 */
 upgradeWeaponSight(){
 	clip_ammo = self getWeaponAmmoClip(self getCurrentWeapon());
@@ -417,7 +417,7 @@ upgradeWeaponSight(){
 }
 
 addXMagsToWeapon(weapon){
-	
+
 	if(!isUsingKillstreak() && !isWeaponSpecial(weapon)){
 		ammo = self GetWeaponAmmoStock(weapon);
 		basename = strtok(weapon, "_");
@@ -479,7 +479,7 @@ killstreakUsePressed(item, cost)
 
 	if ( isDefined( self.selectingLocation ) )
 		return ( 3 );
-		
+
 	if ( maps\mp\killstreaks\_killstreaks::deadlyKillstreak( streakName ) && level.killstreakRoundDelay && getGametypeNumLives() )
 	{
 		if ( level.gracePeriod - level.inGracePeriod < level.killstreakRoundDelay )
@@ -506,10 +506,10 @@ killstreakUsePressed(item, cost)
 		self iPrintLnBold( &"MP_UNAVILABLE_IN_LASTSTAND" );
 		return ( 7 );
 	}
-	
+
 	if ( !self common_scripts\utility::isWeaponEnabled() )
 		return ( 8 );
-	
+
 	if ( !self [[ level.killstreakFuncs[ streakName ] ]]( lifeId ) )
 		return ( 9 );
 
@@ -573,7 +573,7 @@ exchangeWeapon(weaponclass){
 				rand = randomInt(weaponClassArray.size); 						//number representing index of weapon in weaponClassArray
 				randWeapon = weaponClassArray[rand];
 																				//makes sure to not give a weapon which the player already has
-				while(isSubStr(self getWeaponsListPrimaries()[0], randWeapon) || isSubStr(self getWeaponsListPrimaries()[1], randWeapon) || isSubStr(self getWeaponsListPrimaries()[2], randWeapon)){ 
+				while(isSubStr(self getWeaponsListPrimaries()[0], randWeapon) || isSubStr(self getWeaponsListPrimaries()[1], randWeapon) || isSubStr(self getWeaponsListPrimaries()[2], randWeapon)){
 					rand = (rand+1)%weaponClassArray.size;
 					randWeapon = weaponClassArray[rand];
 				}
@@ -586,7 +586,7 @@ exchangeWeapon(weaponclass){
 				if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
 					weap = addXMagsToWeapon(randWeapon + "_mp");
 					self switchToWeapon(weap);
-				}else self switchToWeapon(randWeapon + "_mp");	
+				}else self switchToWeapon(randWeapon + "_mp");
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 			self notify("MENUCHANGE_2");
 		}else{
@@ -599,11 +599,11 @@ exchangeWeapon(weaponclass){
 			//self iPrintLnBold("currWeap: "+weaponClassArray[i]);
 			clip_ammo_ratio = self getWeaponAmmoClip(self getCurrentWeapon())/weaponclipsize(self getCurrentWeapon());
 			stock_ammo_ratio = self getWeaponAmmoStock(self getCurrentWeapon())/weaponmaxammo(self getCurrentWeapon());
-			//makes sure to not give player a weapon he already has																
+			//makes sure to not give player a weapon he already has
 			for(j=0;j<weaponClassArray.size;j++){
 				boolean = true;
 				foreach(weapon in self getWeaponsListPrimaries()){
-					if(isSubStr(weapon, weaponClassArray[i])){ 
+					if(isSubStr(weapon, weaponClassArray[i])){
 						boolean = false;
 					}
 				}
@@ -616,7 +616,7 @@ exchangeWeapon(weaponclass){
 			self takeWeapon(self getCurrentWeapon());
 			if(self getHItemVal("extendedmags", "in_use")==1){					//makes sure to give extended mags to new gun if xmags were acquired before
 				weap = addXMagsToWeapon(weaponClassArray[i] + "_mp");
-				
+
 			}else{
 				weap = weaponClassArray[i] + "_mp";
 			}
@@ -633,33 +633,33 @@ getWeaponArr(weaponclass){
 	switch(weaponclass){
 		case "pistol": weaponArray = level.hand;
 		break;
-		
+
 		case "smg": weaponArray = level.smg;
 		break;
-		
+
 		case "assault": weaponArray = level.assault;
 		break;
-		
+
 		case "projectile": weaponArray = level.explosives;
 		break;
-		
+
 		case "sniper": weaponArray = level.rifle;
 		break;
-		
+
 		case "shotgun": weaponArray = level.shot;
 		break;
-		
+
 		case "lmg": weaponArray = level.lmg;
 		break;
-		
+
 		default:
 		break;
 	}
 	return weaponArray;
 }
 
-	
-	
+
+
 	/*
 	switch( weaponclass )
 	{
@@ -670,11 +670,11 @@ getWeaponArr(weaponclass){
 		case "weapon_sniper":
 		case "weapon_shotgun":
 		case "weapon_lmg":
-			
+
 			break;
 		case "weapon_grenade":
 		case "weapon_explosive":
-			
+
 			break;
 		default:
 			break;

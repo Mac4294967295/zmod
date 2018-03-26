@@ -50,69 +50,69 @@ initCShopItem(name, cost, page, pos, text1, text2){
 */
 initializeItemFuncArray(){
 	level.CFuncArray[10][3] = [];
-	
+
 	level.CFuncArray[0][0]=::life;
 	level.CFuncArray[0][1]=::tacticalinsertion;
-	//level.CFuncArray[0][2]=::finalstand;
-	
-	//level.CFuncArray[1][0]=::antialpha;
-	//level.CFuncArray[1][1]=::cash;
-	
-	
+	level.CFuncArray[0][2]=::finalstand;
+
+	level.CFuncArray[1][0]=::antialpha;
+	level.CFuncArray[1][1]=::cash;
+
+
 	level.ZFuncArray[10][3] = [];
-	
+
 	level.ZFuncArray[0][0]=::health;
 	level.ZFuncArray[0][1]=::wallhack;
 	level.ZFuncArray[0][2]=::throwingknife;
-	
+
 	level.ZFuncArray[1][0]=::coldblood;
 	level.ZFuncArray[1][1]=::ninja;
 	level.ZFuncArray[1][2]=::movespeed;
-	
+
 	level.ZFuncArray[2][0]= "";
 	level.ZFuncArray[2][1]=::stinger;
 	level.ZFuncArray[2][2]=::commando;
-	
+
 	level.ZFuncArray[3][0]=::blastshield;
 	level.ZFuncArray[3][1]=::zriotshield;
 	level.ZFuncArray[3][2]=::_suicide;
-	
-	
-	
+
+
+
 	level.HFuncArray[10][3] = [];
-	
+
 	level.HFuncArray[0][0]=::ammo;
 	level.HFuncArray[0][1]=::extendedmags;
 	level.HFuncArray[0][2]=::sight;
-	
+
 	level.HFuncArray[1][0]=::smg;
 	level.HFuncArray[1][1]=::assault;
 	level.HFuncArray[1][2]=::lmg;
-	
+
 	level.HFuncArray[2][0]=::pistol;
 	level.HFuncArray[2][1]=::shotgun;
 	level.HFuncArray[2][2]=::sniper;
-	
+
 	level.HFuncArray[3][0]=::hriotshield;
 	level.HFuncArray[3][1]=::akimbo;
 	level.HFuncArray[3][2]=::repair;
-	
+
 	level.HFuncArray[4][0]=::steadyaim;
 	level.HFuncArray[4][1]=::sleightofhand;
 	level.HFuncArray[4][2]=::rpg;
-	
+
 	level.HFuncArray[5][0]=::predator_missile;
 	level.HFuncArray[5][1]=::harrier_airstrike;
 	level.HFuncArray[5][2]=::helicopter_flares;
-	
+
 	level.HFuncArray[6][0]=::sentry;
 	level.HFuncArray[6][1]=::helicopter_minigun;
 	level.HFuncArray[6][2]=::ac130;
-	
+
 	level.HFuncArray[7][0]=::stealth_airstrike;
 	level.HFuncArray[7][1]=::artillery;
 	level.HFuncArray[7][2]=::nuke;
-	
+
 	level.HFuncArray[8][0]=::betterdevils;
 	level.HFuncArray[8][1]=::grimreaper;
 }
@@ -145,7 +145,7 @@ initializeCMenu(){
 	initCShopItem("finalstand", 500, 0, 2, "[Human] Buy Finalstand - ", "^1Finalstand activated");
 	initCShopItem("antialpha", 200, 1, 0, "Buy Anti-Alpha ", "^1Anti-Alpha activated");
 	initCShopItem("cash", 200, 1, 1, "Buy 200 Starting Cash ", "^1Starting Cash acquired");
-	
+
 }
 /*
 builds the array.
@@ -156,15 +156,15 @@ initializeZMenu(){
 	initZShopItem("health", 50, 0, 0, "Buy Health - ", "^1Max Health achieved");
 	initZShopItem("wallhack", 200, 0, 1, "Buy Wallhack - ", "^1Wallhack activated");
 	initZShopItem("throwingknife", 300, 0, 2, "Buy a Throwing Knife - ", "^1Throwing Knife equipped");
-	
+
 	initZShopItem("coldblood", 250, 1, 0, "Buy Coldblood - ", "^1Coldblood activated");
 	initZShopItem("ninja", 100, 1, 1, "Buy Ninja - ", "^1Ninja activated");
 	initZShopItem("movespeed", 50, 1, 2, "Buy Movespeed - ", "^1Max Movespeed achieved");
-	
+
 	initZShopItem("placeholder", 100, 2, 0, "Buy PLACEHOLDER - ", "^1PLACEHOLDER activated");
 	initZShopItem("stinger", 150, 2, 1, "Buy Stinger - ", "^1Stinger equipped");
 	initZShopItem("commando", 200, 2, 2, "Buy Commando - ", "^1Commando activated");
-	
+
 	initZShopItem("blastshield", 300, 3, 0, "Buy Blastshield - ", "^1Equip/Unequip Blastshield");
 	initZShopItem("riotshield", 300, 3, 1, "Buy Riotshield - ", "^1 Riotshield equipped");
 	initZShopItem("suicide", "", 3, 2, "Suicide", "");
@@ -175,35 +175,35 @@ initializeHMenu(){
 	initHShopItem("ammo", 100, 0, 0, "Buy Ammo - ", "^1current weapon ammo full");
 	initHShopItem("extendedmags", 150, 0, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
 	initHShopItem("sight", 50, 0, 2, "Unlock Sights - ", "Swap Sight");
-	
+
 	initHShopItem("smg", 150, 1, 0, "Exchange current weapon for SMG - ", "Swap SMG");
 	initHShopItem("assault", 150, 1, 1, "Exchange current weapon for AR - ", "Swap AR");
 	initHShopItem("lmg", 150, 1, 2, "Exchange current weapon for LMG - ", "Swap LMG");
-	
+
 	initHShopItem("pistol", 150, 2, 0, "Exchange current weapon for Pistol - ", "Swap Pistol");
 	initHShopItem("shotgun", 150, 2, 1, "Exchange current weapon for Shotgun - ", "Swap Shotgun");
 	initHShopItem("sniper", 150, 2, 2, "Exchange current weapon for Sniper - ", "Swap Sniper");
-	
+
 	initHShopItem("riotshield", 200, 3, 0, "Buy Riotshield - ", "^1Riotshield already equipped");
 	initHShopItem("akimbo", 50, 3, 1, "Buy Akimbo - ", "^1Akimbo unavailable");
 	initHShopItem("repair", 250, 3, 2, "Buy Repair Tool  - ", "^1Unavailable");
-	
-	initHShopItem("steadyaim", 100, 4, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");	
+
+	initHShopItem("steadyaim", 100, 4, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");
 	initHShopItem("sleightofhand", 150, 4, 1, "Buy Sleight of Hand - ", "^1Sleight of Hand equipped");
 	initHShopItem("rpg", 50, 4, 2, "Buy RPG - ", "^1Unavailable");
-	
+
 	initHShopItem("predator_missile", 150, 5, 0, "Buy Predator - ", "");
 	initHShopItem("harrier_airstrike", 450, 5, 1, "Buy Harrier - ", ""); //harrier
 	initHShopItem("helicopter_flares", 500, 5, 2, "Buy Pavelow - ", ""); //pavelow
-	
+
 	initHShopItem("sentry", 450, 6, 0, "Buy Sentry - ", "");
 	initHShopItem("helicopter_minigun", 800, 6, 1, "Buy Chopper - ", ""); //helicopter_minigun
 	initHShopItem("ac130", 1000, 6, 2, "Buy AC-130 - ", "");
-	
+
 	initHShopItem("stealth_airstrike", 250, 7, 0, "Buy Stealth Bomber - ", ""); //stealthbomber
 	initHShopItem("artillery", 400, 7, 1, "Buy Artillery Strike - ", "");
 	initHShopItem("nuke", 3550, 7, 2, "Buy Nuke - ", "");
-	
+
 	initHShopItem("betterdevils", 500, 8, 0, "Buy Better Devils - ", "");
 	initHShopItem("grimreaper", 500, 8, 1, "Buy Grimreaper - ", "");
 }
@@ -238,11 +238,14 @@ doCreditShop()
 {
 	self endon("disconnect");
 	self endon("death");
+	numberOfPages = roundUp((self.CMenu.size-1)/3);
 	while(level.showcreditshop)
 	{
+		doMenuScroll(numberOfPages);
 		//self.perkztext3 setText("Lives: "+self getCItemVal("life", "in_use") );
 		//self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
+		self.menutext setText("Credit Shop " + (self.menu+1) + "/" + (level.creditM.size));
 		item0 = self.CArray[self.menu][0]; //returns "name" of the item
 		item1 = self.CArray[self.menu][1];
 		item2 = self.CArray[self.menu][2];
@@ -250,19 +253,19 @@ doCreditShop()
 		self.option1 setText("Press [{+smoke}] - " + self getCItemVal(item0, self getCItemVal(item0,"print_text")));
 		self.option2 setText("Press [{+actionslot 2}] - " + self getCItemVal(item1, self getCItemVal(item1,"print_text")));
 		self.option3 setText("Press [{+actionslot 4}] - " + self getCItemVal(item2, self getCItemVal(item2,"print_text")));
-		if(self.buttonPressed[ "+smoke" ] == 1){ 													
-		self.buttonPressed[ "+smoke" ] = 0;			
+		if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
 			self [[level.CFuncArray[self.menu][0]]]();
 		}
-		if(self.buttonPressed[ "+actionslot 2" ] == 1){ 													
-		self.buttonPressed[ "+actionslot 2" ] = 0;			
+		if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
 			self [[level.CFuncArray[self.menu][1]]]();
 		}
-		if(self.buttonPressed[ "+actionslot 4" ] == 1){ 													
-		self.buttonPressed[ "+actionslot 4" ] = 0;			
+		if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
 			self [[level.CFuncArray[self.menu][2]]]();
 		}
-		
+
 		wait 0.1;
 	}
 	doHumanShop(); //at end of creditshop call humanshop
@@ -273,8 +276,11 @@ doZombieShop()
 {
 	self endon("disconnect");
 	self endon("death");
+	numberOfPages = roundUp((self.ZMenu.size-1)/3);
 	while(self.isZombie!=0)
 	{
+		doMenuScroll(numberOfPages);
+		self.menutext setText("Zombie Shop " + (self.menu+1) + "/" + (4));
 		self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
 		self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
@@ -284,23 +290,23 @@ doZombieShop()
 		self.option1 setText("Press [{+smoke}] - " + self getZItemVal(item0, self getZItemVal(item0,"print_text")));
 		self.option2 setText("Press [{+actionslot 2}] - " + self getZItemVal(item1, self getZItemVal(item1,"print_text")));
 		self.option3 setText("Press [{+actionslot 4}] - " + self getZItemVal(item2, self getZItemVal(item2,"print_text")));
-		
-		
-		
-		
-		if(self.buttonPressed[ "+smoke" ] == 1){ 													
-		self.buttonPressed[ "+smoke" ] = 0;			
+
+
+
+
+		if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
 			self [[level.ZFuncArray[self.menu][0]]]();
 		}
-		if(self.buttonPressed[ "+actionslot 2" ] == 1){ 													
-		self.buttonPressed[ "+actionslot 2" ] = 0;			
+		if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
 			self [[level.ZFuncArray[self.menu][1]]]();
 		}
-		if(self.buttonPressed[ "+actionslot 4" ] == 1){ 													
-		self.buttonPressed[ "+actionslot 4" ] = 0;			
+		if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
 			self [[level.ZFuncArray[self.menu][2]]]();
 		}
-		
+
 		wait 0.1;
 	}
 }
@@ -309,8 +315,11 @@ doHumanShop()
 {
 	self endon("disconnect");
 	self endon("death");
+	numberOfPages = roundUp((self.HMenu.size-1)/3);
 	while(self.isZombie==0)
 	{
+		doMenuScroll(numberOfPages);
+		self.menutext setText("Human Shop " + (self.menu+1) + "/" + (level.humanM.size));
 		self.perkztext3 setText("");
 		self.perkztext3.glowColor = ( 1, 0, 0 );
 		item0 = self.HArray[self.menu][0]; //returns "name" of the item
@@ -319,29 +328,29 @@ doHumanShop()
 		self.option1 setText("Press [{+smoke}] - " + self getHItemVal(item0, self getHItemVal(item0,"print_text")));
 		self.option2 setText("Press [{+actionslot 2}] - " + self getHItemVal(item1, self getHItemVal(item1,"print_text")));
 		self.option3 setText("Press [{+actionslot 4}] - " + self getHItemVal(item2, self getHItemVal(item2,"print_text")));
-		
-		
-		
-		if(self.buttonPressed[ "+smoke" ] == 1){ 													
-		self.buttonPressed[ "+smoke" ] = 0;			
+
+
+
+		if(self.buttonPressed[ "+smoke" ] == 1){
+		self.buttonPressed[ "+smoke" ] = 0;
 			self [[level.HFuncArray[self.menu][0]]]();
 		}
-		if(self.buttonPressed[ "+actionslot 2" ] == 1){ 													
-		self.buttonPressed[ "+actionslot 2" ] = 0;			
+		if(self.buttonPressed[ "+actionslot 2" ] == 1){
+		self.buttonPressed[ "+actionslot 2" ] = 0;
 			self [[level.HFuncArray[self.menu][1]]]();
 		}
-		if(self.buttonPressed[ "+actionslot 4" ] == 1){ 													
-		self.buttonPressed[ "+actionslot 4" ] = 0;			
+		if(self.buttonPressed[ "+actionslot 4" ] == 1){
+		self.buttonPressed[ "+actionslot 4" ] = 0;
 			self [[level.HFuncArray[self.menu][2]]]();
 		}
-		
+
 		wait 0.1;
 	}
 }
 /*
 Monitors everything shop related; updates what text to print depending on currentweapon etc.
 */
-monitorShop(){	
+monitorShop(){
 	self endon("disconnect");
 	while(1){
 		if(self getCItemVal("tacticalinsertion", "in_use")==1){
@@ -359,6 +368,7 @@ monitorShop(){
 		if(self getCItemVal("cash", "in_use")==1){
 			self setCItemVal("cash", "print_text", "text2");
 		}
+		//self iPrintLnBold(level.gameState+" "+self.isZombie);
 		//self iprintlnbold("creditshopprint");
 		//self iPrintlnBold(level.showcreditshop);
 		//self iprintlnbold(self getCurrentWeapon());
@@ -369,12 +379,12 @@ monitorShop(){
 		*/
 		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
 		else self setHItemVal("akimbo", "print_text", "text1");
-		
+
 		if(self getHItemVal("sight", "in_use")==1){
 			self setHItemVal("sight", "print_text", "text2");
 		}
 		else self setHItemVal("sight", "print_text", "text1");
-		
+
 		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
 			foreach(weaponclass in level.weaponclasses){
 			basename = strtok(weaponclass, "_");
@@ -388,4 +398,19 @@ monitorShop(){
 	}
 }
 
-
+doMenuScroll(numberOfPages){
+	if(self.menu==-1) self.menu=numberOfPages-1;
+	if(self.menu==numberOfPages) self.menu=0;
+	if(self.buttonPressed[ "+actionslot 3" ] == 1){
+		self.buttonPressed[ "+actionslot 3" ] = 0;
+		self.menu--;
+	}
+	if(self.menu==-1) self.menu=numberOfPages-1;
+	if(self.menu==numberOfPages) self.menu=0;
+	if(self.buttonPressed[ "+actionslot 1" ] == 1){
+		self.buttonPressed[ "+actionslot 1" ] = 0;
+		self.menu++;
+	}
+	if(self.menu==-1) self.menu=numberOfPages-1;
+	if(self.menu==numberOfPages) self.menu=0;
+}

@@ -2,13 +2,13 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_shop_menu;
 health(){
-	if(self.maxhp < 1000){ 																	//max health threshold
+	if(self getZItemVal("health", "in_use") < 19){ 																	//max health threshold
 		if(self.bounty >= self getZItemVal("health", "cost")){ 								//check if enough cash
 			self setZItemVal("health", "in_use", self getZItemVal("health", "in_use")+1); 	//signals how much health has been acquired
 			self statMaxHealthAdd(50); 														//adds 50 health (max & current)
 			self statCashSub(self getZItemVal("health", "cost"));							//subtracts the cost form current cash
 			self iPrintlnBold("^2Health Increased!"); 										//prints text
-			if(self.maxhp==1000) self setZItemVal("health", "print_text", "text2");			//at Max rank update what to print in the menu
+			if(self getZItemVal("health", "in_use")==18) self setZItemVal("health", "print_text", "text2");			//at Max rank update what to print in the menu
 		}else self iPrintlnBold("^1Not Enough ^3Cash");
 	}
 	self notify("MENUCHANGE_2");
@@ -75,14 +75,14 @@ movespeed(){
 	if(self getZItemVal("movespeed", "in_use")<5){ //allows a max of 5 movespeed upgrades
 			if(self.bounty >= self getZItemVal("movespeed", "cost")){
 				statCashSub(self getZItemVal("movespeed", "cost"));
-				self setZItemVal("movespeed", "in_use", getZItemVal("movespeed", "in_use")+1);						
+				self setZItemVal("movespeed", "in_use", getZItemVal("movespeed", "in_use")+1);
 				self.moveSpeedScaler += 0.1;
 				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 				self iPrintlnBold("^2Speed Bought!");
 				if(self getZItemVal("movespeed", "in_use")==5){
 					self setZItemVal("movespeed", "print_text", "text2");
 				}
-			}else self iPrintlnBold("^1Not Enough ^3Cash");		
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 		self notify("MENUCHANGE_2");
 }
@@ -98,7 +98,7 @@ stinger(){
 				self thread monitorZWeaponAmmo("stinger");
 				self switchToWeapon("stinger_mp");
 				self setZItemVal("stinger", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");	
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 		self notify("MENUCHANGE_2");
 }
@@ -145,17 +145,11 @@ zriotshield(){
 }
 
 giveZUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
-	self _clearPerks();
-	self maps\mp\perks\_perks::givePerk("specialty_marathon");
-	self maps\mp\perks\_perks::givePerk("specialty_automantle");
-	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
-	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	if(self getZItemVal("health", "in_use")>0){
-		self.maxhealth = self.maxhp;
-		self.health = self.maxhp;
-		self notify("HEALTH");
-	}
+
+	self.maxhealth = 100+self getZItemVal("health", "in_use")*50;
+	self.health = self.maxhealth;
+	self notify("HEALTH");
+
 	if(self getZItemVal("movespeed", "in_use")>0){
 		self.moveSpeedScaler = 1.0+self getZItemVal("movespeed", "in_use")*0.1;
 		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
@@ -175,19 +169,19 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 		self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
 		self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	}
-	
+
 	if (self getZItemVal("blastshield", "in_use")==1)
 	{
 		self maps\mp\perks\_perks::givePerk("specialty_blastshield");
 	}
-	
+
 	if(self getZItemVal("throwingknife", "in_use")>0)
 	{
 		self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
 		self setWeaponAmmoClip("throwingknife_mp", 1);
 		self thread monitorThrowingKnife();
 	}
-	
+
 	switch(self getZItemVal("stinger", "in_use"))
 	{
 		case 1:
@@ -205,15 +199,15 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 		default:
 		break;
 	}
-	
+
 	if(self getZItemVal("riotshield", "in_use")==1){
 		self giveWeapon("riotshield_mp", 0, false);
 	}
-	
+
 	if(self getZItemVal("wallhack", "in_use")==1){
 		self ThermalVisionFOFOverlayOn();
 	}
-	
+
 	self notify("MENUCHANGE_2");
 }
 
