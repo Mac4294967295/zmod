@@ -2,7 +2,7 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_shop_menu;
 health(){
-	if(self getZItemVal("health", "in_use") < 19){ 																	//max health threshold
+	if(self getZItemVal("health", "in_use") < 18){ 																	//max health threshold
 		if(self.bounty >= self getZItemVal("health", "cost")){ 								//check if enough cash
 			self setZItemVal("health", "in_use", self getZItemVal("health", "in_use")+1); 	//signals how much health has been acquired
 			self statMaxHealthAdd(50); 														//adds 50 health (max & current)

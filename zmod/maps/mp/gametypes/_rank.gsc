@@ -473,7 +473,7 @@ getCreditsPersistent()
 		return 0;
 	return cred;
 }
-
+/*
 doSetup(isRespawn)
 {
 	self _clearPerks();
@@ -567,8 +567,8 @@ doSetup(isRespawn)
 	self notify("MENUCHANGE");
 	self notify("SETUPDONE");
 }
-
-
+*/
+/*
 doAlphaZombie()
 {
 	if(self.team == "allies")
@@ -616,7 +616,8 @@ doAlphaZombie()
 	self notify("HEALTH");
 	self notify("LIVES");
 }
-
+*/
+/*
 doZombie()
 {
 	if(self.team == "allies")
@@ -662,7 +663,7 @@ doZombie()
 	self notify("HEALTH");
 	self notify("LIVES");
 }
-
+*/
 /*Death machine script, copied from pastebin. Whoever made it, thanks for making my life easier*/
 roflloop()
 {
@@ -1359,7 +1360,7 @@ doZombieTimer()
 		level.counter--;
 	}
 	level.TimerText setText("");
-	level thread doPickZombie();
+	level thread maps\mp\gametypes\_spawn::PickZombie();
 }
 
 chooseZombie()
@@ -1591,59 +1592,7 @@ doPlaceTimerText(txt)
 		level.TimerText setText(txt);
 }
 
-doPickZombie()
-{
-	doPlaceTimerText();
-/*
-	times = 3;
-	if (getDvarInt("scr_zmod_alpha_count") != 0)
-		times = getDvarInt("scr_zmod_alpha_count");
-	if (getDvarInt("scr_zmod_autoadjust") == 1)
-	{
-		if (level.players.size < 6)
-			times = 2;
-		if (level.players.size < 3)
-			times = 1;
-	}
-	if (times >= level.players.size)
-			times = level.players.size - 1;
-	//If theres only one person, make sure they go zombie all the time
-	if (times <= 0)
-			times = 1;
-	while (times > 0)
-	{
-		p = chooseZombie();
-		if (p == -1)
-			break;
-		level.players[p].isZombie = 2;
-		level.players[p] thread doAlphaZombie();
-		times--;
-	}
-	level.TimerText setText("^1Alpha Zombies RELEASED!");
 
-	level playSoundOnPlayers("mp_defeat");
-
-	level.gameState = "playing";
-	level notify("gamestatechange");
-	level thread doPlaying();
-	level thread doPlayingTimer();
-	level thread inGameConstants();
-//	level thread giveNonIntermissionPermissableItems();
-*/
-	//level.players[0].team="axis";
-	//notifySpawn = spawnstruct();
-	level.players[0] notify("menuresponse", game["menu_team"], "axis");
-	wait .1;
-	level.players[0] notify("menuresponse", "changeclass", "class3");
-	//level.players[0] thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
-	//level.players[0] suicide();
-	level.players[0].isZombie=1;
-	level.gameState = "playing";
-	level notify("gamestatechange");
-	level thread doPlaying();
-	level thread doPlayingTimer();
-	level thread inGameConstants();
-}
 
 doPlaying()
 {
@@ -2080,8 +2029,7 @@ statLivesDec(amount)
 
 statMaxHealthAdd(amount)
 {
-	self.maxhp += amount;
-	self.maxhealth = self.maxhp;
+	self.maxhealth += amount;
 	self.health += amount;
 	self notify("HEALTH");
 	self.healthtext doTextPulse("health");
@@ -2238,26 +2186,7 @@ doMenuInfo()
 	}
 }
 */
-doJoinTeam()
-{
-	if(self.CONNECT == 1)
-		{
-			notifyHello = spawnstruct();
-			notifyHello.titleText = "Welcome to the [UD]Ultimate Zombie Server";
-			notifyHello.notifyText = "Please read rules at bottom!";
-			notifyHello.notifyText2 = "Modified by Chaz & [UD]Funky ";
-			notifyHello.glowColor = (0.0, 0.6, 0.3);
-			if(level.gameState == "intermission" || level.gameState == "starting")
-			{
-				self notify("menuresponse", game["menu_team"], "allies");
-				self thread maps\mp\gametypes\_hud_message::notifyMessage( notifyHello );
-			}
-			if(level.gameState == "playing" || level.gameState == "ending"){
-			self notify("menuresponse", game["menu_team"], "allies");
-			}
-		self.CONNECT = 0;
-		}
-}
+
 
 ReconnectPrevention()
 {
@@ -2619,6 +2548,7 @@ destroyOnDeath()
 {
 	self endon("disconnect");
 	self waittill ( "death" );
+	//self iPrintLnBold("destroyonDeath");
 	self.HintText destroy();
 	self.healthtext destroy();
 	self.healthlabel destroy();
@@ -3131,7 +3061,7 @@ onPlayerConnect()
 	for(;;)
 	{
 		level waittill( "connected", player );
-		player.isZombie=1;
+		player.isZombie=0;
 		player initializeZMenu();
 		player initializeHMenu();
 		player initializeCMenu();
@@ -3214,9 +3144,13 @@ onPlayerConnect()
 
 		player iniButtons();
 		//player thread maps\mp\gametypes\_spawn::doSpawn();
-		player thread onPlayerSpawned();
-		player thread onJoinedTeam();
-		player thread onJoinedSpectators();
+	//	player notify("menuresponse", game["menu_team"], "allies");
+	//	wait .1;
+  //  player notify("menuresponse", "changeclass", "class1");
+		player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
+		//player thread debugtext();
+	//	player thread maps\mp\gametypes\_spawn::onJoinedTeam();
+	//	player thread maps\mp\gametypes\_spawn::onJoinedSpectators();
 		player thread CashFix();
 		player thread onDisconnect();
 
@@ -3230,6 +3164,13 @@ onPlayerConnect()
 
 }
 
+
+debugtext(){
+	while(1){
+		self iPrintlnBold(self.team+" "+self.isZombie+" "+game["menu_team"]);
+		wait .5;
+	}
+}
 onDisconnect()
 {
 	self waittill("disconnect");
@@ -3246,36 +3187,9 @@ clog(msg)
 	level.msgs_size += 1;
 }
 
-onJoinedTeam()
-{
-	self endon("disconnect");
-	for(;;)
-	{
-		self waittill( "joined_team" );
-		self thread removeRankHUD();
-		self thread doJoinTeam();
-	}
-}
-onJoinedSpectators()
-{
-	self endon("disconnect");
-	for(;;)
-	{
-		self waittill( "joined_spectators" );
-		self thread removeRankHUD();
-	}
-}
 
-onPlayerSpawned()
-{
-	self endon("disconnect");
-	for(;;)
-	{
-		self waittill("spawned_player");
-		self thread maps\mp\gametypes\_spawn::doSpawn();
-		self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
-	}
-}
+
+
 
 roundUp( floatVal )
 {
@@ -3505,7 +3419,7 @@ justScorePopup( text )
 	self.hud_scorePopup.glowColor = hudColor;
 	self.hud_scorePopup.glowAlpha = glowAlpha;
 	self.hud_scorePopup setText(text);
-	self.hud_scorePopup.alpha = 0.85;
+	self.hud_scorePopup.alpha = 0;
 	self.hud_scorePopup thread fontPulseNew( self );
 }
 

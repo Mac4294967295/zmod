@@ -313,13 +313,14 @@ doZombieShop()
 
 doHumanShop()
 {
+	//self iPrintLnBold("dohumashop");
 	self endon("disconnect");
 	self endon("death");
 	numberOfPages = roundUp((self.HMenu.size-1)/3);
 	while(self.isZombie==0)
 	{
 		doMenuScroll(numberOfPages);
-		self.menutext setText("Human Shop " + (self.menu+1) + "/" + (level.humanM.size));
+		self.menutext setText("Human Shop " + (self.menu+1) + "/" + numberOfPages);
 		self.perkztext3 setText("");
 		self.perkztext3.glowColor = ( 1, 0, 0 );
 		item0 = self.HArray[self.menu][0]; //returns "name" of the item
@@ -373,7 +374,7 @@ monitorShop(){
 		//self iPrintlnBold(level.showcreditshop);
 		//self iprintlnbold(self getCurrentWeapon());
 		wait 0.5;
-		//self iPrintlnBold(self isOnGround());
+				//self iPrintlnBold(self isOnGround());
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/
