@@ -14,11 +14,11 @@ init()
 	precacheModel( level.elevator_model["exit"] );
 	level.oi = maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" );
 	precacheShader(level.oi);
-	//precacheShader(maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" ));	
+	//precacheShader(maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" ));
 	level toggleCreateMapWait();
 	level LoadMapEdit();
 	level toggleCreateMapWait();
-	
+
 	level.gameState = "starting";
 }
 
@@ -32,7 +32,7 @@ toggleCreateMapWait()
 		{
 			player freezeControls(false);
 			player VisionSetNakedForPlayer(getDvar("mapname"), 0);
-		}		
+		}
 	}
 	else
 	{
@@ -45,7 +45,7 @@ toggleCreateMapWait()
 		{
 			player freezeControls(true);
 			player VisionSetNakedForPlayer("mpIntro", 0);
-		}		
+		}
 	}
 }
 
@@ -245,12 +245,12 @@ CreateDoors(open, close, angle, size, height, hp, range)
 	wait level.waittime;
 }
 //Door repairing
-	
+
 DoorRepairLoop(open, close)
 {
 	while (1)
 	{
-		
+
 		self waittill ( "triggeruse" , player );
 		if (player.team == "allies" && player.isRepairing)
 			if (player maps\mp\gametypes\_shop_menu::getHItemVal("repair", "in_use") > 0)
@@ -283,7 +283,7 @@ canUseDoor()
 {
 	return !self.isRepairing && self getCurrentWeapon() != "defaultweapon_mp" && !self isInKillcam();
 }
-		
+
 DoorThink(open, close)
 {
 	self thread DoorRepairLoop(open, close);
@@ -317,7 +317,7 @@ DoorThink(open, close)
 			}
 			if(player.team == "axis"){
 				if(self.state == "close" && isAlive(player)){
-					self.hp -= player.atk;
+					self.hp --;
 					if (self.hp < 0)
 						self.hp = 0;
 					player iPrintlnBold("HIT! HP: " + self.hp + "/" + self.maxhp);
@@ -326,7 +326,7 @@ DoorThink(open, close)
 						player SayAll("Door ^3Almost Broken!");
 						self.msg = 1;
 					}
-					
+
 					if (self.hp == 0)
 						player SayAll("Door ^1Destroyed!");
 					wait 0.6;
@@ -400,7 +400,7 @@ DoorUse(range)
 				}
 				else
 					txt = "Please wait for door";
-				
+
 				if (!isDefined(player.doorprogbar)){
 					player.doorprogbar = player createPrimaryProgressBar();
 					player.doorprogtext = player createPrimaryProgressBarText();
@@ -416,7 +416,7 @@ DoorUse(range)
 				}
 				else
 					if (!player.doorprogtext.hidden)
-						player.doorprogtext hideElem();	
+						player.doorprogtext hideElem();
 				if(player.buttonPressed[ "+activate" ] == 1){
 					player.buttonPressed[ "+activate" ] = 0;
 					self notify( "triggeruse" , player);
@@ -533,7 +533,7 @@ Escalator(depart, arivee, time) {
 LoadMapEdit()
 {
 	switch(getDvar("mapname"))
-	{	
+	{
 		case "mp_rust": /** Rust **/
 			//Original Map Created by Unknown, Map modded and fixed by [UD]Dan
 			 CreateBlocks((773, 1080, 258), (0, 90, 0));
@@ -564,7 +564,7 @@ LoadMapEdit()
 			 CreateWalls((773, 1540, 498), (533, 1540, 538));
 			 CreateRamps((560, 1795, 498), (560, 1569, 378));
 			 CreateDoors((670, 1720, 498), (560, 1720, 498), (0, 0, 0), 2, 1, 20, 80);
-			 
+
 			 CreateWalls((790, 1795, 498), (790, 1540, 660));
 			 CreateWalls((515, 1540, 498), (515, 1795, 660));
 			 CreateRamps((560, 1550, 498), (560, 1795, 620));
@@ -575,14 +575,14 @@ LoadMapEdit()
 			 CreateWalls((773, 1540, 725), (533, 1540, 726));
 			 CreateWalls((790, 1795, 725), (790, 1540, 726));
 			 CreateWalls((515, 1540, 725), (515, 1795, 726));
-			break; 
-		
+			break;
+
 		case "mp_afghan":	/** Afghan **/
-			//Shit map edit		
+			//Shit map edit
 			break;
 
 		case "mp_boneyard":	/** Scrapyard **/
-			//Shit map edit	
+			//Shit map edit
 			break;
 
 		case "mp_trailerpark":	/** trailerpark **/
@@ -641,7 +641,7 @@ LoadMapEdit()
 			CreateBlocks((860, -253, 582), (90, -45, 0));
 			CreateBlocks((916, -253, 582), (90, -45, 0));
 			CreateBlocks((962, -253, 582), (90, -45, 0));*/
-			CreateBlocks((415, -777, 582), (0, 0, 0));	
+			CreateBlocks((415, -777, 582), (0, 0, 0));
 			CreateBlocks((360, -777, 582), (0, 0, 0));
 			CreateBlocks((305, -777, 582), (0, 0, 0));
 			CreateBlocks((516, -74, 564), (90, 90, 0));
@@ -666,8 +666,8 @@ LoadMapEdit()
 			break;
 
 		case "mp_highrise":	/** HighRise **/
-			//Shit map edit	
-			break;	
+			//Shit map edit
+			break;
 
 		case "mp_nightshift":	/** Skidrow **/
 			//Shit map edit
@@ -764,7 +764,7 @@ LoadMapEdit()
 			CreateDoors((926, 5745, 368),(926, 5655, 368), (90, 0, 0), 2, 2, 20, 100);
 			CreateDoors((385, 6021, 456),(490, 6021, 456), (90, 90, 0), 4, 2, 15, 110);
 			CreateDoors((200, 6540, 255),(260, 6540, 255), (90, 90, 0), 2, 1, 20, 75);
-			
+
 			CreateElevator((420.868, 6573.77, 213.625),(576.427, 5376.65, 460.125));
 			CreateElevator((1489.22, 6390.62, 440.593),(573.506, 5250.68, 460.125));
 			CreateForce((686.825, 4754.96, 376.125),(695.052, 5447.88, 597.142));
@@ -783,7 +783,7 @@ LoadMapEdit()
 			CreateBlocks((86.8758, 6356.82, 265.591),(0, 0.401001, 0));
 
 			CreateWalls((526.12, 6591.62, 200.125),(526.578, 6626.38, 277.375));
-			CreateWalls((500.732, 6687.48, 220),(507.512, 6839.09, 219));			
+			CreateWalls((500.732, 6687.48, 220),(507.512, 6839.09, 219));
 			break;
 
 		case "mp_underpass":	 /** Underpass **/
@@ -791,29 +791,29 @@ LoadMapEdit()
 			break;
 
 		case "mp_abandon":	/** Carnaval **/
-			
+
 			break;
 
 		case "mp_compact":	/** Salvage **/
-			
-			break;			
+
+			break;
 
 		case "mp_complex":	/** Bailout **/
-			
-			break;	
+
+			break;
 
 		case "mp_crash":	/** Crash **/
-			
-			break;	
+
+			break;
 
 		case "mp_strike":	/** Strike **/
-			
-			break;	
+
+			break;
 
 		case "mp_vacant":	/** Vacant **/
-			
-			break;					
-		
+
+			break;
+
 		default:
 			break;
 	}
