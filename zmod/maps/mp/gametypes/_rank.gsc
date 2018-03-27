@@ -3058,6 +3058,7 @@ return int( tableLookup( "mp/ranktable.csv", 0, rankId, 13 ) );
 onPlayerConnect()
 {
 
+<<<<<<< HEAD
 for(;;)
 {
 level waittill( "connected", player );
@@ -3131,6 +3132,111 @@ player.newcomer = 1;
 else
 {
 player.newcomer = 0;
+=======
+	for(;;)
+	{
+		level waittill( "connected", player );
+		player.isZombie=1;
+		player initializeZMenu();
+		player initializeHMenu();
+		player initializeCMenu();
+		player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "experience" );
+		if ( player.pers["rankxp"] < 0 )
+		{
+			player.pers["rankxp"] = 0;
+		}
+		rankId = player getRankForXp( player getRankXP() );
+		player.pers[ "rank" ] = rankId;
+		player.pers[ "participation" ] = 0;
+		player.xpUpdateTotal = 0;
+		player.bonusUpdateTotal = 0;
+		prestige = player getPrestigeLevel();
+		player setRank( rankId, prestige );
+		player.pers["prestige"] = prestige;
+		player.postGamePromotion = false;
+		if ( !isDefined( player.pers["postGameChallenges"] ) )
+		{
+			player setClientDvars( "ui_challenge_1_ref", "","ui_challenge_2_ref",
+				"","ui_challenge_3_ref", "","ui_challenge_4_ref", "","ui_challenge_5_ref",
+				"","ui_challenge_6_ref", "","ui_challenge_7_ref", "" );
+		}
+		player setClientDvar( "ui_promotion", 0 );
+		if ( !isDefined( player.pers["summary"] ) )
+		{
+			player.pers["summary"] = [];
+			player.pers["summary"]["xp"] = 0;
+			player.pers["summary"]["score"] = 0;
+			player.pers["summary"]["challenge"] = 0;
+			player.pers["summary"]["match"] = 0;
+			player.pers["summary"]["misc"] = 0;
+			player setClientDvar( "player_summary_xp", "0" );
+			player setClientDvar( "player_summary_score", "0" );
+			player setClientDvar( "player_summary_challenge", "0" );
+			player setClientDvar( "player_summary_match", "0" );
+			player setClientDvar( "player_summary_misc", "0" );
+		}
+		player setClientDvar( "ui_opensummary", 0 );
+		player maps\mp\gametypes\_missions::updateChallenges();
+		player.explosiveKills[0] = 0;
+		player.xpGains = [];
+		player.hud_scorePopup = newClientHudElem( player );
+		player.hud_scorePopup.horzAlign = "center";
+		player.hud_scorePopup.vertAlign = "middle";
+		player.hud_scorePopup.alignX = "center";
+		player.hud_scorePopup.alignY = "middle";
+		player.hud_scorePopup.x = 0;
+		if ( level.splitScreen )
+		{
+			player.hud_scorePopup.y = -40;
+		}
+		else
+		{
+			player.hud_scorePopup.y = -60;
+		}
+		player.hud_scorePopup.font = "hudbig";
+		player.hud_scorePopup.fontscale = 0.75;
+		player.hud_scorePopup.archived = false;
+		player.hud_scorePopup.color = (0.5,0.5,0.5);
+		player.hud_scorePopup.sort = 10000;
+		player.hud_scorePopup maps\mp\gametypes\_hud::fontPulseInit( 3.0 );
+		if (level.gameState == "playing" || level.gameState == "ending")
+		{
+			player.newcomer = 1;
+		}
+		else
+		{
+			player.newcomer = 0;
+		}
+
+		isd = false;
+
+		player.doorInRange = 0;
+		player.wasAlpha = 0;
+		player.wasSurvivor = 0;
+		player.credits = player getCreditsPersistent();
+		player.credits = 50000;
+		//player init_player_extra();
+
+		player iniButtons();
+		//player thread maps\mp\gametypes\_spawn::doSpawn();
+		player thread onPlayerSpawned();
+		player thread onJoinedTeam();
+		player thread onJoinedSpectators();
+		player thread CashFix();
+		player thread onDisconnect();
+
+		player allowSpectateTeam( "allies", true );
+		player allowSpectateTeam( "axis", true );
+		player allowSpectateTeam( "freelook", true );
+		player allowSpectateTeam( "none", true );
+
+		player.CONNECT = 1;
+		
+		//player thread TestSpawnpoints();
+		//player thread CollectSpawnCords();		
+	}
+
+>>>>>>> de32d4f1e4d3d31a7b18033a6e6973cd430a54c4
 }
 
 isd = false;
