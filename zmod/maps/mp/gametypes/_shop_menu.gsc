@@ -1,6 +1,7 @@
 #include maps\mp\gametypes\_rank;
 #include maps\mp\_utility;
 #include common_scripts\utility;
+#include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_zombie_items;
 #include maps\mp\gametypes\_human_items;
 #include maps\mp\gametypes\_credit_items;
@@ -123,6 +124,7 @@ resetZMenu(){
 	for(i=0;i<self.ZArray.size;i++){
 		for(j=0;j<self.ZArray[0].size;j++){
 			self setZItemVal(self.ZArray[i][j], "in_use", 0);
+			self setZItemVal(self.ZArray[i][j], "print_text", "text1");
 		}
 	}
 }
@@ -133,6 +135,16 @@ resetHMenu(){
 	for(i=0;i<self.HArray.size;i++){
 		for(j=0;j<self.HArray[0].size;j++){
 			self setHItemVal(self.HArray[i][j], "in_use", 0);
+			self setHItemVal(self.HArray[i][j], "print_text", "text1");
+		}
+	}
+}
+
+resetCMenu(){
+	for(i=0;i<self.CArray.size;i++){
+		for(j=0;j<self.CArray[0].size;j++){
+			self setHItemVal(self.CArray[i][j], "in_use", 0);
+			self setHItemVal(self.CArray[i][j], "print_text", "text1");
 		}
 	}
 }
@@ -245,11 +257,10 @@ doCreditShop()
 		//self.perkztext3 setText("Lives: "+self getCItemVal("life", "in_use") );
 		//self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
-		self.menutext setText("Credit Shop " + (self.menu+1) + "/" + (level.creditM.size));
+		self.menutext setText("Credit Shop " + (self.menu+1) + "/" + numberOfPages);
 		item0 = self.CArray[self.menu][0]; //returns "name" of the item
 		item1 = self.CArray[self.menu][1];
 		item2 = self.CArray[self.menu][2];
-		self iprintlnbold(self.menu);
 		self.option1 setText("Press [{+smoke}] - " + self getCItemVal(item0, self getCItemVal(item0,"print_text")));
 		self.option2 setText("Press [{+actionslot 2}] - " + self getCItemVal(item1, self getCItemVal(item1,"print_text")));
 		self.option3 setText("Press [{+actionslot 4}] - " + self getCItemVal(item2, self getCItemVal(item2,"print_text")));
@@ -280,7 +291,7 @@ doZombieShop()
 	while(self.isZombie!=0)
 	{
 		doMenuScroll(numberOfPages);
-		self.menutext setText("Zombie Shop " + (self.menu+1) + "/" + (4));
+		self.menutext setText("Zombie Shop " + (self.menu+1) + "/" + numberOfPages);
 		self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
 		self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
@@ -313,7 +324,6 @@ doZombieShop()
 
 doHumanShop()
 {
-	//self iPrintLnBold("dohumashop");
 	self endon("disconnect");
 	self endon("death");
 	numberOfPages = roundUp((self.HMenu.size-1)/3);
@@ -353,6 +363,7 @@ Monitors everything shop related; updates what text to print depending on curren
 */
 monitorShop(){
 	self endon("disconnect");
+	self endon("death");
 	while(1){
 		if(self getCItemVal("tacticalinsertion", "in_use")==1){
 			self setCItemVal("tacticalinsertion", "print_text", "text2");
@@ -369,17 +380,12 @@ monitorShop(){
 		if(self getCItemVal("cash", "in_use")==1){
 			self setCItemVal("cash", "print_text", "text2");
 		}
-		//self iPrintLnBold(level.gameState+" "+self.isZombie);
-		//self iprintlnbold("creditshopprint");
-		//self iPrintlnBold(level.showcreditshop);
-		//self iprintlnbold(self getCurrentWeapon());
 		wait 0.5;
-				//self iPrintlnBold(self isOnGround());
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/
-		if(self.attach["akimbo"] != 1) self setHItemVal("akimbo", "print_text", "text2");
-		else self setHItemVal("akimbo", "print_text", "text1");
+		if(isAttachable("akimbo")) self setHItemVal("akimbo", "print_text", "text1");
+		else self setHItemVal("akimbo", "print_text", "text2");
 
 		if(self getHItemVal("sight", "in_use")==1){
 			self setHItemVal("sight", "print_text", "text2");
@@ -414,4 +420,245 @@ doMenuScroll(numberOfPages){
 	}
 	if(self.menu==-1) self.menu=numberOfPages-1;
 	if(self.menu==numberOfPages) self.menu=0;
+}
+
+CreatePlayerHUD()
+{
+  self.HintText = self createFontString( "objective", 1.25 );
+  self.HintText setPoint( "CENTER", "CENTER", 0, 50 );
+
+
+  b = -65;
+  s = 15;
+  i = 0;
+  a = 0.85;
+
+  //Mac: Debug HUD
+  self.DebugHUD = NewClientHudElem( self );
+  //self.DebugHUD.alignY = "bottom";
+  //self.DebugHUD.horzAlign = "center";
+  //self.DebugHUD.vertAlign = "bottom";
+  self.DebugHUD.x = -100;
+  self.DebugHUD.y = -5;
+  self.DebugHUD.foreground = true;
+  self.DebugHUD.fontScale = 1.0;
+  self.DebugHUD.font = "objective";
+  self.DebugHUD.alpha = a;
+  self.DebugHUD.glow = 1;
+  self.DebugHUD.glowColor = ( 0.2, 0.2, 1 );
+  self.DebugHUD.glowAlpha = 1;
+  self.DebugHUD.color = ( 1.0, 1.0, 1.0 );
+  self.DebugHUD setText("Movespeed-var: init");
+
+
+
+  self.scrollleft = NewClientHudElem( self );
+  self.scrollleft.alignX = "center";
+  self.scrollleft.alignY = "bottom";
+  self.scrollleft.horzAlign = "center";
+  self.scrollleft.vertAlign = "bottom";
+  self.scrollleft.x = -230;
+  self.scrollleft.y = -30;
+  self.scrollleft.fontScale = 1;
+  self.scrollleft.font = "hudbig";
+  self.scrollleft.alpha = a;
+  self.scrollleft.glow = 1;
+  self.scrollleft.glowColor = ( 0, 0, 1 );
+  self.scrollleft.glowAlpha = 1;
+  self.scrollleft.color = ( 1.0, 1.0, 1.0 );
+
+  self.scrollright = NewClientHudElem( self );
+  self.scrollright.alignX = "center";
+  self.scrollright.alignY = "bottom";
+  self.scrollright.horzAlign = "center";
+  self.scrollright.vertAlign = "bottom";
+  self.scrollright.fontScale = 1.15;
+  self.scrollright.x = 230;
+  self.scrollright.y = -30;
+  self.scrollright.fontScale = 1;
+  self.scrollright.font = "hudbig";
+  self.scrollright.alpha = a;
+  self.scrollright.glow = 1;
+  self.scrollright.glowColor = ( 0, 0, 1 );
+  self.scrollright.glowAlpha = 1;
+  self.scrollright.color = ( 1.0, 1.0, 1.0 );
+
+  self.scrollright setText(">");
+  self.scrollleft setText("<");
+
+  self.menutext = NewClientHudElem( self );
+  self.menutext.alignX = "center";
+  self.menutext.alignY = "bottom";
+  self.menutext.horzAlign = "center";
+  self.menutext.vertAlign = "bottom";
+  self.menutext.y = b + (s * i);
+  self.menutext.foreground = true;
+  self.menutext.fontScale = 1.15;
+  self.menutext.font = "objective";
+  self.menutext.alpha = a;
+  self.menutext.glow = 1;
+  self.menutext.glowColor = ( 0.2, 0.2, 1 );
+  self.menutext.glowAlpha = 1;
+  self.menutext.color = ( 1.0, 1.0, 1.0 );
+  i++;
+
+  self.option1 = NewClientHudElem( self );
+  self.option1.alignX = "center";
+  self.option1.alignY = "bottom";
+  self.option1.horzAlign = "center";
+  self.option1.vertAlign = "bottom";
+  self.option1.y = b + (s * i);
+  self.option1.foreground = true;
+  self.option1.fontScale = 1.15;
+  self.option1.font = "objective";
+  self.option1.alpha = a;
+  self.option1.glow = 1;
+  self.option1.glowColor = ( 0, 0, 1 );
+  self.option1.glowAlpha = 1;
+  self.option1.color = ( 1.0, 1.0, 1.0 );
+  i++;
+
+  self.option2 = NewClientHudElem( self );
+  self.option2.alignX = "center";
+  self.option2.alignY = "bottom";
+  self.option2.horzAlign = "center";
+  self.option2.vertAlign = "bottom";
+  self.option2.y = b + (s * i);
+  self.option2.foreground = true;
+  self.option2.fontScale = 1.15;
+  self.option2.font = "objective";
+  self.option2.alpha = a;
+  self.option2.glow = 1;
+  self.option2.glowColor = ( 0, 0, 1 );
+  self.option2.glowAlpha = 1;
+  self.option2.color = ( 1.0, 1.0, 1.0 );
+  i++;
+
+  self.option3 = NewClientHudElem( self );
+  self.option3.alignX = "center";
+  self.option3.alignY = "bottom";
+  self.option3.horzAlign = "center";
+  self.option3.vertAlign = "bottom";
+  self.option3.y = b + (s * i);
+  self.option3.foreground = true;
+  self.option3.fontScale = 1.15;
+  self.option3.font = "objective";
+  self.option3.alpha = a;
+  self.option3.glow = 1;
+  self.option3.glowColor = ( 0, 0, 1 );
+  self.option3.glowAlpha = 1;
+  self.option3.color = ( 1.0, 1.0, 1.0 );
+  i++;
+
+  b = 50;
+  s = 15;
+  i = 0;
+  x = 40;
+
+  self.perkztext1 = NewClientHudElem( self );
+  self.perkztext1.alignX = "right";
+  self.perkztext1.alignY = "top";
+  self.perkztext1.horzAlign = "right";
+  self.perkztext1.vertAlign = "top";
+  self.perkztext1.x = x;
+  self.perkztext1.y = b + (s * i);
+  self.perkztext1.foreground = true;
+  self.perkztext1.fontScale = .45;
+  self.perkztext1.font = "hudbig";
+  self.perkztext1.alpha = a;
+  self.perkztext1.glow = 1;
+  self.perkztext1.glowColor = ( 1, 0, 0 );
+  self.perkztext1.glowAlpha = 1;
+  self.perkztext1.color = ( 1.0, 1.0, 1.0 );
+  i++;
+  self.perkztext2 = NewClientHudElem( self );
+  self.perkztext2.alignX = "right";
+  self.perkztext2.alignY = "top";
+  self.perkztext2.horzAlign = "right";
+  self.perkztext2.vertAlign = "top";
+  self.perkztext2.x = x;
+  self.perkztext2.y = b + (s * i);
+  self.perkztext2.foreground = true;
+  self.perkztext2.fontScale = .45;
+  self.perkztext2.font = "hudbig";
+  self.perkztext2.alpha = a;
+  self.perkztext2.glow = 1;
+  self.perkztext2.glowColor = ( 1, 0, 0 );
+  self.perkztext2.glowAlpha = 1;
+  self.perkztext2.color = ( 1.0, 1.0, 1.0 );
+  self.perkztext3 = NewClientHudElem( self );
+  i++;
+  self.perkztext3.alignX = "right";
+  self.perkztext3.alignY = "top";
+  self.perkztext3.horzAlign = "right";
+  self.perkztext3.vertAlign = "top";
+  self.perkztext3.x = x;
+  self.perkztext3.y = b + (s * i);
+  self.perkztext3.foreground = true;
+  self.perkztext3.fontScale = .45;
+  self.perkztext3.font = "hudbig";
+  self.perkztext3.alpha = a;
+  self.perkztext3.glow = 1;
+  self.perkztext3.glowColor = ( 1, 0, 0 );
+  self.perkztext3.glowAlpha = 1;
+  self.perkztext3.color = ( 1.0, 1.0, 1.0 );
+  i++;
+  self.perkztext4 = NewClientHudElem( self );
+  self.perkztext4.alignX = "right";
+  self.perkztext4.alignY = "top";
+  self.perkztext4.horzAlign = "right";
+  self.perkztext4.vertAlign = "top";
+  self.perkztext4.x = x;
+  self.perkztext4.y = b + (s * i);
+  self.perkztext4.foreground = true;
+  self.perkztext4.fontScale = .45;
+  self.perkztext4.font = "hudbig";
+  self.perkztext4.alpha = a;
+  self.perkztext4.glow = 1;
+  self.perkztext4.glowColor = ( 1, 0, 0 );
+  self.perkztext4.glowAlpha = 1;
+  self.perkztext4.color = ( 1.0, 1.0, 1.0 );
+  i++;
+  self.perkztext5 = NewClientHudElem( self );
+  self.perkztext5.alignX = "right";
+  self.perkztext5.alignY = "top";
+  self.perkztext5.horzAlign = "right";
+  self.perkztext5.vertAlign = "top";
+  self.perkztext5.x = x;
+  self.perkztext5.y = b + (s * i);
+  self.perkztext5.foreground = true;
+  self.perkztext5.fontScale = .45;
+  self.perkztext5.font = "hudbig";
+  self.perkztext5.alpha = a;
+  self.perkztext5.glow = 1;
+  self.perkztext5.glowColor = ( 1, 0, 0 );
+  self.perkztext5.glowAlpha = 1;
+  self.perkztext5.color = ( 1.0, 1.0, 1.0 );
+}
+
+destroyOnDeath()
+{
+	self endon("disconnect");
+	while(1){
+	  self waittill ( "death" );
+	  self.HintText destroy();
+	  self.healthtext destroy();
+	  self.healthlabel destroy();
+	  self.lifetext destroy();
+	  self.lifelabel destroy();
+	  self.menutext destroy();
+	  self.cash destroy();
+	  self.cashlabel destroy();
+	  self.option1 destroy();
+	  self.option2 destroy();
+	  self.option3 destroy();
+	  self.scrollleft destroy();
+	  self.scrollright destroy();
+	  self.perkztext1 destroy();
+	  self.perkztext2 destroy();
+	  self.perkztext3 destroy();
+	  self.perkztext4 destroy();
+	  self.perkztext5 destroy();
+	  self.DebugHUD destroy();
+	}
 }

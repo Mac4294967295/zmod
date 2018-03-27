@@ -1668,6 +1668,7 @@ doEnding()
     player _clearPerks();
     player resetZMenu();
     player resetHMenu();
+    player resetCMenu();
     player.moveSpeedScaler = 1;
     player freezeControls(true);
     player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
@@ -2544,31 +2545,7 @@ OverRider()
   }
 }
 
-destroyOnDeath()
-{
-  self endon("disconnect");
-  self waittill ( "death" );
-  //self iPrintLnBold("destroyonDeath");
-  self.HintText destroy();
-  self.healthtext destroy();
-  self.healthlabel destroy();
-  self.lifetext destroy();
-  self.lifelabel destroy();
-  self.menutext destroy();
-  self.cash destroy();
-  self.cashlabel destroy();
-  self.option1 destroy();
-  self.option2 destroy();
-  self.option3 destroy();
-  self.scrollleft destroy();
-  self.scrollright destroy();
-  self.perkztext1 destroy();
-  self.perkztext2 destroy();
-  self.perkztext3 destroy();
-  self.perkztext4 destroy();
-  self.perkztext5 destroy();
-  self.DebugHUD destroy();
-}
+
 
 OMAExploitFix()
 {
@@ -2666,219 +2643,7 @@ fadeInMenu(dest)
   self.scrollright.alpha = 1;
 }
 
-CreatePlayerHUD()
-{
-  self.HintText = self createFontString( "objective", 1.25 );
-  self.HintText setPoint( "CENTER", "CENTER", 0, 50 );
 
-
-  b = -65;
-  s = 15;
-  i = 0;
-  a = 0.85;
-
-  //Mac: Debug HUD
-  self.DebugHUD = NewClientHudElem( self );
-  //self.DebugHUD.alignY = "bottom";
-  //self.DebugHUD.horzAlign = "center";
-  //self.DebugHUD.vertAlign = "bottom";
-  self.DebugHUD.x = -100;
-  self.DebugHUD.y = -5;
-  self.DebugHUD.foreground = true;
-  self.DebugHUD.fontScale = 1.0;
-  self.DebugHUD.font = "objective";
-  self.DebugHUD.alpha = a;
-  self.DebugHUD.glow = 1;
-  self.DebugHUD.glowColor = ( 0.2, 0.2, 1 );
-  self.DebugHUD.glowAlpha = 1;
-  self.DebugHUD.color = ( 1.0, 1.0, 1.0 );
-  self.DebugHUD setText("Movespeed-var: init");
-
-
-
-  self.scrollleft = NewClientHudElem( self );
-  self.scrollleft.alignX = "center";
-  self.scrollleft.alignY = "bottom";
-  self.scrollleft.horzAlign = "center";
-  self.scrollleft.vertAlign = "bottom";
-  self.scrollleft.x = -230;
-  self.scrollleft.y = -30;
-  self.scrollleft.fontScale = 1;
-  self.scrollleft.font = "hudbig";
-  self.scrollleft.alpha = a;
-  self.scrollleft.glow = 1;
-  self.scrollleft.glowColor = ( 0, 0, 1 );
-  self.scrollleft.glowAlpha = 1;
-  self.scrollleft.color = ( 1.0, 1.0, 1.0 );
-
-  self.scrollright = NewClientHudElem( self );
-  self.scrollright.alignX = "center";
-  self.scrollright.alignY = "bottom";
-  self.scrollright.horzAlign = "center";
-  self.scrollright.vertAlign = "bottom";
-  self.scrollright.fontScale = 1.15;
-  self.scrollright.x = 230;
-  self.scrollright.y = -30;
-  self.scrollright.fontScale = 1;
-  self.scrollright.font = "hudbig";
-  self.scrollright.alpha = a;
-  self.scrollright.glow = 1;
-  self.scrollright.glowColor = ( 0, 0, 1 );
-  self.scrollright.glowAlpha = 1;
-  self.scrollright.color = ( 1.0, 1.0, 1.0 );
-
-  self.scrollright setText(">");
-  self.scrollleft setText("<");
-
-  self.menutext = NewClientHudElem( self );
-  self.menutext.alignX = "center";
-  self.menutext.alignY = "bottom";
-  self.menutext.horzAlign = "center";
-  self.menutext.vertAlign = "bottom";
-  self.menutext.y = b + (s * i);
-  self.menutext.foreground = true;
-  self.menutext.fontScale = 1.15;
-  self.menutext.font = "objective";
-  self.menutext.alpha = a;
-  self.menutext.glow = 1;
-  self.menutext.glowColor = ( 0.2, 0.2, 1 );
-  self.menutext.glowAlpha = 1;
-  self.menutext.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  self.option1 = NewClientHudElem( self );
-  self.option1.alignX = "center";
-  self.option1.alignY = "bottom";
-  self.option1.horzAlign = "center";
-  self.option1.vertAlign = "bottom";
-  self.option1.y = b + (s * i);
-  self.option1.foreground = true;
-  self.option1.fontScale = 1.15;
-  self.option1.font = "objective";
-  self.option1.alpha = a;
-  self.option1.glow = 1;
-  self.option1.glowColor = ( 0, 0, 1 );
-  self.option1.glowAlpha = 1;
-  self.option1.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  self.option2 = NewClientHudElem( self );
-  self.option2.alignX = "center";
-  self.option2.alignY = "bottom";
-  self.option2.horzAlign = "center";
-  self.option2.vertAlign = "bottom";
-  self.option2.y = b + (s * i);
-  self.option2.foreground = true;
-  self.option2.fontScale = 1.15;
-  self.option2.font = "objective";
-  self.option2.alpha = a;
-  self.option2.glow = 1;
-  self.option2.glowColor = ( 0, 0, 1 );
-  self.option2.glowAlpha = 1;
-  self.option2.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  self.option3 = NewClientHudElem( self );
-  self.option3.alignX = "center";
-  self.option3.alignY = "bottom";
-  self.option3.horzAlign = "center";
-  self.option3.vertAlign = "bottom";
-  self.option3.y = b + (s * i);
-  self.option3.foreground = true;
-  self.option3.fontScale = 1.15;
-  self.option3.font = "objective";
-  self.option3.alpha = a;
-  self.option3.glow = 1;
-  self.option3.glowColor = ( 0, 0, 1 );
-  self.option3.glowAlpha = 1;
-  self.option3.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  b = 50;
-  s = 15;
-  i = 0;
-  x = 40;
-
-  self.perkztext1 = NewClientHudElem( self );
-  self.perkztext1.alignX = "right";
-  self.perkztext1.alignY = "top";
-  self.perkztext1.horzAlign = "right";
-  self.perkztext1.vertAlign = "top";
-  self.perkztext1.x = x;
-  self.perkztext1.y = b + (s * i);
-  self.perkztext1.foreground = true;
-  self.perkztext1.fontScale = .45;
-  self.perkztext1.font = "hudbig";
-  self.perkztext1.alpha = a;
-  self.perkztext1.glow = 1;
-  self.perkztext1.glowColor = ( 1, 0, 0 );
-  self.perkztext1.glowAlpha = 1;
-  self.perkztext1.color = ( 1.0, 1.0, 1.0 );
-  i++;
-  self.perkztext2 = NewClientHudElem( self );
-  self.perkztext2.alignX = "right";
-  self.perkztext2.alignY = "top";
-  self.perkztext2.horzAlign = "right";
-  self.perkztext2.vertAlign = "top";
-  self.perkztext2.x = x;
-  self.perkztext2.y = b + (s * i);
-  self.perkztext2.foreground = true;
-  self.perkztext2.fontScale = .45;
-  self.perkztext2.font = "hudbig";
-  self.perkztext2.alpha = a;
-  self.perkztext2.glow = 1;
-  self.perkztext2.glowColor = ( 1, 0, 0 );
-  self.perkztext2.glowAlpha = 1;
-  self.perkztext2.color = ( 1.0, 1.0, 1.0 );
-  self.perkztext3 = NewClientHudElem( self );
-  i++;
-  self.perkztext3.alignX = "right";
-  self.perkztext3.alignY = "top";
-  self.perkztext3.horzAlign = "right";
-  self.perkztext3.vertAlign = "top";
-  self.perkztext3.x = x;
-  self.perkztext3.y = b + (s * i);
-  self.perkztext3.foreground = true;
-  self.perkztext3.fontScale = .45;
-  self.perkztext3.font = "hudbig";
-  self.perkztext3.alpha = a;
-  self.perkztext3.glow = 1;
-  self.perkztext3.glowColor = ( 1, 0, 0 );
-  self.perkztext3.glowAlpha = 1;
-  self.perkztext3.color = ( 1.0, 1.0, 1.0 );
-  i++;
-  self.perkztext4 = NewClientHudElem( self );
-  self.perkztext4.alignX = "right";
-  self.perkztext4.alignY = "top";
-  self.perkztext4.horzAlign = "right";
-  self.perkztext4.vertAlign = "top";
-  self.perkztext4.x = x;
-  self.perkztext4.y = b + (s * i);
-  self.perkztext4.foreground = true;
-  self.perkztext4.fontScale = .45;
-  self.perkztext4.font = "hudbig";
-  self.perkztext4.alpha = a;
-  self.perkztext4.glow = 1;
-  self.perkztext4.glowColor = ( 1, 0, 0 );
-  self.perkztext4.glowAlpha = 1;
-  self.perkztext4.color = ( 1.0, 1.0, 1.0 );
-  i++;
-  self.perkztext5 = NewClientHudElem( self );
-  self.perkztext5.alignX = "right";
-  self.perkztext5.alignY = "top";
-  self.perkztext5.horzAlign = "right";
-  self.perkztext5.vertAlign = "top";
-  self.perkztext5.x = x;
-  self.perkztext5.y = b + (s * i);
-  self.perkztext5.foreground = true;
-  self.perkztext5.fontScale = .45;
-  self.perkztext5.font = "hudbig";
-  self.perkztext5.alpha = a;
-  self.perkztext5.glow = 1;
-  self.perkztext5.glowColor = ( 1, 0, 0 );
-  self.perkztext5.glowAlpha = 1;
-  self.perkztext5.color = ( 1.0, 1.0, 1.0 );
-}
 
 CreateServerHUD()
 {
@@ -3147,6 +2912,7 @@ onPlayerConnect()
     //	player notify("menuresponse", game["menu_team"], "allies");
     //	wait .1;
     //  player notify("menuresponse", "changeclass", "class1");
+    player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
     //player thread debugtext();
     //	player thread maps\mp\gametypes\_spawn::onJoinedTeam();

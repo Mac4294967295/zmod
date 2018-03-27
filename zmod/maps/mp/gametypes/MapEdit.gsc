@@ -17,8 +17,8 @@ init()
 	precacheShader(level.oi);
 	//precacheShader(maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" ));
 	wait 1;
-	
-	
+
+
 	if(getDvar("mapname") == "mp_afghan"){ /** Afghan **/
 		level thread Afghan();
 		level.doCustomMap = 1;
@@ -347,12 +347,12 @@ CreateDoors(open, close, angle, size, height, hp, range)
 	wait level.waittime;
 }
 //Door repairing
-	
+
 DoorRepairLoop(open, close)
 {
 	while (1)
 	{
-		
+
 		self waittill ( "triggeruse" , player );
 		if (player.team == "allies" && player.isRepairing)
 			if (player maps\mp\gametypes\_shop_menu::getHItemVal("repair", "in_use") > 0)
@@ -385,7 +385,7 @@ canUseDoor()
 {
 	return !self.isRepairing && self getCurrentWeapon() != "defaultweapon_mp" && !self isInKillcam();
 }
-		
+
 DoorThink(open, close)
 {
 	self thread DoorRepairLoop(open, close);
@@ -419,7 +419,7 @@ DoorThink(open, close)
 			}
 			if(player.team == "axis"){
 				if(self.state == "close" && isAlive(player)){
-					self.hp -= player.atk;
+					self.hp --;
 					if (self.hp < 0)
 						self.hp = 0;
 					player iPrintlnBold("HIT! HP: " + self.hp + "/" + self.maxhp);
@@ -428,7 +428,7 @@ DoorThink(open, close)
 						player SayAll("Door ^3Almost Broken!");
 						self.msg = 1;
 					}
-					
+
 					if (self.hp == 0)
 						player SayAll("Door ^1Destroyed!");
 					wait 0.6;
@@ -502,7 +502,7 @@ DoorUse(range)
 				}
 				else
 					txt = "Please wait for door";
-				
+
 				if (!isDefined(player.doorprogbar)){
 					player.doorprogbar = player createPrimaryProgressBar();
 					player.doorprogtext = player createPrimaryProgressBarText();
@@ -518,7 +518,7 @@ DoorUse(range)
 				}
 				else
 					if (!player.doorprogtext.hidden)
-						player.doorprogtext hideElem();	
+						player.doorprogtext hideElem();
 				if(player.buttonPressed[ "+activate" ] == 1){
 					player.buttonPressed[ "+activate" ] = 0;
 					self notify( "triggeruse" , player);
@@ -663,7 +663,7 @@ CreateBlocks((1240, 1338, 750), (45, 0, 0));
 
 //CreateGrids((885, 1004, 373), (956, 765, 372));
 //CreateWeapon("cheytac_fmj_xmags_mp", 100, (890, 895, 380), (0, 90, 0)); //Weaps
-//mgTurret1 = spawnTurret( "misc_turret", (979, 1012, 433), "pavelow_minigun_mp" ); 
+//mgTurret1 = spawnTurret( "misc_turret", (979, 1012, 433), "pavelow_minigun_mp" );
 //mgTurret1 setModel( "weapon_minigun" );
 //mgTurret1.angles = (0, 0, 0);
 //CreateElevator((1002, 1870, 411), (1754, 827, 233));
@@ -711,7 +711,7 @@ Derail()
 {	//Crashes game, too many entities
 	/*
 	//Funky Edit Start
-	
+
 	//All Forces
 	CreateForce((-1362, -3247, 160), (-1350, -2626 , 156));
 	CreateForce((659, -2706 ,121), (819, -3103 , 240));
@@ -722,7 +722,7 @@ Derail()
 	CreateForce((-2549, -70 ,37), (-4556, -116, 214));
 	CreateForce((-4502, -122 ,157), (-4165, -2658, 549));
 	CreateForce((-2041, -2653 ,235), (-4457, -2205, 728));
-	
+
 	//All Walls
 	//CreateWalls((-1353, -3247, 160), (-1349, -2626, 156));
 	//CreateWalls((814, -3104, 173), (658, -2706, 165));
@@ -743,12 +743,12 @@ Derail()
 	CreateWalls((-391, -3575, 98), (-387, -3681, 114));
 	CreateWalls((-206, -3618, 129), (-204, -3694, 168));
 	CreateWalls((-15, -3568, 98), (138, -3563, 100));
-	
+
 	//All Ramps
 	CreateRamps((-288, -2092, 295), (-92, -2101, 342));
 	CreateRamps((-2895, -1570, 345), (-3299, -1382, 592));
 	CreateRamps((-3352, -1410, 626), (-3354, -1599, 736));
-	
+
 	//Teleporter
 	CreateElevator((-168, -3391, 90), (-814, -1212, 567));
 	CreateElevator((-805, -2327, 130), (-2463, -2252, 268));
@@ -836,28 +836,28 @@ Estate()
 	CreateBlocks((-3821, 2170, -195), (90, 0, 0));
 	CreateBlocks((-3791, 2170, -195), (90, 0, 0));
 	CreateBlocks((-3761, 2170, -195), (90, 0, 0));*/
-	
+
 	/*CreateBlocks((-471, -126, 193), (0, 0, 90));
 	CreateBlocks((-547, -104, 193), (0, 0, 90));
 	CreateBlocks((-625, -84, 193), (0, 0, 90));
 	CreateBlocks((-702, -61, 193), (0, 0, 90));
 	CreateBlocks((-778, -38, 193), (0, 0, 90));
 	CreateBlocks((-830, -13, 193), (0, 0, 90));*/
-	
+
 	CreateElevator((-95, -549, 340),(-2102.5, 2626, 16.5) , (0, 180, 0));
 	CreateElevator((-2328.4, 2231, 35), (468, 811, 666), (0, 0, 0));
 	CreateElevator((-1695.1, 2720.9, .8), (-896, -307, 355), (0, 0, 0));
 	CreateElevator((-440, 1075.3, 686), (1279, 3926, 374), (0, 0, 0));
-	
+
 	CreateGrids((-342, 928, 450), (-173, 1194, 450));
-	
+
 	CreateRamps((82, 880, 334), (-156.8, 923, 443.5));
-	
+
 	CreateRamps((-432, 76.7, 72), (-517, -323.2, 303));
-	
+
 	CreateDoors((621, 839, 48), (743, 763.6, 49), (90, 70, 0), 4, 2, 20, 75);
-	
-	
+
+
 	CreateBlocks((1333, -92, 210), (0, 0, 90));
 	CreateDoors((489, 1321, 212), (409, 1341, 212), (90, 70, 0), 4, 2, 20, 75);
 	CreateDoors((421, 861, 212), (461, 1011, 212), (90, -20, 0), 4, 2, 20, 75);
@@ -883,18 +883,18 @@ Favela()
 	CreateRamps((14040, -11470, -727), (14040, -11060, -842));
 	CreateGrids((14095, -11030, -732), (14260, -11470, -732), (0,0,0));
 	CreateDoors((14300, -11100, -810), (14300, -11250, -810), (90, 180, 0), 5, 2, 25, 75);
-	
+
 	// Added
 	CreateDoors((-64, 277, 198), (-64, 337, 198), (90, -6, 0), 2, 2, 5, 50);
 	CreateDoors((-438, 987, 310), (-438, 1047, 310), (90, 4, 0), 2, 2, 5, 50);
 	CreateDoors((-625, -238, 174), (-625, -298, 174), (90, -9, 0), 2, 2, 5, 50);
 	CreateDoors((893, 1056, 368), (833, 1056, 368), (90, 90, 0), 2, 2, 5, 50);
 	CreateDoors((80, 450, 198), (145, 450, 198), (90, 90, 0), 2, 2, 5, 50);
-	CreateElevator((-321, 2633, 335), (1985, 816 , 500), (0, 0, 0));	
+	CreateElevator((-321, 2633, 335), (1985, 816 , 500), (0, 0, 0));
 	CreateElevator((1993, 962, 500), (1824, -525, 728), (0, 0, 0));
 	CreateElevator((1648, -1024, 728), (5047, -2867, 216), (0, 0, 0));
 	CreateElevator((763, -1983, 152), (404, 1677, 595), (0, 0, 0));
-	
+
 	/*CreateGrids((2809, -2212, 239), (2809, -2675, 230), (0, 0, 0));
 	CreateWalls((2809, -2212, 143), (2236, -2212, 240));
 	CreateWalls((2809, -2212, 143), (2809, -2400, 180));
@@ -905,10 +905,10 @@ Favela()
 	CreateWalls((2809, -2675, 143), (2236, -2675, 240));
 	CreateRamps((2650, -2600, 143), (2236, -2600, 220));
 	CreateDoors((2780, -2300, 143), (2809, -2485, 143), (90, 0, 0), 7, 2, 15, 50);*/
-	
+
 	/*CreateElevator((-2148, 4890, 296), (-1481, 1593, 160), (0, 180, 0));
 	CreateElevator((-1240, 2457, 293), (-974, 3128, 280), (0, 180, 0));
-	CreateElevator((1120, 1706, 292), (1036, 2248, 287), (0, 180, 0));	
+	CreateElevator((1120, 1706, 292), (1036, 2248, 287), (0, 180, 0));
 	CreateRamps((-2110, 4368, 386), (-1997, 4441, 386));
 	CreateRamps((-2145, 4432, 416), (-1867, 3978, 416));
 	CreateRamps((-2162, 4762, 296), (-2145, 4432, 416));
@@ -919,7 +919,7 @@ Favela()
 	CreateWalls((-2212, 4412, 296), (-1906, 3956, 476));
 	CreateWalls((-1688, 3930, 296), (-1421, 3628, 392));
 	CreateWalls((2739, 3152, 280), (2739, 2842, 432));*/
-	
+
 	// Ubber Epic, lets you go on the statues head!
 	CreateElevator((-47.092, 3005.96, 572.125), (9799.85, 18484.1, 12643.1), (0, 180, 0));
 	CreateElevator((10076.1, 18459.2, 12643.1), (10522, 18402.9, 13635.1), (0, 180, 0));
@@ -1055,7 +1055,7 @@ Rundown()
 	CreateRamps((2250, -1155, 306), (1905, -876, 200));
 	CreateRamps((850, -3125, 312), (535, -3125, 189));
 	CreateRamps((1775, 450, 144), (1775, 735, -5));
-	
+
 	/* extra */
 	CreateElevator((1986, -2364, 372), (1036, -2607, 340), (0, 180, 0));
 	CreateElevator((935, -3022, 341), (1583, -603, 344), (0, 180, 0));
@@ -1111,7 +1111,7 @@ Rust()
  CreateWalls((773, 1540, 498), (533, 1540, 538));
  CreateRamps((560, 1795, 498), (560, 1569, 378));
  CreateDoors((670, 1720, 498), (560, 1720, 498), (0, 0, 0), 2, 1, 20, 80);
- 
+
  CreateWalls((790, 1795, 498), (790, 1540, 660));
  CreateWalls((515, 1540, 498), (515, 1795, 660));
  CreateRamps((560, 1550, 498), (560, 1795, 620));
@@ -1246,7 +1246,7 @@ CreateWalls((526.12, 6591.62, 200.125),(526.578, 6626.38, 277.375));
 CreateWalls((500.732, 6687.48, 220),(507.512, 6839.09, 219));
 
 }
-	
+
 Underpass()
 {
 	CreateElevator((-415, 3185, 392), (-1630, 3565, 1035), (0, 180, 0));
@@ -1281,9 +1281,9 @@ CreateWalls((9547, 6334, 175), (9547, 6510, 215));
 CreateWalls((9547, 6334, 309), (9547, 6573, 249));
 
 
-mgTurret1 = spawnTurret( "misc_turret", (9660, 6380, 230), "pavelow_minigun_mp" ); 
+mgTurret1 = spawnTurret( "misc_turret", (9660, 6380, 230), "pavelow_minigun_mp" );
 mgTurret1 setModel( "weapon_minigun" );
-mgTurret1.angles = (0, 180, 0); 
+mgTurret1.angles = (0, 180, 0);
 CreateElevator((9850, 6590, 170), (10648, 10140, 304), (0, 180, 0));
 CreateDoors((9542, 6383, 190), (9548, 6545, 190), (90,0, 0), 2, 2, 50, 75);
 
@@ -1355,14 +1355,14 @@ Salvage()
 	CreateBlocks((1939.47,254.955,108.25), (0,90,0));
 	CreateBlocks((1939.5,208.948,108.125), (0,90,0));
 	CreateDoors((2368.87,30,17.9268), (2368.87,100,17.9268), (90, 0, 0), 3, 2, 35, 75);
-	
+
 	CreateBlocks((2052,1984,65), (90,90,0)); CreateBlocks((1992,1984,65), (90,90,0));
 	CreateBlocks((1852,1988,180), (90,90,0)); CreateBlocks((1794,1988,180), (90,90,0));
-	
+
 	CreateDoors((1800,2365,5) , (1863,2365,5),(90, 90, 0), 2, 2, 35, 75);
-	
+
 	CreateBlocks((1598,2056,65), (90,0,0));
-	
+
 	CreateBlocks((4245,2086,32), (0,0,0));
 	CreateBlocks((2546.82, 248.022, 66.7187),(0, 90, 0));
 
@@ -1387,7 +1387,7 @@ Salvage()
 }
 
 Bailout()
-{ 
+{
 	CreateElevator((2678,  -3362, 572), (-550, -637, 384), (0, 180, 0));
 	CreateElevator((-622,  -1216, 384), (-610, -1363, 384), (0, 180, 0));
 	CreateElevator((-1000, -1600, 490), (2962, -3183, 600), (0, 180, 0));
@@ -1433,8 +1433,8 @@ CreateElevator((794, -1575, 244), (1779, -809, 71), (0, 0, 0));
 CreateElevator((1790, -984, 207), (904, -284, 431), (0, 0, 0));
 //deleted wall added 2 doors and new wall to defend flag
  CreateDoors((1562, -724, 284), (1562, -724, 215), (0, 0, 0), 2, 1, 15, 80);
- CreateBlocks((1587, -770, 230), (0, 0, 0)); 
- CreateDoors((1417, -787, 207), (1490, -787, 207), (90, 90, 0), 2, 2, 25, 60); 
+ CreateBlocks((1587, -770, 230), (0, 0, 0));
+ CreateDoors((1417, -787, 207), (1490, -787, 207), (90, 90, 0), 2, 2, 25, 60);
  CreateWalls((1778, -823, 207), (1742, -823, 284));
 //Funky Edit End
 
@@ -1462,10 +1462,10 @@ Strike()
         CreateGrids((-1800, 2650, 950),(-1500, 2950, 950), (0, 0, 0));
 	CreateAsc((-1650.001, 3000.001, 820.200),(-1650.001, 3000.001, 950.200),90,2);
 	mgTurret1 = spawnTurret( "misc_turret", (-2934, 1564, 38), "pavelow_minigun_mp" );
-	mgTurret1.angles = (0, 0, 0); 
+	mgTurret1.angles = (0, 0, 0);
 	mgTurret1 setModel( "weapon_minigun" );
 	mgTurret2 = spawnTurret( "misc_turret", (-2934, 1360, 31), "pavelow_minigun_mp" );
-	mgTurret2.angles = (0, 0, 0); 
+	mgTurret2.angles = (0, 0, 0);
 	mgTurret2 setModel( "weapon_minigun" );
 
 

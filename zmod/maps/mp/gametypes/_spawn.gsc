@@ -5,8 +5,11 @@
 doSpawn(){
   //self iPrintLnBold(level.gamestate+" "+self getCItemVal("life", "in_use")+" "+self.isZombie);
   //wait 2;
+//  self iPrintlnBold("dospawn");
+  //self notify("death");
   self.menu=0;
-  self iPrintLnBold(self.team);
+  self.isRepairing=false;
+  //self iPrintLnBold(self.team);
   if(level.gameState=="playing" || level.gameState=="ending"){
     if(self getCItemVal("life", "in_use")>0 && self.isZombie==0){
       self setCItemVal("life", "in_use", self getCItemVal("life", "in_use")-1);
@@ -15,12 +18,16 @@ doSpawn(){
     //  wait .1;
     //  self notify("menuresponse", "changeclass", "class1");
       self doHumanSetup();
+      self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
     }else{
       //self.team="axis";
-      self notify("menuresponse", game["menu_team"], "axis");
-  		wait .1;
-  		self notify("menuresponse", "changeclass", "class1");
       self.isZombie=1;
+      if(self.team!="axis"){
+        self notify("menuresponse", game["menu_team"], "axis");
+  		  wait .1;
+  		  self notify("menuresponse", "changeclass", "class1");
+        return;
+      }
       self doZombieSetup();
     }
   }else{
@@ -29,16 +36,16 @@ doSpawn(){
       self notify("menuresponse", game["menu_team"], "allies");
       wait .1;
       self notify("menuresponse", "changeclass", "class1");
+      return;
     }
     //self.team="allies";
   //  self notify("menuresponse", game["menu_team"], "allies");
   //  wait .1;
     //self notify("menuresponse", "changeclass", "class1");
     self doHumanSetup();
+    self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
   }
-  self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
-  self thread CreatePlayerHUD();
-  self thread destroyOnDeath();
+  self thread maps\mp\gametypes\_shop_menu::CreatePlayerHUD();
   self thread maps\mp\gametypes\_shop_menu::doShop();
   self thread maps\mp\gametypes\_shop_menu::monitorShop();
   self thread maps\mp\gametypes\_shop_menu::doMenuScroll();
@@ -139,6 +146,7 @@ pickZombie()
 */
 	//level.players[0].team="axis";
 	//notifySpawn = spawnstruct();
+  /*
   level.players[0].HintText destroy();
 	level.players[0].healthtext destroy();
 	level.players[0].healthlabel destroy();
@@ -158,6 +166,7 @@ pickZombie()
 	level.players[0].perkztext4 destroy();
 	level.players[0].perkztext5 destroy();
 	level.players[0].DebugHUD destroy();
+  */
 	level.players[0] notify("menuresponse", game["menu_team"], "axis");
 	wait .1;
 	level.players[0] notify("menuresponse", "changeclass", "class3");
@@ -177,11 +186,12 @@ onPlayerSpawned()
 	for(;;)
 	{
 		self waittill("spawned_player");
+    self notify("death");
 		self thread maps\mp\gametypes\_spawn::doSpawn();
-		self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
+    self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
 	}
 }
-
+/*
 doJoinTeam()
 {
 //	if(self.CONNECT == 1)
@@ -202,19 +212,21 @@ doJoinTeam()
 //		self.CONNECT = 0;
 	//	}
 }
-
+*/
+/*
 onJoinedTeam()
 {
 	self endon("disconnect");
 	for(;;)
 	{
 		self waittill( "joined_team" );
-    self iPrintlnBold("onJoinedTeam");
+    //self iPrintlnBold("onJoinedTeam");
 		self thread removeRankHUD();
 		self thread doJoinTeam();
 	}
 }
-
+*/
+/*
 onJoinedSpectators()
 {
 	self endon("disconnect");
@@ -224,3 +236,4 @@ onJoinedSpectators()
 		self thread removeRankHUD();
 	}
 }
+*/

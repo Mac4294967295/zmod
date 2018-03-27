@@ -19,6 +19,7 @@ extendedmags(){
 		if (self.bounty >= self getHItemVal("extendedmags","cost")){
 			self statCashSub(self getHItemVal("extendedmags","cost"));
 			self setHItemVal("extendedmags", "in_use", 1);
+			self setHItemVal("extendedmags", "print_text", "text2");
 			basename = strtok(self getCurrentWeapon(), "_");
 			foreach(weapon in self getWeaponsListPrimaries()){
 				string = addXMagsToWeapon(weapon);
@@ -95,14 +96,14 @@ hriotshield(){
 
 akimbo(){
 	if(!isUsingKillstreak() && !isWeaponSpecial(self getCurrentWeapon())){
-		if(self.attach["akimbo"] == 1){
+		if(isAttachable("akimbo")){
 			if (self getHItemVal("akimbo", "in_use")==0){
 				if (self.bounty >= self getHItemVal("akimbo","cost")){
 					self statCashSub(self getHItemVal("akimbo","cost"));
 					ammo = self GetWeaponAmmoStock(self getCurrentWeapon());
 					basename = strtok(self getCurrentWeapon(), "_");
-					gun = buildWeaponName(basename[0], self.attach1[self.currentweapon], "akimbo");
-					self takeWeapon(self.current);
+					gun = buildWeaponName(basename[0], self.attach1[self getCurrentWeapon()], "akimbo");
+					self takeWeapon(self getCurrentWeapon());
 					self giveWeapon(gun , 0, true);
 					if(self getHItemVal("extendedmags", "in_use")==1){ //makes sure to give extended mags to new gun if xmags were acquired before
 						weap = addXMagsToWeapon(gun);
@@ -127,6 +128,8 @@ repair(){
 				self iPrintlnBold("^2Bought Door Repair Tool!");
 				self giveWeapon("defaultweapon_mp");
 				self switchToWeapon("defaultweapon_mp");
+				self setWeaponAmmoClip("defaultweapon_mp", 0);
+				self setWeaponAmmoStock("defaultweapon_mp", 0);
 				self thread monitorRepair();
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
@@ -689,4 +692,18 @@ isWeaponSpecial(weapon){
 	(self getHItemVal("grimreaper", "in_use")!=0 && weapon=="at4_mp") ||
 	weapon=="riotshield_mp"||
 	(self getHItemVal("repair", "in_use")!=0 && weapon =="defaultweapon_mp"));
+}
+/*
+Returns whether the attachment is attachble on the current weapon
+*/
+isAttachable(attachment){
+	if(isSubStr(self getCurrentWeapon(), attachment)) return false;
+	basename = strtok(self getCurrentWeapon(), "_");
+	if(basename.size>3) return false;
+	if(basename.size==2){
+		newWeaponName=basename[0]+"_"+attachment+"_mp";
+	}else{
+		newWeaponName=maps\mp\gametypes\_class::buildWeaponName(basename[0], basename[1], attachment);
+	}
+	return isValidWeapon(newWeaponName);
 }
