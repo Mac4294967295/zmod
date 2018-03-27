@@ -8,6 +8,7 @@ life(){
 		self setCItemVal("life", "in_use", self getCItemVal("life", "in_use")+1);
 	}else self iPrintlnBold("^1Not Enough ^3Cash");
 	self notify("MENUCHANGE_2");
+	self notify("LIVES");
 }
 
 tacticalinsertion(){
@@ -48,6 +49,7 @@ cash(){
 gives the player the items on respawn
 */
 giveCreditUpgrades(){
+	self iPrintlnBold(self getCItemVal("tacticalinsertion", "in_use"));
 	if(self getCItemVal("tacticalinsertion", "in_use")==1){
 		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
 	}

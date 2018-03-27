@@ -122,9 +122,11 @@ resets all the "in_use" variables of the items
 */
 resetZMenu(){
 	for(i=0;i<self.ZArray.size;i++){
-		for(j=0;j<self.ZArray[0].size;j++){
-			self setZItemVal(self.ZArray[i][j], "in_use", 0);
-			self setZItemVal(self.ZArray[i][j], "print_text", "text1");
+		for(j=0;j<3;j++){
+			if(isDefined(self.ZArray[i][j])){
+				self setZItemVal(self.ZArray[i][j], "in_use", 0);
+				self setZItemVal(self.ZArray[i][j], "print_text", "text1");
+			}
 		}
 	}
 }
@@ -133,18 +135,22 @@ resets all the "in_use" variables of the items
 */
 resetHMenu(){
 	for(i=0;i<self.HArray.size;i++){
-		for(j=0;j<self.HArray[0].size;j++){
-			self setHItemVal(self.HArray[i][j], "in_use", 0);
-			self setHItemVal(self.HArray[i][j], "print_text", "text1");
+		for(j=0;j<3;j++){
+			if(isDefined(self.HArray[i][j])){
+				self setHItemVal(self.HArray[i][j], "in_use", 0);
+				self setHItemVal(self.HArray[i][j], "print_text", "text1");
+			}
 		}
 	}
 }
 
 resetCMenu(){
 	for(i=0;i<self.CArray.size;i++){
-		for(j=0;j<self.CArray[0].size;j++){
-			self setHItemVal(self.CArray[i][j], "in_use", 0);
-			self setHItemVal(self.CArray[i][j], "print_text", "text1");
+		for(j=0;j<3;j++){
+			if(isDefined(self.CArray[i][j])){
+				self setCItemVal(self.CArray[i][j], "in_use", 0);
+				self setCItemVal(self.CArray[i][j], "print_text", "text1");
+			}
 		}
 	}
 }
@@ -250,7 +256,8 @@ doCreditShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	numberOfPages = roundUp((self.CMenu.size-1)/3);
+	self notify("CASH"); //updates what currency to display
+	numberOfPages = self.CArray.size-1;
 	while(level.showcreditshop)
 	{
 		doMenuScroll(numberOfPages);
@@ -287,7 +294,7 @@ doZombieShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	numberOfPages = roundUp((self.ZMenu.size-1)/3);
+	numberOfPages = self.ZArray.size-1;
 	while(self.isZombie!=0)
 	{
 		doMenuScroll(numberOfPages);
@@ -326,7 +333,8 @@ doHumanShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	numberOfPages = roundUp((self.HMenu.size-1)/3);
+	self notify("CASH"); //updates what currency to display
+	numberOfPages = self.HArray.size-1;
 	while(self.isZombie==0)
 	{
 		doMenuScroll(numberOfPages);

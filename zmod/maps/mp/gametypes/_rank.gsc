@@ -1904,7 +1904,7 @@ doCash()
 
   while(1)
   {
-    if (self.creditshop == false)
+    if (level.showcreditshop == false)
     {
       self.cashlabel.glowColor = ( 0, 1, 0 );
       self.cash.glowColor = ( 0, 1, 0 );
@@ -1927,7 +1927,7 @@ doLives()
   self endon("disconnect");
   self endon("death");
   curlives = -1;
-
+  wait 0.2;
   self.lifetext = NewClientHudElem( self );
   self.lifetext.alignX = TR_HUD_VALUE_ALIGNX;
   self.lifetext.alignY = "top";
@@ -2002,7 +2002,7 @@ statCreditsAdd(amount)
 
 statCreditsSub(amount)
 {
-  if (self.credits + amount > 0)
+  if (self.credits - amount > 0)
   self.credits -= amount;
   else
   self.credits = 0;

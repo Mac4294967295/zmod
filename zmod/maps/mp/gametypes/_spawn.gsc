@@ -46,11 +46,12 @@ doSpawn(){
     self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
   }
   self thread maps\mp\gametypes\_shop_menu::CreatePlayerHUD();
-  self thread maps\mp\gametypes\_shop_menu::doShop();
+  maps\mp\gametypes\_shop_menu::doShop();
   self thread maps\mp\gametypes\_shop_menu::monitorShop();
-  self thread maps\mp\gametypes\_shop_menu::doMenuScroll();
+  //self thread maps\mp\gametypes\_shop_menu::doMenuScroll();
   self thread maps\mp\gametypes\_rank::doCash();
   self thread maps\mp\gametypes\_rank::doHealth();
+  //self thread maps\mp\gametypes\_rank::doLives();
   self.combo = 0;
   self statCashAdd(5000);
 	if(level.gamestate == "starting")
@@ -62,6 +63,7 @@ doSpawn(){
 
 doHumanSetup(){
   self thread maps\mp\gametypes\_rank::doLives();
+  self iPrintLnBold("humasteup");
   self _clearPerks();
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
@@ -137,42 +139,12 @@ pickZombie()
 
 	level playSoundOnPlayers("mp_defeat");
 
-	level.gameState = "playing";
-	level notify("gamestatechange");
-	level thread doPlaying();
-	level thread doPlayingTimer();
-	level thread inGameConstants();
-//	level thread giveNonIntermissionPermissableItems();
 */
-	//level.players[0].team="axis";
-	//notifySpawn = spawnstruct();
-  /*
-  level.players[0].HintText destroy();
-	level.players[0].healthtext destroy();
-	level.players[0].healthlabel destroy();
-	level.players[0].lifetext destroy();
-	level.players[0].lifelabel destroy();
-	level.players[0].menutext destroy();
-	level.players[0].cash destroy();
-	level.players[0].cashlabel destroy();
-	level.players[0].option1 destroy();
-	level.players[0].option2 destroy();
-	level.players[0].option3 destroy();
-	level.players[0].scrollleft destroy();
-	level.players[0].scrollright destroy();
-	level.players[0].perkztext1 destroy();
-	level.players[0].perkztext2 destroy();
-	level.players[0].perkztext3 destroy();
-	level.players[0].perkztext4 destroy();
-	level.players[0].perkztext5 destroy();
-	level.players[0].DebugHUD destroy();
-  */
-	level.players[0] notify("menuresponse", game["menu_team"], "axis");
+  randPlayer = level.players[randomInt(level.players.size)];
+	randPlayer notify("menuresponse", game["menu_team"], "axis");
 	wait .1;
-	level.players[0] notify("menuresponse", "changeclass", "class3");
-	//level.players[0] thread maps\mp\gametypes\_hud_message::notifyMessage( notifySpawn );
-	//level.players[0] suicide();
-	level.players[0].isZombie=1;
+	randPlayer notify("menuresponse", "changeclass", "class3");
+  randPlayer.isZombie=1;
 	level.gameState = "playing";
 	level notify("gamestatechange");
 	level thread doPlaying();
@@ -186,9 +158,10 @@ onPlayerSpawned()
 	for(;;)
 	{
 		self waittill("spawned_player");
-    self notify("death");
-		self thread maps\mp\gametypes\_spawn::doSpawn();
-    self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
+    //self notify("death");
+    if(!(self getCItemVal("life", "in_use")>0 && self.isZombie==0)) //if is respawing due to lives dont respawn at default spawn but at random or tac insertion
+      self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
+    self thread maps\mp\gametypes\_spawn::doSpawn();
 	}
 }
 /*
