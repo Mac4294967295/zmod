@@ -146,7 +146,6 @@ chaz_init()
   setup_dvar("scr_zmod_intermission_time", "10");
   setup_dvar("scr_zmod_starting_time", "10");
   setup_dvar("scr_zmod_alpha_time", "10");
-  setup_dvar("scr_zmod_mapwait_time", "10");
   setup_dvar("scr_zmod_nuke_time", "25");
   setup_dvar("scr_zmod_trade_distance", "80");
   setup_dvar("scr_zmod_trade_timeout", "12");
