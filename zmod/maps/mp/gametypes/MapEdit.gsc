@@ -15,6 +15,9 @@ init()
 	level.oi = maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" );
 	precacheShader(level.oi);
 	//precacheShader(maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" ));
+	
+	wait 5;
+	
 	level toggleCreateMapWait();
 	level LoadMapEdit();
 	level toggleCreateMapWait();
