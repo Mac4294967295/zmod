@@ -1,63 +1,49 @@
 #include maps\mp\gametypes\_rank;
 
-//Returns the number of the next spawn that is nulled, don't set spawns on 0/0/0
-GetSpawnPoint(team)
+//creates the array, nulls all data, loads spawns
+InitializeSpawnPoints()
+{	
+	//[humans/Zombie][Spawnpoint#][x_cord / y_cord / z_cord / angle]
+	level.max_spawnpoints_perteam = 50;
+	level.arraySpawnPoint[2][level.max_spawnpoints_perteam][4] = [];
+	NullSpawnPoints();
+	LoadSpawnPoints();
+}
+
+//sets all spawnpoint x/y/z cords to 0
+NullSpawnPoints()
 {
+	for(i = 0; i < level.arraySpawnPoint.size - 1; i++)
+	{
+		for(c = 0; c < level.arraySpawnPoint[i].size - 1; c++)
+		{
+			for(h = 0; h < level.arraySpawnPoint[i][c].size - 1; h++)
+			{
+				level.arraySpawnPoint[i][c][h] = 0;
+			}
+		}
+	}	
+}
+
+//adds spawnpoint to arraySpawnPoint
+SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
+{	
 	if(team == "humans")
 	{
 		team = 0;
 	}
 	else if(team == "zombies")
 	{
-		team = 1;	
+		team = 1;
 	}
-	else
-	{
-		return 0;
-	}
-	
-	for(counter = 0; counter <= 49; counter++)
-	{
-		if(level.arraySpawnPoint[team][counter][0] == 0 && level.arraySpawnPoint[team][counter][1] == 0 && level.arraySpawnPoint[team][counter][2] == 0)
-		{
-				return counter;		
-		}
-	}
-}
 
-//sets all spawnpoint x/y/z cords to 0
-NullSpawnPoints()
-{
-	for(i = 0; i <= 49; i++)
-	{
-		level.arraySpawnPoint[0][i][0] = 0;
-		level.arraySpawnPoint[0][i][1] = 0;
-		level.arraySpawnPoint[0][i][2] = 0;
-		level.arraySpawnPoint[0][i][3] = 0;
-		level.arraySpawnPoint[1][i][0] = 0;
-		level.arraySpawnPoint[1][i][1] = 0;
-		level.arraySpawnPoint[1][i][2] = 0;
-		level.arraySpawnPoint[0][i][3] = 0;
-	}
-}
-
-//adds spawnpoint to arraySpawnPoint
-SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
-{	
-	spawnpoint = GetSpawnPoint(team);
-	//iPrintLn("Spawnpoint: " + spawnpoint + "Team: " + team);
+	spawnpoint = level.arraySpawnPoint[team].size;
 	
-	if(spawnpoint < getdvarInt("max_spawnpoints_perteam") - 1)
-	{
-		if(team == "humans")
-		{
-			team = 0;
-		}
-		else if(team == "zombies")
-		{
-			team = 1;
-		}
-		
+	if(!isDefined(spawnpoint))
+		spawnpoint = 0;
+	
+	if(spawnpoint < level.max_spawnpoints_perteam - 1)
+	{	
 		level.arraySpawnPoint[team][spawnpoint][0] = x_cord;
 		level.arraySpawnPoint[team][spawnpoint][1] = y_cord;
 		level.arraySpawnPoint[team][spawnpoint][2] = z_cord;
@@ -71,41 +57,25 @@ SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
 //spawns player on random team spawnpoint
 SpawnPlayer()
 {	
-	//iPrintLn("I AM A : " + self.isZombie);
-	team = 0;
-	nameteam = 0;
-	
 	if(self.isZombie == 0)
 	{
 		team = 0;
-		nameteam = "humans";
 	}
-	else if(self.isZombie != 0)
+	else
 	{
 		team = 1;
-		nameteam = "zombies";
 	}
 	
-	randspawn = randomInt(GetSpawnPoint(nameteam));
-	//iPrintLn("Zombie: " + self.isZombie + " Team: " + team + " randspawn: " + randspawn + " GetSpawnPoint:" + GetSpawnPoint(nameteam));
-	//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2] + " a: " + level.arraySpawnPoint[team][randspawn][3]);
-	
-	//dont spawn if x/y/z = 0
-	if( level.arraySpawnPoint[team][randspawn][0] != 0 && level.arraySpawnPoint[team][randspawn][1] != 0 && level.arraySpawnPoint[team][randspawn][2] != 0)
-	{
-		self setOrigin((level.arraySpawnPoint[team][randspawn][0], level.arraySpawnPoint[team][randspawn][1], level.arraySpawnPoint[team][randspawn][2]));
-		self SetPlayerAngles( (0, level.arraySpawnPoint[team][randspawn][3], 0) );		
-		//iPrintLn("Zombie: " + self.isZombie + " Team: " + team);
-		//iPrintLn("randspawn " + randspawn + " / GetSpawn " + GetSpawnPoint(team));
-		//iPrintLn("x: " + level.arraySpawnPoint[team][randspawn][0] + " y: " + level.arraySpawnPoint[team][randspawn][1] + " z: " + level.arraySpawnPoint[team][randspawn][2]);
-		//wait 1;
-	}
+	randspawn = randomInt(level.arraySpawnPoint[team].size);
+
+	self setOrigin((level.arraySpawnPoint[team][randspawn][0], level.arraySpawnPoint[team][randspawn][1], level.arraySpawnPoint[team][randspawn][2]));
+	self SetPlayerAngles( (0, level.arraySpawnPoint[team][randspawn][3], 0) );		
 }
 
 //cycles through all the map spawnpoints during intermission, uncomment in _rank to enable
 TestSpawnpoints()
 {	
-	SetDvar("scr_zmod_intermission_time", "600");
+	SetDvar("scr_zmod_intermission_time", "300");
 	while(1)
 	{
 		while(level.gameState == "intermission")
@@ -123,11 +93,11 @@ TestSpawnpoints()
 					nameteam = "zombies";
 				}
 				
-				iPrintLn("Team: " + team + " Teamname:  " + nameteam + " Totalteamspawns: " + GetSpawnPoint(nameteam));
+				iPrintLn("Team: " + team + " Teamname:  " + nameteam + " Totalteamspawns: " + level.arraySpawnPoint[team].size);
 				wait 1.5;
-				for(spawncounter = 0; spawncounter < GetSpawnPoint(nameteam); spawncounter++)	//Human Spawns
+				for(spawncounter = 0; spawncounter < level.arraySpawnPoint[team].size; spawncounter++)	//Human Spawns
 				{
-					iPrintLn("Spawnpoint: Team: " + nameteam + " Number: " + spawncounter + " / " + (GetSpawnPoint(nameteam) - 1));
+					iPrintLn("Spawnpoint: Team: " + nameteam + " Number: " + spawncounter + " / " + level.arraySpawnPoint[team].size - 1);
 					iPrintLn("Spawnpointinfo (x, y, z, a): (" + level.arraySpawnPoint[team][spawncounter][0] + " ," + level.arraySpawnPoint[team][spawncounter][1] + " ," + level.arraySpawnPoint[team][spawncounter][2] + " ," + level.arraySpawnPoint[team][spawncounter][3] + ")");
 					self setOrigin((level.arraySpawnPoint[team][spawncounter][0], level.arraySpawnPoint[team][spawncounter][1], level.arraySpawnPoint[team][spawncounter][2]));
 					self SetPlayerAngles( (0, level.arraySpawnPoint[team][spawncounter][3], 0) );
@@ -137,16 +107,6 @@ TestSpawnpoints()
 		}
 		wait 0.1;
 	}
-}
-
-//creates the array, nulls all data, loads spawns
-InitializeSpawnPoints()
-{	
-	//[humans/Zombie][Spawnpoint#][x_cord / y_cord / z_cord / angle]
-	setup_dvar("max_spawnpoints_perteam", "50");
-	level.arraySpawnPoint[2][getdvarInt("max_spawnpoints_perteam")][4] = [];
-	NullSpawnPoints();
-	LoadSpawnPoints();
 }
 
 //function that prints player cords and angle; uncomment function call in _rank to enable
@@ -203,9 +163,9 @@ SetSpawnZone(team, point1_x, point1_y, point2_x, point2_y, height, angle, numspa
 	}
 	
 	//if numspawns is greater then the available space in the arraySpawnPoint set it to max possible
-	if(numspawns > getdvarInt("max_spawnpoints_perteam") - GetSpawnPoint(team))
+	if(numspawns > level.max_spawnpoints_perteam - level.arraySpawnPoint[team].size)
 	{
-		numspawn = getdvarInt("max_spawnpoints_perteam") - GetSpawnPoint(team);
+		numspawn = level.max_spawnpoints_perteam - level.arraySpawnPoint[team].size;
 	}
 	
 	createdspawns = 0;
@@ -253,14 +213,14 @@ LoadSpawnPoints()
 	//SetSpawnPoint("humans", 100, 100, 100, 100);
 	//SetSpawnZone("zombies", 100, 100, 100, 100, 100, 100, 10);
 	//Note: if a spawnpoints x/y/z coordinates are all 0, the spawn will not work and all spawns loaded after it will not work either
-	
 	switch(getDvar("mapname"))
 	{
 		case "mp_rust":
-			SetSpawnZone("humans", 770, 1480, 550, 1150, 295, -90, 10);
+			SetSpawnZone("humans", 770, 1480, 550, 1150, 295, -90, 4);
 			SetSpawnPoint("zombies", -254, 1760, -236, 0);
 			SetSpawnPoint("zombies", 1130, 1762, -228, 180);
 			SetSpawnPoint("zombies", 1470, 1360, -236, -90);
+			
 			SetSpawnPoint("zombies", 1400, -160, -228, 180);
 			SetSpawnPoint("zombies", 570, -20, -217, -90);
 			SetSpawnPoint("zombies", -260, -70, -234, -32);
