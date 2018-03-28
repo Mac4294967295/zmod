@@ -3,6 +3,34 @@
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_shop_menu;
 
+doInit()
+{
+  setDvar("scr_zmod_intermission_time", "10");
+  setDvar("scr_zmod_starting_time", "10");
+  setDvar("scr_zmod_alpha_time", "10");
+  setDvar("scr_zmod_sentry_timeout", "200");
+  level.gameState = "";
+  level.ShowCreditShop = false;
+  level weaponInit();
+  level maps\mp\gametypes\_zmod_hud::CreateServerHUD();
+  level.infotext setText("^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
+  level thread OverRider();
+  maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
+  level.mapwait = 0;
+
+  level initializeItemFuncArray();
+  level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();
+  level thread maps\mp\gametypes\MapEdit::init();
+
+  setDvar("g_gametype", "war");
+  setDvar("ui_gametype", "war");
+  setDvar("scr_war_scorelimit", 0);
+  setDvar("scr_war_waverespawndelay", 0);
+  setDvar("scr_war_playerrespawndelay", 0);
+  wait 2;
+
+  level thread maps\mp\gametypes\_zmod_gamelogic::doGameStarter();
+}
 
 doIntermission()
 {
@@ -220,7 +248,7 @@ doEnding()
     player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
     player.newcomer = 0;
   }
-  maps\mp\gametypes\_gamestate_logic::CleanupKillstreaks();
+  maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
   wait 4.5;
   VisionSetNaked(getDvar( "mapname" ), 2);
 
@@ -228,7 +256,7 @@ doEnding()
   {
     player freezeControls(false);
   }
-  level thread maps\mp\gametypes\_gamestate_logic::doIntermission();
+  level thread maps\mp\gametypes\_zmod_gamelogic::doIntermission();
 }
 
 doLastAlive()
@@ -437,4 +465,140 @@ statCreditsSub(amount)
   self notify("CASH");
 
   self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash", 0.6);
+}
+
+OverRider()
+{
+  for(;;)
+  {
+    level notify("abort_forfeit");
+    level.prematchPeriod = 0;
+
+    if (level.enablekillcam)
+    level.killcam = 1;
+    else
+    level.killcam = 0;
+    level.killstreakRewards = 0;
+    wait 1;
+  }
+}
+
+weaponInit()
+{
+  level.lmg = [];
+  level.lmg[0] = "rpd";
+  level.weapname["rpd"] = "RPD";
+  level.lmg[1] = "sa80";
+  level.weapname["sa80"] = "LSW";
+  level.lmg[2] = "mg4";
+  level.weapname["mg4"] = "MG4";
+  level.lmg[3] = "m240";
+  level.weapname["m240"] = "M240";
+  level.lmg[4] = "aug";
+  level.weapname["aug"] = "AUG";
+
+  level.assault = [];
+  level.assault[0] = "ak47";
+  level.weapname["ak47"] = "AK-47";
+  level.assault[1] = "m16";
+  level.weapname["m16"] = "M16";
+  level.assault[2] = "m4";
+  level.weapname["m4"] = "M4";
+  level.assault[3] = "fn2000";
+  level.weapname["fn2000"] = "F2000";
+  level.assault[4] = "masada";
+  level.weapname["masada"] = "ACR";
+  level.assault[5] = "famas";
+  level.weapname["famas"] = "FAMAS";
+  level.assault[6] = "fal";
+  level.weapname["fal"] = "FAL";
+  level.assault[7] = "scar";
+  level.weapname["scar"] = "SCAR-H";
+  level.assault[8] = "tavor";
+  level.weapname["tavor"] = "TAR-21";
+
+  level.sights = [];
+  level.sights[0] = "reflex";
+  level.sights[1] = "eotech";
+  level.sights[2] = "acog";
+  level.sights[3] = "";
+
+  level.smg = [];
+  level.smg[0] = "mp5k";
+  level.weapname["mp5k"] = "MP5K";
+  level.smg[1] = "uzi";
+  level.weapname["uzi"] = "MINI-UZI";
+  level.smg[2] = "p90";
+  level.weapname["p90"] = "P90";
+  level.smg[3] = "kriss";
+  level.weapname["kriss"] = "VECTOR";
+  level.smg[4] = "ump45";
+  level.weapname["ump45"] = "UMP45";
+
+  level.shot = [];
+  level.shot[0] = "ranger";
+  level.weapname["ranger"] = "RANGER";
+  level.shot[1] = "model1887";
+  level.weapname["model1887"] = "MODEL-1887";
+  level.shot[2] = "striker";
+  level.weapname["striker"] = "STRIKER";
+  level.shot[3] = "aa12";
+  level.weapname["aa12"] = "AA12";
+  level.shot[4] = "m1014";
+  level.weapname["m1014"] = "M1014";
+  level.shot[5] = "spas12";
+  level.weapname["spas12"] = "SPAS-12";
+
+  level.machine = [];
+  level.machine[0] = "pp2000";
+  level.weapname["pp2000"] = "PP2000";
+  level.machine[1] = "glock";
+  level.weapname["glock"] = "G18";
+  level.machine[2] = "beretta393";
+  level.weapname["beretta393"] = "RAFFICA";
+
+  level.hand = [];
+  level.hand[0] = "beretta";
+  level.hand[1] = "usp";
+  level.hand[2] = "deserteagle";
+  level.hand[3] = "coltanaconda";
+  level.hand[4] = "glock";
+  level.hand[5] = "beretta393";
+  level.hand[6] = "pp2000";
+  level.hand[7] = "tmp";
+
+
+
+  level.rifle = [];
+  level.rifle[0] = "wa2000";
+  level.weapname["wa2000"] = "WA2000";
+  level.rifle[1] = "barrett";
+  level.weapname["barrett"] = "BARRETT .50CAL";
+  level.rifle[2] = "cheytac";
+  level.weapname["cheytac"] = "INTERVENTION";
+  level.rifle[3] = "m21";
+  level.weapname["m21"] = "M21 EBR";
+
+  level.explosives = [];
+  level.explosives[0] = "frag";
+  level.weapname["frag"] = "FRAG";
+  level.explosives[1] = "semtex";
+  level.weapname["semtex"] = "SEMTEX";
+  level.explosives[2] = "claymore";
+  level.weapname["claymore"] = "CLAYMORE";
+  level.explosives[3] = "c4";
+  level.weapname["c4"] = "C4 CHARGE";
+
+  level.weapname["riotshield"] = "Riotshield";
+
+  level.weaponclasses = [];
+  level.weaponclasses[0] = "weapon_lmg";
+  level.weaponclasses[1] = "weapon_assault";
+  level.weaponclasses[2] = "weapon_smg";
+  level.weaponclasses[3] = "weapon_shotgun";
+  level.weaponclasses[4] = "weapon_machine_pistol";
+  level.weaponclasses[5] = "weapon_pistol";
+  level.weaponclasses[6] = "weapon_sniper";
+  level.weaponclasses[7] = "weapon_riot";
+  level.weaponclasses[8] = "weapon_explosives";
 }

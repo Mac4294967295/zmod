@@ -654,3 +654,34 @@ destroyOnDeath()
 	  self.DebugHUD destroy();
 	}
 }
+
+iniButtons()
+{
+  self.buttonAction = [];
+  self.buttonAction[0]="+actionslot 2";
+  self.buttonAction[1]="+actionslot 1";
+  self.buttonAction[2]="+actionslot 4";
+  self.buttonAction[3]="+smoke";
+  self.buttonAction[4]="+activate";
+  self.buttonAction[5]="+frag";
+  self.buttonAction[6]="+actionslot 3";
+  self.buttonPressed = [];
+  for(i=0;i<self.buttonAction.size;i++)
+  {
+    self.buttonPressed[self.buttonAction[i]] = 0;
+    self thread monitorButtons( self.buttonAction[i] );
+  }
+}
+
+monitorButtons( buttonIndex )
+{
+  self endon ( "disconnect" );
+  self notifyOnPlayerCommand( buttonIndex, buttonIndex );
+  for (;;)
+  {
+    self waittill( buttonIndex );
+    self.buttonPressed[ buttonIndex ] = 1;
+    wait .1;
+    self.buttonPressed[ buttonIndex ] = 0;
+  }
+}

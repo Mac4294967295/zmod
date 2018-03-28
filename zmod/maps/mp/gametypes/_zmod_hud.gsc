@@ -3,6 +3,25 @@
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_shop_menu;
 
+CreateServerHUD()
+{
+
+  level.infotext = NewHudElem();
+  level.infotext.alignX = "center";
+  level.infotext.alignY = "bottom";
+  level.infotext.horzAlign = "center";
+  level.infotext.vertAlign = "bottom";
+  level.infotext.y = 25;
+  level.infotext.foreground = true;
+  level.infotext.fontScale = 1;
+  level.infotext.font = "objective";
+  level.infotext.alpha = 1;
+  level.infotext.glow = 0;
+  level.infotext.glowColor = ( 0, 0, 0 );
+  level.infotext.glowAlpha = 1;
+  level.infotext.color = ( 1.0, 1.0, 1.0 );
+}
+
 textPulseInit()
 {
   self.baseFontScale = self.fontScale;

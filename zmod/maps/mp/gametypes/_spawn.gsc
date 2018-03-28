@@ -122,9 +122,9 @@ pickZombie()
   randPlayer.isZombie=1;
 	level.gameState = "playing";
 	level notify("gamestatechange");
-	level thread maps\mp\gametypes\_gamestate_logic::doPlaying();
-	level thread maps\mp\gametypes\_gamestate_logic::doPlayingTimer();
-	level thread maps\mp\gametypes\_gamestate_logic::inGameConstants();
+	level thread maps\mp\gametypes\_zmod_gamelogic::doPlaying();
+	level thread maps\mp\gametypes\_zmod_gamelogic::doPlayingTimer();
+	level thread maps\mp\gametypes\_zmod_gamelogic::inGameConstants();
 }
 
 onPlayerSpawned()
@@ -138,6 +138,21 @@ onPlayerSpawned()
       self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
     self thread maps\mp\gametypes\_spawn::doSpawn();
 	}
+}
+
+OMAExploitFix()
+{
+  self endon("disconnect");
+  self endon("death");
+  while(1)
+  {
+    if(self _hasPerk("specialty_onemanarmy") || self _hasPerk("specialty_omaquickchange"))
+    {
+      self _clearPerks();
+      self takeAllWeapons();
+    }
+    wait .5;
+  }
 }
 /*
 doJoinTeam()

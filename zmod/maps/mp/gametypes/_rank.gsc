@@ -262,186 +262,6 @@ statMaxHealthAdd(amount)
   self.healthtext maps\mp\gametypes\_zmod_hud::doTextPulse("health");
 }
 
-doInit()
-{
-  level.gameState = "";
-  level.ShowCreditShop = false;
-  level weaponInit();
-  level CreateServerHUD();
-  level.infotext setText("^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
-  level thread OverRider();
-  maps\mp\gametypes\_gamestate_logic::CleanupKillstreaks();
-  level.mapwait = 0;
-
-  level initializeItemFuncArray();
-  level InitializeSpawnPoints();
-  level thread maps\mp\gametypes\MapEdit::init();
-
-  setDvar("g_gametype", "war");
-  setDvar("ui_gametype", "war");
-  setDvar("scr_war_scorelimit", 0);
-  setDvar("scr_war_waverespawndelay", 0);
-  setDvar("scr_war_playerrespawndelay", 0);
-  wait 2;
-
-  level thread maps\mp\gametypes\_gamestate_logic::doGameStarter();
-}
-
-weaponInit()
-{
-  level.lmg = [];
-  level.lmg[0] = "rpd";
-  level.weapname["rpd"] = "RPD";
-  level.lmg[1] = "sa80";
-  level.weapname["sa80"] = "LSW";
-  level.lmg[2] = "mg4";
-  level.weapname["mg4"] = "MG4";
-  level.lmg[3] = "m240";
-  level.weapname["m240"] = "M240";
-  level.lmg[4] = "aug";
-  level.weapname["aug"] = "AUG";
-
-  level.assault = [];
-  level.assault[0] = "ak47";
-  level.weapname["ak47"] = "AK-47";
-  level.assault[1] = "m16";
-  level.weapname["m16"] = "M16";
-  level.assault[2] = "m4";
-  level.weapname["m4"] = "M4";
-  level.assault[3] = "fn2000";
-  level.weapname["fn2000"] = "F2000";
-  level.assault[4] = "masada";
-  level.weapname["masada"] = "ACR";
-  level.assault[5] = "famas";
-  level.weapname["famas"] = "FAMAS";
-  level.assault[6] = "fal";
-  level.weapname["fal"] = "FAL";
-  level.assault[7] = "scar";
-  level.weapname["scar"] = "SCAR-H";
-  level.assault[8] = "tavor";
-  level.weapname["tavor"] = "TAR-21";
-
-  level.sights = [];
-  level.sights[0] = "reflex";
-  level.sights[1] = "eotech";
-  level.sights[2] = "acog";
-  level.sights[3] = "";
-
-  level.smg = [];
-  level.smg[0] = "mp5k";
-  level.weapname["mp5k"] = "MP5K";
-  level.smg[1] = "uzi";
-  level.weapname["uzi"] = "MINI-UZI";
-  level.smg[2] = "p90";
-  level.weapname["p90"] = "P90";
-  level.smg[3] = "kriss";
-  level.weapname["kriss"] = "VECTOR";
-  level.smg[4] = "ump45";
-  level.weapname["ump45"] = "UMP45";
-
-  level.shot = [];
-  level.shot[0] = "ranger";
-  level.weapname["ranger"] = "RANGER";
-  level.shot[1] = "model1887";
-  level.weapname["model1887"] = "MODEL-1887";
-  level.shot[2] = "striker";
-  level.weapname["striker"] = "STRIKER";
-  level.shot[3] = "aa12";
-  level.weapname["aa12"] = "AA12";
-  level.shot[4] = "m1014";
-  level.weapname["m1014"] = "M1014";
-  level.shot[5] = "spas12";
-  level.weapname["spas12"] = "SPAS-12";
-
-  level.machine = [];
-  level.machine[0] = "pp2000";
-  level.weapname["pp2000"] = "PP2000";
-  level.machine[1] = "glock";
-  level.weapname["glock"] = "G18";
-  level.machine[2] = "beretta393";
-  level.weapname["beretta393"] = "RAFFICA";
-
-  level.hand = [];
-  level.hand[0] = "beretta";
-  level.hand[1] = "usp";
-  level.hand[2] = "deserteagle";
-  level.hand[3] = "coltanaconda";
-  level.hand[4] = "glock";
-  level.hand[5] = "beretta393";
-  level.hand[6] = "pp2000";
-  level.hand[7] = "tmp";
-
-
-
-  level.rifle = [];
-  level.rifle[0] = "wa2000";
-  level.weapname["wa2000"] = "WA2000";
-  level.rifle[1] = "barrett";
-  level.weapname["barrett"] = "BARRETT .50CAL";
-  level.rifle[2] = "cheytac";
-  level.weapname["cheytac"] = "INTERVENTION";
-  level.rifle[3] = "m21";
-  level.weapname["m21"] = "M21 EBR";
-
-  level.explosives = [];
-  level.explosives[0] = "frag";
-  level.weapname["frag"] = "FRAG";
-  level.explosives[1] = "semtex";
-  level.weapname["semtex"] = "SEMTEX";
-  level.explosives[2] = "claymore";
-  level.weapname["claymore"] = "CLAYMORE";
-  level.explosives[3] = "c4";
-  level.weapname["c4"] = "C4 CHARGE";
-
-  level.weapname["riotshield"] = "Riotshield";
-
-  level.weaponclasses = [];
-  level.weaponclasses[0] = "weapon_lmg";
-  level.weaponclasses[1] = "weapon_assault";
-  level.weaponclasses[2] = "weapon_smg";
-  level.weaponclasses[3] = "weapon_shotgun";
-  level.weaponclasses[4] = "weapon_machine_pistol";
-  level.weaponclasses[5] = "weapon_pistol";
-  level.weaponclasses[6] = "weapon_sniper";
-  level.weaponclasses[7] = "weapon_riot";
-  level.weaponclasses[8] = "weapon_explosives";
-}
-
-
-
-OverRider()
-{
-  for(;;)
-  {
-    level notify("abort_forfeit");
-    level.prematchPeriod = 0;
-
-    if (level.enablekillcam)
-    level.killcam = 1;
-    else
-    level.killcam = 0;
-    level.killstreakRewards = 0;
-    wait 1;
-  }
-}
-
-
-
-OMAExploitFix()
-{
-  self endon("disconnect");
-  self endon("death");
-  while(1)
-  {
-    if(self _hasPerk("specialty_onemanarmy") || self _hasPerk("specialty_omaquickchange"))
-    {
-      self _clearPerks();
-      self takeAllWeapons();
-    }
-    wait .5;
-  }
-}
-
 CashFix()
 {
   self endon("disconnect");
@@ -456,36 +276,7 @@ CashFix()
   }
 }
 
-iniButtons()
-{
-  self.buttonAction = [];
-  self.buttonAction[0]="+actionslot 2";
-  self.buttonAction[1]="+actionslot 1";
-  self.buttonAction[2]="+actionslot 4";
-  self.buttonAction[3]="+smoke";
-  self.buttonAction[4]="+activate";
-  self.buttonAction[5]="+frag";
-  self.buttonAction[6]="+actionslot 3";
-  self.buttonPressed = [];
-  for(i=0;i<self.buttonAction.size;i++)
-  {
-    self.buttonPressed[self.buttonAction[i]] = 0;
-    self thread monitorButtons( self.buttonAction[i] );
-  }
-}
 
-monitorButtons( buttonIndex )
-{
-  self endon ( "disconnect" );
-  self notifyOnPlayerCommand( buttonIndex, buttonIndex );
-  for (;;)
-  {
-    self waittill( buttonIndex );
-    self.buttonPressed[ buttonIndex ] = 1;
-    wait .1;
-    self.buttonPressed[ buttonIndex ] = 0;
-  }
-}
 fadeOutMenu(dest)
 {
   self.menutext fadeOverTime(0.3);
@@ -524,24 +315,7 @@ fadeInMenu(dest)
 
 
 
-CreateServerHUD()
-{
 
-  level.infotext = NewHudElem();
-  level.infotext.alignX = "center";
-  level.infotext.alignY = "bottom";
-  level.infotext.horzAlign = "center";
-  level.infotext.vertAlign = "bottom";
-  level.infotext.y = 25;
-  level.infotext.foreground = true;
-  level.infotext.fontScale = 1;
-  level.infotext.font = "objective";
-  level.infotext.alpha = 1;
-  level.infotext.glow = 0;
-  level.infotext.glowColor = ( 0, 0, 0 );
-  level.infotext.glowAlpha = 1;
-  level.infotext.color = ( 1.0, 1.0, 1.0 );
-}
 
 init()
 {
@@ -604,13 +378,8 @@ init()
     rankName = tableLookup( "mp/ranktable.csv", 0, rankId, 1 );
   }
   maps\mp\gametypes\_missions::buildChallegeInfo();
-
-  setDvar("scr_zmod_intermission_time", "10");
-  setDvar("scr_zmod_starting_time", "10");
-  setDvar("scr_zmod_alpha_time", "10");
-  setDvar("scr_zmod_sentry_timeout", "200");
   level thread onPlayerConnect();
-  level thread doInit();
+  level thread maps\mp\gametypes\_zmod_gamelogic::doInit();
 
 
 }
