@@ -102,7 +102,7 @@ akimbo(){
 					self statCashSub(self getHItemVal("akimbo","cost"));
 					ammo = self GetWeaponAmmoStock(self getCurrentWeapon());
 					basename = strtok(self getCurrentWeapon(), "_");
-					gun = buildWeaponName(basename[0], self.attach1[self getCurrentWeapon()], "akimbo");
+					gun = maps\mp\gametypes\_class::buildWeaponName(basename[0], self.attach1[self getCurrentWeapon()], "akimbo");
 					self takeWeapon(self getCurrentWeapon());
 					self giveWeapon(gun , 0, true);
 					if(self getHItemVal("extendedmags", "in_use")==1){ //makes sure to give extended mags to new gun if xmags were acquired before
@@ -704,5 +704,11 @@ isAttachable(attachment){
 	}else{
 		newWeaponName=maps\mp\gametypes\_class::buildWeaponName(basename[0], basename[1], attachment);
 	}
-	return isValidWeapon(newWeaponName);
+	return maps\mp\gametypes\_class::isValidWeapon(newWeaponName);
+}
+
+vector_scal(vec, scale)
+{
+  vec = (vec[0] * scale, vec[1] * scale, vec[2] * scale);
+  return vec;
 }

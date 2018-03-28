@@ -26,84 +26,13 @@ doFX()
   }
 }
 
-assistedKill(who)
-{
-  if (level.gameState != "playing" || who.team == self.team)
-  return;
-  earn = 0;
-  if (self.team == "allies")
-  earn = 25;
-  else
-  if (self.team == "axis")
-  earn = 50;
-  //self justScorePopup("Assist: +$" + earn);
-  self justScorePopup("Assist: +$");
-  self statCashAdd(earn);
-}
-killedPlayer(who, weap)
-{
-	if (self.team == who.team || level.gameState != "playing")
-		return;
-	if (self.team == who.team)
-		return;
-	//processChallengeKill(self, who, weap);
-	if (self.isZombie != 0)
-	{
-		amount = 100 + (50 * self.combo);
-
-		self statCashAdd(amount);
-		self.combo++;
-		if (self.combo > 1)
-			self thread justScorePopup("Kill Combo! x" + self.combo + " +$" + amount);
-		else
-			self thread justScorePopup("Killed Human! +$" + amount);
-		self notify("CASH");
-	}
-	else
-	{
-		who statCashAdd(50);
-		who justScorePopup("Died! +$50");
-
-		earn = 50;
-		if (weap == "melee_mp")
-		{
-			earn *= 4;
-			self thread justScorePopup("Melee Kill! +$" + earn);
-		}
-		else
-			self thread justScorePopup("Killed Zombie! +$" + earn);
-		self statCashAdd(earn);
-	}
-}
-
-
-
-GetCursorPos()
-{
-  forward = self getTagOrigin("tag_eye");
-  end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
-  location = BulletTrace( forward, end, 0, self)[ "position" ];
-  return location;
-}
-
-vector_scal(vec, scale)
-{
-  vec = (vec[0] * scale, vec[1] * scale, vec[2] * scale);
-  return vec;
-}
 
 
 
 
-destroyTrace()
-{
-  if (isDefined(level.bosspoint))
-  {
-    level.bosspoint destroy();
-    level.bosspoint = undefined;
-  }
-}
 
+
+/*
 buildWeaponName( baseName, attachment1, attachment2 )
 {
   if( !isDefined( level.letterToNumber ) )
@@ -213,115 +142,14 @@ isValidWeapon( refString )
   assertMsg( "Replacing invalid weapon/attachment combo: " + refString );
   return false;
 }
-
-
-
-statCashAdd(amount)
-{
-  if (self.bounty + amount < 99999)
-  self.bounty += amount;
-  else
-  self.bounty = 99999;
-  self notify("CASH");
-  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash");
-}
-
-statCashSub(amount)
-{
-  if (self.bounty - amount > 0)
-  self.bounty -= amount;
-  else
-  self.bounty = 0;
-  self notify("CASH");
-  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash", 0.6);
-}
-
-
-
-statLivesInc(amount)
-{
-  if (self.lives < level.maxlives)
-  self.lives++;
-  self notify("LIVES");
-  self.lifetext maps\mp\gametypes\_zmod_hud::doTextPulse("life");
-}
-
-statLivesDec(amount)
-{
-  if (self.lives > 0)
-  self.lives--;
-  self notify("LIVES");
-  self.lifetext maps\mp\gametypes\_zmod_hud::doTextPulse("life", 0.6);
-}
-
-statMaxHealthAdd(amount)
-{
-  self.maxhealth += amount;
-  self.health += amount;
-  self notify("HEALTH");
-  self.healthtext maps\mp\gametypes\_zmod_hud::doTextPulse("health");
-}
-
-CashFix()
-{
-  self endon("disconnect");
-  while(1)
-  {
-    if(self.bounty < 0)
-    {
-      self.bounty = 0;
-      self notify("CASH");
-    }
-    wait .5;
-  }
-}
-
-
-fadeOutMenu(dest)
-{
-  self.menutext fadeOverTime(0.3);
-  self.menutext.alpha = 0.2;
-  self.option1 fadeOverTime(0.3);
-  self.option1.alpha = 0.2;
-  self.option2 fadeOverTime(0.3);
-  self.option2.alpha = 0.2;
-  self.option3 fadeOverTime(0.3);
-  self.option3.alpha = 0.2;
-  self.option1 fadeOverTime(0.3);
-  self.option1.alpha = 0.2;
-  self.scrollleft fadeOverTime(0.3);
-  self.scrollleft.alpha = 0.1;
-  self.scrollright fadeOverTime(0.3);
-  self.scrollright.alpha = 0.1;
-}
-
-fadeInMenu(dest)
-{
-  self.menutext fadeOverTime(0.3);
-  self.menutext.alpha = 1;
-  self.option1 fadeOverTime(0.3);
-  self.option1.alpha = 1;
-  self.option2 fadeOverTime(0.3);
-  self.option2.alpha = 1;
-  self.option3 fadeOverTime(0.3);
-  self.option3.alpha = 1;
-  self.option1 fadeOverTime(0.3);
-  self.option1.alpha = 1;
-  self.scrollleft fadeOverTime(0.3);
-  self.scrollleft.alpha = 1;
-  self.scrollright fadeOverTime(0.3);
-  self.scrollright.alpha = 1;
-}
-
-
-
-
-
+*/
 init()
 {
   level.scoreInfo = [];
   level.xpScale = getDvarInt( "scr_xpscale" );
+
   level.rankTable = [];
+
   precacheShader("white");
   precacheString( &"RANK_PLAYER_WAS_PROMOTED_N" );
   precacheString( &"RANK_PLAYER_WAS_PROMOTED" );
@@ -452,105 +280,91 @@ getRankInfoLevel( rankId )
 
 onPlayerConnect()
 {
+	for(;;)
+	{
+		level waittill( "connected", player );
 
-  for(;;)
-  {
-    level waittill( "connected", player );
-    player.isZombie=0;
-    player initializeZMenu();
-    player initializeHMenu();
-    player initializeCMenu();
-    player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "experience" );
-    if ( player.pers["rankxp"] < 0 )
-    {
-      player.pers["rankxp"] = 0;
-    }
-    rankId = player getRankForXp( player getRankXP() );
-    player.pers[ "rank" ] = rankId;
-    player.pers[ "participation" ] = 0;
-    player.xpUpdateTotal = 0;
-    player.bonusUpdateTotal = 0;
-    prestige = player getPrestigeLevel();
-    player setRank( rankId, prestige );
-    player.pers["prestige"] = prestige;
-    player.postGamePromotion = false;
-    if ( !isDefined( player.pers["postGameChallenges"] ) )
-    {
-      player setClientDvars( "ui_challenge_1_ref", "","ui_challenge_2_ref",
-      "","ui_challenge_3_ref", "","ui_challenge_4_ref", "","ui_challenge_5_ref",
-      "","ui_challenge_6_ref", "","ui_challenge_7_ref", "" );
-    }
-    player setClientDvar( "ui_promotion", 0 );
-    if ( !isDefined( player.pers["summary"] ) )
-    {
-      player.pers["summary"] = [];
-      player.pers["summary"]["xp"] = 0;
-      player.pers["summary"]["score"] = 0;
-      player.pers["summary"]["challenge"] = 0;
-      player.pers["summary"]["match"] = 0;
-      player.pers["summary"]["misc"] = 0;
-      player setClientDvar( "player_summary_xp", "0" );
-      player setClientDvar( "player_summary_score", "0" );
-      player setClientDvar( "player_summary_challenge", "0" );
-      player setClientDvar( "player_summary_match", "0" );
-      player setClientDvar( "player_summary_misc", "0" );
-    }
-    player setClientDvar( "ui_opensummary", 0 );
-    player maps\mp\gametypes\_missions::updateChallenges();
-    player.explosiveKills[0] = 0;
-    player.xpGains = [];
-    player.hud_scorePopup = newClientHudElem( player );
-    player.hud_scorePopup.horzAlign = "center";
-    player.hud_scorePopup.vertAlign = "middle";
-    player.hud_scorePopup.alignX = "center";
-    player.hud_scorePopup.alignY = "middle";
-    player.hud_scorePopup.x = 0;
-    if ( level.splitScreen )
-    {
-      player.hud_scorePopup.y = -40;
-    }
-    else
-    {
-      player.hud_scorePopup.y = -60;
-    }
-    player.hud_scorePopup.font = "hudbig";
-    player.hud_scorePopup.fontscale = 0.75;
-    player.hud_scorePopup.archived = false;
-    player.hud_scorePopup.color = (0.5,0.5,0.5);
-    player.hud_scorePopup.sort = 10000;
-    player.hud_scorePopup maps\mp\gametypes\_hud::fontPulseInit( 3.0 );
-    if (level.gameState == "playing" || level.gameState == "ending")
-    {
-      player.newcomer = 1;
-    }
-    else
-    {
-      player.newcomer = 0;
-    }
+		/#
+		if ( getDvarInt( "scr_forceSequence" ) )
+			player setPlayerData( "experience", 145499 );
+		#/
+		player.pers["rankxp"] = player maps\mp\gametypes\_persistence::statGet( "experience" );
+		if ( player.pers["rankxp"] < 0 ) // paranoid defensive
+			player.pers["rankxp"] = 0;
 
-    isd = false;
+		rankId = player getRankForXp( player getRankXP() );
+		player.pers[ "rank" ] = rankId;
+		player.pers[ "participation" ] = 0;
 
-    player.doorInRange = 0;
-    player.wasAlpha = 0;
-    player.wasSurvivor = 0;
-    //player.credits = player getCreditsPersistent();
-    player.credits = 50000;
-    player iniButtons();
-    player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
-    player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
-    player thread CashFix();
-    player thread onDisconnect();
-    player allowSpectateTeam( "allies", true );
-    player allowSpectateTeam( "axis", true );
-    player allowSpectateTeam( "freelook", true );
-    player allowSpectateTeam( "none", true );
+		player.xpUpdateTotal = 0;
+		player.bonusUpdateTotal = 0;
 
-    player.CONNECT = 1;
+		prestige = player getPrestigeLevel();
+		player setRank( rankId, prestige );
+		player.pers["prestige"] = prestige;
 
-    //player thread TestSpawnpoints();
-	  //player thread CollectSpawnCords();
-  }
+		player.postGamePromotion = false;
+		if ( !isDefined( player.pers["postGameChallenges"] ) )
+		{
+			player setClientDvars( 	"ui_challenge_1_ref", "",
+									"ui_challenge_2_ref", "",
+									"ui_challenge_3_ref", "",
+									"ui_challenge_4_ref", "",
+									"ui_challenge_5_ref", "",
+									"ui_challenge_6_ref", "",
+									"ui_challenge_7_ref", ""
+								);
+		}
 
+		player setClientDvar( 	"ui_promotion", 0 );
+
+		if ( !isDefined( player.pers["summary"] ) )
+		{
+			player.pers["summary"] = [];
+			player.pers["summary"]["xp"] = 0;
+			player.pers["summary"]["score"] = 0;
+			player.pers["summary"]["challenge"] = 0;
+			player.pers["summary"]["match"] = 0;
+			player.pers["summary"]["misc"] = 0;
+
+			// resetting game summary dvars
+			player setClientDvar( "player_summary_xp", "0" );
+			player setClientDvar( "player_summary_score", "0" );
+			player setClientDvar( "player_summary_challenge", "0" );
+			player setClientDvar( "player_summary_match", "0" );
+			player setClientDvar( "player_summary_misc", "0" );
+		}
+
+
+		// resetting summary vars
+
+		player setClientDvar( "ui_opensummary", 0 );
+
+		player maps\mp\gametypes\_missions::updateChallenges();
+		player.explosiveKills[0] = 0;
+		player.xpGains = [];
+
+		player.hud_scorePopup = newClientHudElem( player );
+		player.hud_scorePopup.horzAlign = "center";
+		player.hud_scorePopup.vertAlign = "middle";
+		player.hud_scorePopup.alignX = "center";
+		player.hud_scorePopup.alignY = "middle";
+ 		player.hud_scorePopup.x = 0;
+ 		if ( level.splitScreen )
+			player.hud_scorePopup.y = -40;
+		else
+			player.hud_scorePopup.y = -60;
+		player.hud_scorePopup.font = "hudbig";
+		player.hud_scorePopup.fontscale = 0.75;
+		player.hud_scorePopup.archived = false;
+		player.hud_scorePopup.color = (0.5,0.5,0.5);
+		player.hud_scorePopup.sort = 10000;
+		player.hud_scorePopup maps\mp\gametypes\_hud::fontPulseInit( 3.0 );
+
+	//	player thread onPlayerSpawned();
+	//	player thread onJoinedTeam();
+		//player thread onJoinedSpectators();
+	}
 }
 
 
@@ -562,7 +376,37 @@ debugtext(){
 }
 
 
+scorePopup( amount, bonus, hudColor, glowAlpha )
+{
+  self endon( "disconnect" );
+  self endon( "joined_team" );
+  self endon( "joined_spectators" );
+  if ( amount == 0 )
+  {
+    return;
+  }
+  self notify( "scorePopup" );
+  self endon( "scorePopup" );
+  self.xpUpdateTotal += amount;
+  self.bonusUpdateTotal += bonus;
+  wait ( 0.05 );
 
+  increment = max( int( self.bonusUpdateTotal / 20 ), 1 );
+  if ( self.bonusUpdateTotal )
+  {
+    while ( self.bonusUpdateTotal > 0 )
+    {
+      self.xpUpdateTotal += min( self.bonusUpdateTotal, increment );
+      self.bonusUpdateTotal -= min( self.bonusUpdateTotal, increment );
+      wait ( 0.05 );
+    }
+  }
+  else
+  {
+    wait ( 1.0 );
+  }
+  self.xpUpdateTotal = 0;
+}
 
 
 
@@ -668,7 +512,7 @@ giveRankXP( type, value )
   {
     if ( type == "teamkill" )
     {
-      self thread scorePopup( 0 - getScoreInfoValue( "kill" ), 0, (1,0,0), 0 );
+      //self thread scorePopup( 0 - getScoreInfoValue( "kill" ), 0, (1,0,0), 0 );
     }
     else
     {
@@ -677,7 +521,7 @@ giveRankXP( type, value )
       {
         color = (1,.65,0);
       }
-      self thread scorePopup( value, momentumBonus, color, 0 );
+      //self thread scorePopup( value, momentumBonus, color, 0 );
     }
   }
   switch( type )
@@ -768,76 +612,10 @@ endGameUpdate()
   player = self;
 }
 
-fontPulseNew(player)
-{
-  self notify ( "fontPulse" );
-  self endon ( "fontPulse" );
-  self endon( "death" );
-
-  player endon("disconnect");
-  player endon("joined_team");
-  player endon("joined_spectators");
-
-  self ChangeFontScaleOverTime( self.inFrames * 0.05 );
-  self.fontScale = self.maxFontScale;
-  wait (self.inFrames * 0.05);
-
-  self ChangeFontScaleOverTime( self.outFrames * 0.05 );
-  self.fontScale = self.baseFontScale;
-  wait 0.3;
-
-  self fadeOverTime( 0.75 );
-  self.alpha = 0;
-}
 
 
-justScorePopup( text )
-{
-  glowAlpha = (1, 1, 1);
-  hudColor = (1,1,0.5);
-  self endon( "disconnect" );
-  self endon( "joined_team" );
-  self endon( "joined_spectators" );
-  self notify( "scorePopup" );
-  self.hud_scorePopup.color = hudColor;
-  self.hud_scorePopup.glowColor = hudColor;
-  self.hud_scorePopup.glowAlpha = glowAlpha;
-  self.hud_scorePopup setText(text);
-  self.hud_scorePopup.alpha = 0.85;
-  self.hud_scorePopup thread fontPulseNew( self );
-}
 
-scorePopup( amount, bonus, hudColor, glowAlpha )
-{
-	self endon( "disconnect" );
-	self endon( "joined_team" );
-	self endon( "joined_spectators" );
-	if ( amount == 0 )
-	{
-		return;
-	}
-	self notify( "scorePopup" );
-	self endon( "scorePopup" );
-	self.xpUpdateTotal += amount;
-	self.bonusUpdateTotal += bonus;
-	wait ( 0.05 );
-	increment = max( int( self.bonusUpdateTotal / 20 ), 1 );
-	if ( self.bonusUpdateTotal )
-	{
-		while ( self.bonusUpdateTotal > 0 )
-		{
-			self.xpUpdateTotal += min( self.bonusUpdateTotal, increment );
-			self.bonusUpdateTotal -= min( self.bonusUpdateTotal, increment );
-			//self.hud_scorePopup setValue( self.xpUpdateTotal );
-			wait ( 0.05 );
-		}
-	}
-	else
-		{
-			wait ( 1.0 );
-		}
-	self.xpUpdateTotal = 0;
-}
+
 removeRankHUD()
 {
   self.hud_scorePopup.alpha = 0;

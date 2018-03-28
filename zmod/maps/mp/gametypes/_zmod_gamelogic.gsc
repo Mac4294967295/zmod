@@ -2,9 +2,42 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_shop_menu;
+onPlayerConnect()
+{
 
+  for(;;)
+  {
+
+    level waittill( "connected", player );
+    player.isZombie=0;
+    player initializeZMenu();
+    player initializeHMenu();
+    player initializeCMenu();
+
+    player.doorInRange = 0;
+    player.wasAlpha = 0;
+    player.wasSurvivor = 0;
+    //player.credits = player getCreditsPersistent();
+    player.credits = 50000;
+    player iniButtons();
+    player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
+    player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
+    player thread maps\mp\gametypes\_shop_menu::CashFix();
+    //player thread onDisconnect();
+    player allowSpectateTeam( "allies", true );
+    player allowSpectateTeam( "axis", true );
+    player allowSpectateTeam( "freelook", true );
+    player allowSpectateTeam( "none", true );
+
+    //player thread TestSpawnpoints();
+	  //player thread CollectSpawnCords();
+
+  }
+
+}
 doInit()
 {
+  level thread onPlayerConnect();
   setDvar("scr_zmod_intermission_time", "10");
   setDvar("scr_zmod_starting_time", "10");
   setDvar("scr_zmod_alpha_time", "10");
@@ -601,4 +634,53 @@ weaponInit()
   level.weaponclasses[6] = "weapon_sniper";
   level.weaponclasses[7] = "weapon_riot";
   level.weaponclasses[8] = "weapon_explosives";
+}
+
+assistedKill(who)
+{
+  if (level.gameState != "playing" || who.team == self.team)
+  return;
+  earn = 0;
+  if (self.team == "allies")
+  earn = 25;
+  else
+  if (self.team == "axis")
+  earn = 50;
+  self maps\mp\gametypes\_zmod_hud::justScorePopup("Assist: +$" + earn);
+  self statCashAdd(earn);
+}
+killedPlayer(who, weap)
+{
+	if (self.team == who.team || level.gameState != "playing")
+		return;
+	if (self.team == who.team)
+		return;
+	//processChallengeKill(self, who, weap);
+	if (self.isZombie != 0)
+	{
+		amount = 100 + (50 * self.combo);
+
+		self statCashAdd(amount);
+		self.combo++;
+		if (self.combo > 1)
+			self thread maps\mp\gametypes\_zmod_hud::justScorePopup("Kill Combo! x" + self.combo + " +$" + amount);
+		else
+			self thread maps\mp\gametypes\_zmod_hud::justScorePopup("Killed Human! +$" + amount);
+		self notify("CASH");
+	}
+	else
+	{
+		who statCashAdd(50);
+		who maps\mp\gametypes\_zmod_hud::justScorePopup("Died! +$50");
+
+		earn = 50;
+		if (weap == "melee_mp")
+		{
+			earn *= 4;
+			self thread maps\mp\gametypes\_zmod_hud::justScorePopup("Melee Kill! +$" + earn);
+		}
+		else
+			self thread maps\mp\gametypes\_zmod_hud::justScorePopup("Killed Zombie! +$" + earn);
+		self statCashAdd(earn);
+	}
 }

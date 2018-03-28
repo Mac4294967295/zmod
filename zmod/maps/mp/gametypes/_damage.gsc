@@ -351,7 +351,7 @@ handleNormalDeath( lifeId, attacker, eInflictor, sWeapon, sMeansOfDeath )
 				continue;
 
 			player thread maps\mp\gametypes\_gamescore::processAssist( self );
-			player maps\mp\gametypes\_rank::assistedKill(self);
+			player maps\mp\gametypes\_zmod_gamelogic::assistedKill(self);
 
 		}
 		self.attackers = [];

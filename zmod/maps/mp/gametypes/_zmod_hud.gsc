@@ -204,3 +204,73 @@ doLives()
     self waittill("LIVES");
   }
 }
+
+justScorePopup( text )
+{
+  glowAlpha = (1, 1, 1);
+  hudColor = (1,1,0.5);
+  self endon( "disconnect" );
+  self endon( "joined_team" );
+  self endon( "joined_spectators" );
+  self notify( "scorePopup" );
+  self.hud_scorePopup.color = hudColor;
+  self.hud_scorePopup.glowColor = hudColor;
+  self.hud_scorePopup.glowAlpha = glowAlpha;
+  self.hud_scorePopup setText(text);
+  self.hud_scorePopup.alpha = 0.85;
+  self.hud_scorePopup thread fontPulseNew( self );
+}
+/*
+scorePopup( amount, bonus, hudColor, glowAlpha )
+{
+	self endon( "disconnect" );
+	self endon( "joined_team" );
+	self endon( "joined_spectators" );
+	if ( amount == 0 )
+	{
+		return;
+	}
+	self notify( "scorePopup" );
+	self endon( "scorePopup" );
+	self.xpUpdateTotal += amount;
+	self.bonusUpdateTotal += bonus;
+	wait ( 0.05 );
+	increment = max( int( self.bonusUpdateTotal / 20 ), 1 );
+	if ( self.bonusUpdateTotal )
+	{
+		while ( self.bonusUpdateTotal > 0 )
+		{
+			self.xpUpdateTotal += min( self.bonusUpdateTotal, increment );
+			self.bonusUpdateTotal -= min( self.bonusUpdateTotal, increment );
+			//self.hud_scorePopup setValue( self.xpUpdateTotal );
+			wait ( 0.05 );
+		}
+	}
+	else
+		{
+			wait ( 1.0 );
+		}
+	self.xpUpdateTotal = 0;
+}
+*/
+fontPulseNew(player)
+{
+  self notify ( "fontPulse" );
+  self endon ( "fontPulse" );
+  self endon( "death" );
+
+  player endon("disconnect");
+  player endon("joined_team");
+  player endon("joined_spectators");
+
+  self ChangeFontScaleOverTime( self.inFrames * 0.05 );
+  self.fontScale = self.maxFontScale;
+  wait (self.inFrames * 0.05);
+
+  self ChangeFontScaleOverTime( self.outFrames * 0.05 );
+  self.fontScale = self.baseFontScale;
+  wait 0.3;
+
+  self fadeOverTime( 0.75 );
+  self.alpha = 0;
+}

@@ -685,3 +685,45 @@ monitorButtons( buttonIndex )
     self.buttonPressed[ buttonIndex ] = 0;
   }
 }
+
+statCashAdd(amount)
+{
+  if (self.bounty + amount < 99999)
+  self.bounty += amount;
+  else
+  self.bounty = 99999;
+  self notify("CASH");
+  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash");
+}
+
+statCashSub(amount)
+{
+  if (self.bounty - amount > 0)
+  self.bounty -= amount;
+  else
+  self.bounty = 0;
+  self notify("CASH");
+  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash", 0.6);
+}
+
+statMaxHealthAdd(amount)
+{
+  self.maxhealth += amount;
+  self.health += amount;
+  self notify("HEALTH");
+  self.healthtext maps\mp\gametypes\_zmod_hud::doTextPulse("health");
+}
+
+CashFix()
+{
+  self endon("disconnect");
+  while(1)
+  {
+    if(self.bounty < 0)
+    {
+      self.bounty = 0;
+      self notify("CASH");
+    }
+    wait .5;
+  }
+}
