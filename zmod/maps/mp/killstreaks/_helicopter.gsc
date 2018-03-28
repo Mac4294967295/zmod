@@ -20,7 +20,7 @@ init()
 	precacheHelicopter( "vehicle_pavelow", "pavelow" );
 	precacheHelicopter( "vehicle_pavelow_opfor", "pavelow" );
 	precacheHelicopter( "vehicle_little_bird_armed", "cobra" );
-	
+
 	precacheitem( "cobra_FFAR_mp" );
 	precacheitem( "cobra_20mm_mp" );
 	precacheitem( "cobra_player_minigun_mp" );
@@ -30,7 +30,7 @@ init()
 	precacheVehicle( "pavelow_mp" );
 	precacheTurret( "pavelow_minigun_mp" );
 	precacheString( &"MP_CIVILIAN_AIR_TRAFFIC" );
-	
+
 	level.chopper = undefined;
 
 	// array of paths, each element is an array of start nodes that all leads to a single destination node
@@ -45,25 +45,25 @@ init()
 
 	level.heli_crash_nodes = getEntArray( "heli_crash_start", "targetname" );
 	assertEx( level.heli_crash_nodes.size, "No \"heli_crash_start\" nodes found in map!" );
-	
+
 	level.heli_missile_rof 	= 5;	// missile rate of fire, one every this many seconds per target, could fire two at the same time to different targets
 	level.heli_maxhealth 	= 1500;	// max health of the helicopter
 	level.heli_debug 		= 0;	// debug mode, draws debugging info on screen
-	
+
 	level.heli_targeting_delay 	= 0.5;	// targeting delay
 	level.heli_turretReloadTime = 1.5;	// mini-gun reload time
 	level.heli_turretClipSize 	= 40;	// mini-gun clip size, rounds before reload
 	level.heli_visual_range 	= 3500;	// distance radius helicopter will acquire targets (see)
-			
+
 	level.heli_target_spawnprotection 	= 5;		// players are this many seconds safe from helicopter after spawn
 	level.heli_target_recognition 		= 0.5;		// percentage of the player's body the helicopter sees before it labels him as a target
 	level.heli_missile_friendlycare 	= 256;		// if friendly is within this distance of the target, do not shoot missile
 	level.heli_missile_target_cone 		= 0.3;		// dot product of vector target to helicopter forward, 0.5 is in 90 range, bigger the number, smaller the cone
 	level.heli_armor_bulletdamage 		= 0.3;		// damage multiplier to bullets onto helicopter's armor
-	
+
 	level.heli_attract_strength 		= 1000;
-	level.heli_attract_range 			= 4096;	
-	
+	level.heli_attract_range 			= 4096;
+
 	level.heli_angle_offset 			= 90;
 	level.heli_forced_wait 				= 0;
 
@@ -113,7 +113,7 @@ init()
 	level.killstreakFuncs["helicopter_flares"] = ::useHelicopterFlares;
 	level.killstreakFuncs["helicopter_minigun"] = ::useHelicopterMinigun;
 	level.killstreakFuncs["helicopter_mk19"] = ::useHelicopterMK19;
-	
+
 	level.heliDialog["tracking"][0] = "ac130_fco_moreenemy";
 	level.heliDialog["tracking"][1] = "ac130_fco_getthatguy";
 	level.heliDialog["tracking"][2] = "ac130_fco_guyrunnin";
@@ -126,8 +126,8 @@ init()
 	level.heliDialog["locked"][1] = "ac130_fco_takehimout";
 	level.heliDialog["locked"][2] = "ac130_fco_nailthoseguys";
 
-	level.lastHeliDialogTime = 0;	
-	
+	level.lastHeliDialogTime = 0;
+
 	queueCreate( "helicopter" );
 }
 
@@ -218,19 +218,19 @@ tryUseHelicopter( lifeId, heliType )
 		self iPrintLnBold( &"MP_CIVILIAN_AIR_TRAFFIC" );
 		return false;
 	}
-	
+
 	if ( (!isDefined( heliType ) || heliType == "flares") && isDefined( level.chopper ) )
 	{
 		self iPrintLnBold( &"MP_AIR_SPACE_TOO_CROWDED" ); //Change from MP_HELI_IN_QUEUE to MP_AIR_SPACE_TOO_CROWDED, no queues for zmod
-		
+
 		if ( isDefined( heliType ) )
 			streakName = "helicopter_" + heliType;
 		else
 			streakName = "helicopter";
-		
+
 		self maps\mp\killstreaks\_killstreaks::shuffleKillStreaksFILO( streakName );
-		self maps\mp\killstreaks\_killstreaks::giveOwnedKillstreakItem();		
-		
+		self maps\mp\killstreaks\_killstreaks::giveOwnedKillstreakItem();
+
 		queueEnt = spawn( "script_origin", (0,0,0) );
 		queueEnt hide();
 		queueEnt thread deleteOnEntNotify( self, "disconnect" );
@@ -239,16 +239,16 @@ tryUseHelicopter( lifeId, heliType )
 		queueEnt.lifeId = lifeId;
 		queueEnt.heliType = heliType;
 		queueEnt.streakName = streakName;
-		
+
 		//queueAdd( "helicopter", queueEnt );
-		
+
 		return false;
 	}
 	else if ( isDefined( level.chopper ) )
 	{
 		self iPrintLnBold( &"MP_AIR_SPACE_TOO_CROWDED" );
 		return false;
-	}		
+	}
 
 	if ( isDefined( heliType ) && heliType == "minigun" )
 	{
@@ -259,7 +259,7 @@ tryUseHelicopter( lifeId, heliType )
 		{
 			if ( result != "disconnect" )
 				self clearUsingRemote();
-	
+
 			return false;
 		}
 
@@ -281,7 +281,7 @@ deleteOnEntNotify( ent, notifyString )
 {
 	self endon ( "death" );
 	ent waittill ( notifyString );
-	
+
 	self delete();
 }
 
@@ -303,13 +303,13 @@ startHelicopter( lifeId, heliType )
 			eventType = "helicopter";
 			break;
 	}
-	
+
 	team = self.pers["team"];
-	
+
 	startNode = level.heli_start_nodes[ randomInt( level.heli_start_nodes.size ) ];
 
 	self maps\mp\_matchdata::logKillstreakEvent( eventType, self.origin );
-	
+
 	thread heli_think( lifeId, self, startnode, self.pers["team"], heliType );
 }
 
@@ -319,18 +319,18 @@ precacheHelicopter( model, heliType )
 	deathfx = loadfx ("explosions/tanker_explosion");
 
 	precacheModel( model );
-	
+
 	level.heli_types[model] = heliType;
-	
+
 	/******************************************************/
 	/*					SETUP WEAPON TAGS				  */
 	/******************************************************/
-	
+
 	level.cobra_missile_models = [];
 	level.cobra_missile_models["cobra_Hellfire"] = "projectile_hellfire_missile";
 
 	precachemodel( level.cobra_missile_models["cobra_Hellfire"] );
-	
+
 	// helicopter sounds:
 	level.heli_sound["allies"]["hit"] = "cobra_helicopter_hit";
 	level.heli_sound["allies"]["hitsecondary"] = "cobra_helicopter_secondary_exp";
@@ -352,21 +352,21 @@ precacheHelicopter( model, heliType )
 spawn_helicopter( owner, origin, angles, vehicleType, modelName )
 {
 	chopper = spawnHelicopter( owner, origin, angles, vehicleType, modelName );
-	
+
 	if ( !isDefined( chopper ) )
 		return undefined;
 
 	chopper.heli_type = level.heli_types[ modelName ];
-	
+
 	chopper thread [[ level.lightFxFunc[ chopper.heli_type ] ]]();
-	
+
 	chopper addToHeliList();
-		
+
 	chopper.zOffset = (0,0,chopper getTagOrigin( "tag_origin" )[2] - chopper getTagOrigin( "tag_ground" )[2]);
 	chopper.attractor = Missile_CreateAttractorEnt( chopper, level.heli_attract_strength, level.heli_attract_range );
-	
+
 	chopper.damageCallback = ::Callback_VehicleDamage;
-	
+
 	return chopper;
 }
 
@@ -389,15 +389,15 @@ heliRide( lifeId, chopper )
 		self setThirdPersonDOF( false );
 
 	chopper VehicleTurretControlOn( self );
-	
+
 	self PlayerLinkWeaponviewToDelta( chopper, "tag_player", 1.0, 180, 180, 0, 180, true );
-	
-	chopper.gunner = self;	
+
+	chopper.gunner = self;
 
 	self.heliRideLifeId = lifeId;
 
 	self thread endRideOnHelicopterDone( chopper );
-	
+
 	self thread weaponLockThink( chopper );
 
 	while ( true )
@@ -413,10 +413,10 @@ heliRide( lifeId, chopper )
 thermalVision( chopper )
 {
 	chopper endon ( "helicopter_done" );
-	
+
 	if ( getIntProperty( "ac130_thermal_enabled", 1 ) == 0 )
 		return;
-	
+
 	inverted = false;
 
 	self visionSetThermalForPlayer( game["thermal_vision"], 3 );
@@ -426,7 +426,7 @@ thermalVision( chopper )
 	for (;;)
 	{
 		self waittill ( "switch thermal" );
-		
+
 		if ( !inverted )
 		{
 			self visionSetThermalForPlayer( "missilecam", 0.62 );
@@ -470,7 +470,7 @@ weaponLockThink( chopper )
 
 			if ( level.teamBased && player.team == self.team )
 				continue;
-				
+
 			if ( player == self )
 				continue;
 
@@ -485,7 +485,7 @@ weaponLockThink( chopper )
 			{
 				//if ( distance( player.origin, trace["position"] ) > 256 )
 				//	continue;
-				
+
 				targetListNoLOS[targetListNoLOS.size] = player;
 			}
 			else
@@ -500,20 +500,20 @@ weaponLockThink( chopper )
 		foreach ( target in targetList )
 		{
 			insideReticle = self WorldPointInReticle_Circle( target.origin, 65, 1200 );
-			
+
 			if ( !insideReticle )
 				continue;
-				
+
 			targetsInReticle[targetsInReticle.size] = target;
 		}
 		*/
-		
+
 		targetsInReticle = targetListLOS;
 		foreach ( target in targetListNoLos )
 		{
 			targetListLOS[targetListLOS.size] = target;
 		}
-		
+
 		if ( targetsInReticle.size != 0 )
 		{
 			sortedTargets = SortByDistance( targetsInReticle, trace["position"] );
@@ -543,14 +543,14 @@ heliDialog( dialogGroup )
 {
 	if ( getTime() - level.lastHeliDialogTime < 6000 )
 		return;
-	
+
 	level.lastHeliDialogTime = getTime();
-	
+
 	randomIndex = randomInt( level.heliDialog[ dialogGroup ].size );
 	soundAlias = level.heliDialog[ dialogGroup ][ randomIndex ];
-	
+
 	fullSoundAlias = maps\mp\gametypes\_teams::getTeamVoicePrefix( self.team ) + soundAlias;
-	
+
 	self playLocalSound( fullSoundAlias );
 }
 
@@ -572,18 +572,18 @@ endRide( chopper )
 	weaponList = self GetWeaponsListExclusives();
 	foreach ( weapon in weaponList )
 		self takeWeapon( weapon );
-	
+
 	if ( isDefined( chopper ) )
 		chopper VehicleTurretControlOff( self );
 
 	self notify ( "heliPlayer_removed" );
-}	
+}
 
 
 endRideOnHelicopterDone( chopper )
 {
 	self endon ( "disconnect" );
-	
+
 	chopper waittill ( "helicopter_done" );
 
 	self endRide( chopper );
@@ -593,25 +593,25 @@ endRideOnHelicopterDone( chopper )
 getPosNearEnemies()
 {
 	validEnemies = [];
-	
+
 	foreach ( player in level.players )
 	{
 		if ( player.team == "spectator" )
 			continue;
-			
+
 		if ( player.team == self.team )
 			continue;
-			
+
 		if ( !isAlive( player ) )
 			continue;
 
 		if ( !bulletTracePassed( player.origin, player.origin + (0,0,2048), false, player ) )
 			continue;
-			
+
 		player.remoteHeliDist = 0;
-		validEnemies[validEnemies.size] = player;		
+		validEnemies[validEnemies.size] = player;
 	}
-	
+
 	if ( !validEnemies.size )
 		return undefined;
 
@@ -620,12 +620,12 @@ getPosNearEnemies()
 		for ( j = i + 1; j < validEnemies.size; j++ )
 		{
 			dist = distanceSquared( validEnemies[i].origin, validEnemies[j].origin );
-			
+
 			validEnemies[i].remoteHeliDist += dist;
 			validEnemies[j].remoteHeliDist += dist;
 		}
 	}
-	
+
 	bestPlayer = validEnemies[0];
 	foreach ( player in validEnemies )
 	{
@@ -646,7 +646,7 @@ updateAreaNodes( areaNodes )
 		node.validPlayers = [];
 		node.nodeScore = 0;
 	}
-	
+
 	foreach ( player in level.players )
 	{
 		if ( !isAlive( player ) )
@@ -654,12 +654,12 @@ updateAreaNodes( areaNodes )
 
 		if ( player.team == self.team )
 			continue;
-			
+
 		foreach ( node in areaNodes )
 		{
 			if ( distanceSquared( player.origin, node.origin ) > 1048576 )
 				continue;
-				
+
 			node.validPlayers[node.validPlayers.size] = player;
 		}
 	}
@@ -671,15 +671,15 @@ updateAreaNodes( areaNodes )
 		foreach ( player in node.validPlayers )
 		{
 			node.nodeScore += 1;
-			
+
 			if ( bulletTracePassed( player.origin + (0,0,32), heliNode.origin, false, player ) )
 				node.nodeScore += 3;
 		}
-		
+
 		if ( node.nodeScore > bestNode.nodeScore )
 			bestNode = node;
 	}
-	
+
 	return ( getEnt( bestNode.target, "targetname" ) );
 }
 
@@ -712,19 +712,19 @@ heli_think( lifeId, owner, startnode, heli_team, heliType )
 				vehicleModel = "vehicle_cobra_helicopter_fly_low";
 			else
 				vehicleModel = "vehicle_mi24p_hind_mp";
-			break;		
+			break;
 	}
 
 	chopper = spawn_helicopter( owner, heliOrigin, heliAngles, vehicleType, vehicleModel );
 
 	if ( !isDefined( chopper ) )
 		return;
-		
+
 	level.chopper = chopper;
 	chopper.heliType = heliType;
 	chopper.lifeId = lifeId;
 	chopper.team = heli_team;
-	chopper.pers["team"] = heli_team;	
+	chopper.pers["team"] = heli_team;
 	chopper.owner = owner;
 
 	if ( heliType == "flares" )
@@ -737,10 +737,10 @@ heli_think( lifeId, owner, startnode, heli_team, heliType )
 	chopper.secondaryTarget = undefined;				// secondary target ( player )
 	chopper.attacker = undefined;						// last player that shot the helicopter
 	chopper.currentstate = "ok";						// health state
-	
+
 	if ( heliType == "flares" || heliType == "minigun" )
 		chopper thread heli_flares_monitor();
-	
+
 	// helicopter loop threads
 	chopper thread heli_leave_on_disconnect( owner );
 	chopper thread heli_leave_on_changeTeams( owner );
@@ -755,7 +755,7 @@ heli_think( lifeId, owner, startnode, heli_team, heliType )
 	chopper endon ( "leaving" );
 	chopper endon ( "death" );
 
-	// initial fight into play space	
+	// initial fight into play space
 	if ( heliType == "minigun" )
 	{
 		owner thread heliRide( lifeId, chopper );
@@ -764,7 +764,7 @@ heli_think( lifeId, owner, startnode, heli_team, heliType )
 
 	attackAreas = getEntArray( "heli_attack_area", "targetname" );
 	//attackAreas = [];
-	loopNode = level.heli_loop_nodes[ randomInt( level.heli_loop_nodes.size ) ];	
+	loopNode = level.heli_loop_nodes[ randomInt( level.heli_loop_nodes.size ) ];
 
 	// specific logic per type
 	switch ( heliType )
@@ -812,7 +812,7 @@ makeGunShip()
  	mgTurret makeTurretInoperable();
  	mgTurret.pers["team"] = self.team;
  	mgTurret.killCamEnt = self;
- 	self.mgTurretLeft = mgTurret; 
+ 	self.mgTurretLeft = mgTurret;
  	self.mgTurretLeft SetDefaultDropPitch( 0 );
 
 	mgTurret = spawnTurret( "misc_turret", self.origin, "pavelow_minigun_mp" );
@@ -824,7 +824,7 @@ makeGunShip()
  	mgTurret makeTurretInoperable();
  	mgTurret.pers["team"] = self.team;
  	mgTurret.killCamEnt = self;
- 	self.mgTurretRight = mgTurret; 
+ 	self.mgTurretRight = mgTurret;
  	self.mgTurretRight SetDefaultDropPitch( 0 );
 
 	if ( level.teamBased )
@@ -835,16 +835,16 @@ makeGunShip()
 
  	self.mgTurretLeft setMode( "auto_nonai" );
  	self.mgTurretRight setMode( "auto_nonai" );
- 	
+
 	self.mgTurretLeft SetSentryOwner( self.owner );
 	self.mgTurretRight SetSentryOwner( self.owner );
-	
+
 	self.mgTurretLeft SetTurretMinimapVisible( false );
 	self.mgTurretRight SetTurretMinimapVisible( false );
 
 	self.mgTurretLeft thread sentry_attackTargets();
 	self.mgTurretRight thread sentry_attackTargets();
- 
+
  	self thread deleteTurretsWhenDone();
 }
 
@@ -852,7 +852,7 @@ makeGunShip()
 deleteTurretsWhenDone()
 {
  	self waittill ( "helicopter_done" );
- 	
+
  	self.mgTurretRight delete();
  	self.mgTurretLeft delete();
 }
@@ -892,9 +892,9 @@ sentry_burstFireStart()
 	maxPause = 2.0;
 
 	for ( ;; )
-	{		
+	{
 		numShots = randomIntRange( minShots, maxShots + 1 );
-		
+
 		for ( i = 0; i < numShots; i++ )
 		{
 			targetEnt = self getTurretTarget( false );
@@ -903,7 +903,7 @@ sentry_burstFireStart()
 
 			wait ( fireTime );
 		}
-		
+
 		wait ( randomFloatRange( minPause, maxPause ) );
 	}
 }
@@ -918,13 +918,13 @@ sentry_burstFireStop()
 heli_existance()
 {
 	entityNumber = self getEntityNumber();
-	
+
 	self waittill_any( "death", "crashing", "leaving" );
 
 	self removeFromHeliList( entityNumber );
-	
+
 	self notify( "helicopter_done" );
-	
+
 	player = undefined;
 	queueEnt = queueRemoveFirst( "helicopter" );
 	if ( !isDefined( queueEnt ) )
@@ -932,7 +932,7 @@ heli_existance()
 		level.chopper = undefined;
 		return;
 	}
-	
+
 	player = queueEnt.player;
 	lifeId = queueEnt.lifeId;
 	streakName = queueEnt.streakName;
@@ -940,7 +940,6 @@ heli_existance()
 	team = queueEnt.team;
 	queueEnt delete();
 	if (player.team != team)
-		maps\mp\gametypes\_rank::clog("Gotcha! Helicopter revoked due to switched teams.");
 	if ( isDefined( player ) && (player.sessionstate == "playing" || player.sessionstate == "dead") && player.team == team)
 	{
 		player maps\mp\killstreaks\_killstreaks::usedKillstreak( streakName, true );
@@ -958,17 +957,17 @@ heli_targeting()
 {
 	self endon ( "death" );
 	self endon ( "helicopter_done" );
-	
+
 	// targeting sweep cycle
 	for ( ;; )
-	{		
+	{
 		// array of helicopter's targets
 		targets = [];
 		self.primaryTarget = undefined;
 		self.secondaryTarget = undefined;
 
 		players = level.players;
-		
+
 		foreach ( player in level.players )
 		{
 			if ( !canTarget_turret( player ) )
@@ -976,7 +975,7 @@ heli_targeting()
 
 			targets[targets.size] = player;
 		}
-	
+
 		if ( targets.size )
 		{
 			targetPlayer = getBestPrimaryTarget( targets );
@@ -990,7 +989,7 @@ heli_targeting()
 			{
 				if( !isDefined( harrier ) )
 					continue;
-				
+
 				if ( (level.teamBased && harrier.team != self.team) || (!level.teamBased && harrier.owner != self.owner) )
 				{
 					self notify( "secondary acquired" );
@@ -1000,14 +999,14 @@ heli_targeting()
 		}
 
 		wait ( 0.5 );
-	}	
+	}
 }
 
 // targetability
 canTarget_turret( player )
 {
 	canTarget = true;
-	
+
 	if ( !isAlive( player ) || player.sessionstate != "playing" )
 		return false;
 
@@ -1016,29 +1015,29 @@ canTarget_turret( player )
 		if ( !self Vehicle_CanTurretTargetPoint( player.origin+(0,0,40), 1, self ) )
 			return false;
 	}
-		
+
 	if ( distance( player.origin, self.origin ) > level.heli_visual_range )
 		return false;
-	
+
 	if ( level.teamBased && player.pers["team"] == self.team )
 		return false;
-	
+
 	if ( player == self.owner )
 		return false;
-	
+
 	if ( isdefined( player.spawntime ) && ( gettime() - player.spawntime )/1000 <= 5 )
 		return false;
 
 	if ( player _hasPerk( "specialty_coldblooded" ) )
 		return false;
-		
+
 	heli_centroid = self.origin + ( 0, 0, -160 );
 	heli_forward_norm = anglestoforward( self.angles );
 	heli_turret_point = heli_centroid + 144*heli_forward_norm;
-	
+
 	if ( player sightConeTrace( heli_turret_point, self) < level.heli_target_recognition )
-		return false;	
-	
+		return false;
+
 	return canTarget;
 }
 
@@ -1047,22 +1046,22 @@ getBestPrimaryTarget( targets )
 {
 	foreach ( player in targets )
 		update_player_threat( player );
-			
+
 	// find primary target, highest threat level
-	highest = 0;	
+	highest = 0;
 	primaryTarget = undefined;
-	
+
 	foreach ( player in targets )
 	{
 		assertEx( isDefined( player.threatlevel ), "Target player does not have threat level" );
-		
+
 		if ( player.threatlevel < highest )
 			continue;
-			
+
 		highest = player.threatlevel;
 		primaryTarget = player;
 	}
-	
+
 	assertEx( isDefined( primaryTarget ), "Targets exist, but none was assigned as primary" );
 
 	return ( primaryTarget );
@@ -1073,21 +1072,21 @@ getBestPrimaryTarget( targets )
 update_player_threat( player )
 {
 	player.threatlevel = 0;
-	
+
 	// distance factor
 	dist = distance( player.origin, self.origin );
 	player.threatlevel += ( (level.heli_visual_range - dist)/level.heli_visual_range )*100; // inverse distance % with respect to helicopter targeting range
-	
+
 	// behavior factor
 	if ( isdefined( self.attacker ) && player == self.attacker )
 		player.threatlevel += 100;
-	
+
 	// player score factor
 	player.threatlevel += player.score*4;
-		
+
 	if( isdefined( player.antithreat ) )
 		player.threatlevel -= player.antithreat;
-		
+
 	if( player.threatlevel <= 0 )
 		player.threatlevel = 1;
 }
@@ -1098,7 +1097,7 @@ heli_reset()
 {
 	self clearTargetYaw();
 	self clearGoalYaw();
-	self Vehicle_SetSpeed( 60, 25 );	
+	self Vehicle_SetSpeed( 60, 25 );
 	self setyawspeed( 75, 45, 45 );
 	//self setjitterparams( (30, 30, 30), 4, 6 );
 	self setmaxpitchroll( 30, 30 );
@@ -1111,7 +1110,7 @@ Callback_VehicleDamage( inflictor, attacker, damage, dFlags, meansOfDeath, weapo
 {
 	if ( !isDefined( attacker ) || attacker == self )
 		return;
-		
+
 	if ( !maps\mp\gameTypes\_weapons::attackerCanDamageItem( attacker, self.owner ) )
 		return;
 
@@ -1126,7 +1125,7 @@ Callback_VehicleDamage( inflictor, attacker, damage, dFlags, meansOfDeath, weapo
 			damage = self.maxhealth + 1;
 			break;
 	}
-	
+
 	if( self.damageTaken+damage >= self.maxhealth )
 	{
 		validAttacker = undefined;
@@ -1161,15 +1160,15 @@ heli_damage_monitor()
 	self endon( "death" );
 	self endon( "crashing" );
 	self endon( "leaving" );
-	
+
 	self.damageTaken = 0;
 	self.recentDamageAmount = 0;
-	
+
 	for( ;; )
 	{
 		// this damage is done to self.health which isnt used to determine the helicopter's health, damageTaken is.
 		self waittill( "damage", damage, attacker, direction_vec, P, type );
-		
+
 		assert( isDefined( attacker ) );
 
 		self.attacker = attacker;
@@ -1181,7 +1180,7 @@ heli_damage_monitor()
 			if ( type == "MOD_RIFLE_BULLET" || type == "MOD_PISTOL_BULLET" )
 			{
 				damage *= level.heli_armor_bulletdamage;
-				
+
 				if ( attacker _hasPerk( "specialty_armorpiercing" ) )
 					damage += damage*level.armorPiercingMod;
 			}
@@ -1220,10 +1219,10 @@ heli_damage_monitor()
 					thread teamPlayerCardSplash( "callout_destroyed_helicopter", validAttacker );
 					xpVal = 200;
 				}
-				
+
 				validAttacker thread maps\mp\gametypes\_rank::giveRankXP( "kill", xpVal );
 				thread maps\mp\gametypes\_missions::vehicleKilled( self.owner, self, undefined, validAttacker, damage, type );
-				
+
 			}
 		}
 	}
@@ -1235,14 +1234,14 @@ heli_health()
 	self endon( "death" );
 	self endon( "leaving" );
 	self endon( "crashing" );
-	
+
 	self.currentstate = "ok";
 	self.laststate = "ok";
 	self setdamagestage( 3 );
-	
+
 	damageState = 3;
 	self setDamageStage( damageState );
-	
+
 	for ( ;; )
 	{
 		if ( self.damageTaken >= (self.maxhealth * 0.33) && damageState == 3 )
@@ -1266,7 +1265,7 @@ heli_health()
 			self setDamageStage( damageState );
 
 			stopFxOnTag( level.chopper_fx["damage"]["heavy_smoke"], self, "tag_engine_left" );
-			
+
 			if ( IsDefined( self.largeProjectileDamage ) && self.largeProjectileDamage )
 			{
 				self thread heli_explode( true );
@@ -1277,7 +1276,7 @@ heli_health()
 				self thread heli_crash();
 			}
 		}
-		
+
 		wait 0.05;
 	}
 }
@@ -1288,12 +1287,12 @@ heli_crash()
 {
 	self notify( "crashing" );
 
-	crashNode = level.heli_crash_nodes[ randomInt( level.heli_crash_nodes.size ) ];	
+	crashNode = level.heli_crash_nodes[ randomInt( level.heli_crash_nodes.size ) ];
 
 	self thread heli_spin( 180 );
 	self thread heli_secondary_explosions();
 	self heli_fly_simple_path( crashNode );
-	
+
 	self thread heli_explode();
 }
 
@@ -1306,7 +1305,7 @@ heli_secondary_explosions()
 
 	if ( !isDefined( self ) )
 		return;
-         
+
 	playFxOnTag( level.chopper_fx["explode"]["large"], self, "tag_engine_left" );
 	self playSound ( level.heli_sound[self.team]["hitsecondary"] );
 }
@@ -1315,13 +1314,13 @@ heli_secondary_explosions()
 heli_spin( speed )
 {
 	self endon( "death" );
-	
+
 	// play hit sound immediately so players know they got it
 	self playSound ( level.heli_sound[self.team]["hit"] );
-	
+
 	// play heli crashing spinning sound
 	self thread spinSoundShortly();
-	
+
 	// spins until death
 	self setyawspeed( speed, speed, speed );
 	while ( isdefined( self ) )
@@ -1335,9 +1334,9 @@ heli_spin( speed )
 spinSoundShortly()
 {
 	self endon("death");
-	
+
 	wait .25;
-	
+
 	self stopLoopSound();
 	wait .05;
 	self playLoopSound( level.heli_sound[self.team]["spinloop"] );
@@ -1350,22 +1349,22 @@ spinSoundShortly()
 heli_explode( altStyle )
 {
 	self notify( "death" );
-	
+
 	if ( isDefined( altStyle ) && isDefined( level.chopper_fx["explode"]["air_death"][self.heli_type] ) )
 	{
 		deathAngles = self getTagAngles( "tag_deathfx" );
-		
+
 		playFx( level.chopper_fx["explode"]["air_death"][self.heli_type], self getTagOrigin( "tag_deathfx" ), anglesToForward( deathAngles ), anglesToUp( deathAngles ) );
-		//playFxOnTag( level.chopper_fx["explode"]["air_death"][self.heli_type], self, "tag_deathfx" );	
+		//playFxOnTag( level.chopper_fx["explode"]["air_death"][self.heli_type], self, "tag_deathfx" );
 	}
 	else
 	{
-		org = self.origin;	
+		org = self.origin;
 		forward = ( self.origin + ( 0, 0, 1 ) ) - self.origin;
 		playFx( level.chopper_fx["explode"]["death"][self.heli_type], org, forward );
 	}
-	
-	
+
+
 	// play heli explosion sound
 	self playSound( level.heli_sound[self.team]["crash"] );
 
@@ -1380,7 +1379,7 @@ fire_missile( sMissileType, iShots, eTarget )
 	if ( !isdefined( iShots ) )
 		iShots = 1;
 	assert( self.health > 0 );
-	
+
 	weaponName = undefined;
 	weaponShootTime = undefined;
 	defaultWeapon = "cobra_20mm_mp";
@@ -1389,7 +1388,7 @@ fire_missile( sMissileType, iShots, eTarget )
 	{
 		case "ffar":
 			weaponName = "harrier_FFAR_mp";
-				
+
 			tags[ 0 ] = "tag_store_r_2";
 			break;
 		default:
@@ -1398,10 +1397,10 @@ fire_missile( sMissileType, iShots, eTarget )
 	}
 	assert( isdefined( weaponName ) );
 	assert( tags.size > 0 );
-	
+
 	weaponShootTime = weaponfiretime( weaponName );
 	assert( isdefined( weaponShootTime ) );
-	
+
 	self setVehWeapon( weaponName );
 	nextMissileTag = -1;
 	for( i = 0 ; i < iShots ; i++ ) // I don't believe iShots > 1 is properly supported; we don't set the weapon each time
@@ -1409,9 +1408,9 @@ fire_missile( sMissileType, iShots, eTarget )
 		nextMissileTag++;
 		if ( nextMissileTag >= tags.size )
 			nextMissileTag = 0;
-		
+
 		self setVehWeapon( "harrier_FFAR_mp" );
-		
+
 		if ( isdefined( eTarget ) )
 		{
 			eMissile = self fireWeapon( tags[ nextMissileTag ], eTarget );
@@ -1424,7 +1423,7 @@ fire_missile( sMissileType, iShots, eTarget )
 			eMissile Missile_SetFlightmodeDirect();
 			eMissile Missile_SetTargetEnt( eTarget );
 		}
-		
+
 		if ( i < iShots - 1 )
 			wait weaponShootTime;
 	}
@@ -1437,10 +1436,10 @@ check_owner()
 	if ( !isdefined( self.owner ) || !isdefined( self.owner.pers["team"] ) || self.owner.pers["team"] != self.team )
 	{
 		self thread heli_leave();
-		
-		return false;	
+
+		return false;
 	}
-	
+
 	return true;
 }
 
@@ -1451,7 +1450,7 @@ heli_leave_on_disconnect( owner )
 	self endon ( "helicopter_done" );
 
 	owner waittill( "disconnect" );
-	
+
 	self thread heli_leave();
 }
 
@@ -1461,7 +1460,7 @@ heli_leave_on_changeTeams( owner )
 	self endon ( "helicopter_done" );
 
 	owner waittill_any( "joined_team", "joined_spectators" );
-	
+
 	self thread heli_leave();
 }
 
@@ -1471,7 +1470,7 @@ heli_leave_on_spawned( owner )
 	self endon ( "helicopter_done" );
 
 	owner waittill( "spawned" );
-	
+
 	self thread heli_leave();
 }
 
@@ -1481,17 +1480,17 @@ heli_leave_on_gameended( owner )
 	self endon ( "helicopter_done" );
 
 	level waittill ( "game_ended" );
-	
-	self thread heli_leave();	
+
+	self thread heli_leave();
 }
 
 heli_leave_on_timeout( timeOut )
 {
 	self endon ( "death" );
 	self endon ( "helicopter_done" );
-	
+
 	maps\mp\gametypes\_hostmigration::waitLongDurationWithHostMigrationPause( timeOut );
-	
+
 	self thread heli_leave();
 }
 
@@ -1508,15 +1507,15 @@ attack_secondary()
 {
 	self endon( "death" );
 	self endon( "crashing" );
-	self endon( "leaving" );	
-	
+	self endon( "leaving" );
+
 	for( ;; )
 	{
 		if ( isdefined( self.secondaryTarget ) )
 		{
 			self.secondaryTarget.antithreat = undefined;
 			self.missileTarget = self.secondaryTarget;
-			
+
 			antithreat = 0;
 
 			while( isdefined( self.missileTarget ) && isalive( self.missileTarget ) )
@@ -1526,9 +1525,9 @@ attack_secondary()
 					self thread missile_support( self.missileTarget, level.heli_missile_rof);
 				else
 					break;
-				
+
 				self waittill( "missile ready" );
-				
+
 				// target might disconnect or change during last assault cycle
 				if ( !isdefined( self.secondaryTarget ) || ( isdefined( self.secondaryTarget ) && self.missileTarget != self.secondaryTarget ) )
 					break;
@@ -1538,10 +1537,10 @@ attack_secondary()
 				self.missileTarget.antithreat = undefined;
 		}
 		self waittill( "secondary acquired" );
-		
+
 		// check if owner has left, if so, leave
 		self check_owner();
-	}	
+	}
 }
 
 // check if missile is in hittable sight zone
@@ -1552,7 +1551,7 @@ missile_target_sight_check( missiletarget )
 	heli2forward_normal = vectornormalize( heli2forward );
 
 	heli_dot_target = vectordot( heli2target_normal, heli2forward_normal );
-	
+
 	if ( heli_dot_target >= level.heli_missile_target_cone )
 	{
 		debug_print3d_simple( "Missile sight: " + heli_dot_target, self, ( 0,0,-40 ), 40 );
@@ -1566,8 +1565,8 @@ missile_support( target_player, rof )
 {
 	self endon( "death" );
 	self endon( "crashing" );
-	self endon( "leaving" );	
-	
+	self endon( "leaving" );
+
 	if ( isdefined( target_player ) )
 	{
 		if ( level.teambased )
@@ -1576,7 +1575,7 @@ missile_support( target_player, rof )
 			{
 				self fire_missile( "ffar", 1, target_player );
 				self notify( "missile fired" );
-			}				
+			}
 		}
 		else
 		{
@@ -1587,10 +1586,10 @@ missile_support( target_player, rof )
 			}
 		}
 	}
-	
+
 	wait ( rof );
 	self notify ( "missile ready" );
-	
+
 	return;
 }
 
@@ -1600,14 +1599,14 @@ attack_primary()
 	self endon( "death" );
 	self endon( "crashing" );
 	self endon( "leaving" );
-	
+
 	while ( 1 )
 	{
 		wait ( 0.05 );
 
 		if ( !isAlive( self.primaryTarget ) )
 			continue;
-			
+
 		currentTarget = self.primaryTarget;
 
 		currentTarget.antithreat = 0;
@@ -1623,14 +1622,14 @@ attack_primary()
 		yOffset = sin( angle ) * radiusOffset;
 
 		self setTurretTargetEnt( currentTarget, (xOffset,yOffset,40) );
-		
+
 		self waitOnTargetOrDeath( currentTarget, 3.0 );
-		
+
 		if ( !isAlive( currentTarget ) || !self Vehicle_CanTurretTargetPoint( currentTarget.origin+(0,0,40) ) )
 			continue;
-		
+
 		weaponShootTime = weaponFireTime( "cobra_20mm_mp" );
-		
+
 		convergenceMod = 1;
 		shotsSinceLastSighting = 0;
 
@@ -1668,7 +1667,7 @@ attack_primary()
 		// lower the target's threat since already assaulted on
 		if ( isAlive( currentTarget ) )
 			currentTarget.antithreat += 100;
-		
+
 		wait ( randomFloatRange( 0.5, 2.0 ) );
 	}
 }
@@ -1680,7 +1679,7 @@ waitOnTargetOrDeath( target, timeOut )
 
 	target endon ( "death" );
 	target endon ( "disconnect" );
-	
+
 	self waittill_notify_or_timeout( "turret_on_target", timeOut );
 }
 
@@ -1690,12 +1689,12 @@ fireMissile( missileTarget )
 	self endon( "death" );
 	self endon( "crashing" );
 	self endon( "leaving" );
-	
+
 	assert( self.health > 0 );
-	
+
 	if ( !isdefined( missileTarget ) )
 		return;
-		
+
 	if ( Distance2D(self.origin, missileTarget.origin ) < 512 )
 		return;
 
@@ -1714,18 +1713,18 @@ getOriginOffsets( goalNode )
 {
 	startOrigin = self.origin;
 	endOrigin = goalNode.origin;
-	
+
 	numTraces = 0;
 	maxTraces = 40;
-	
+
 	traceOffset = (0,0,-196);
-	
+
 	traceOrigin = physicsTrace( startOrigin+traceOffset, endOrigin+traceOffset );
 
 	while ( distance( traceOrigin, endOrigin+traceOffset ) > 10 && numTraces < maxTraces )
-	{	
+	{
 		println( "trace failed: " + distance( physicsTrace( startOrigin+traceOffset, endOrigin+traceOffset ), endOrigin+traceOffset ) );
-			
+
 		if ( startOrigin[2] < endOrigin[2] )
 		{
 			startOrigin += (0,0,128);
@@ -1735,17 +1734,17 @@ getOriginOffsets( goalNode )
 			endOrigin += (0,0,128);
 		}
 		else
-		{	
+		{
 			startOrigin += (0,0,128);
 			endOrigin += (0,0,128);
 		}
-		
+
 		//thread draw_line( startOrigin+traceOffset, endOrigin+traceOffset, (0,1,9), 200 );
 		numTraces++;
 
 		traceOrigin = physicsTrace( startOrigin+traceOffset, endOrigin+traceOffset );
 	}
-	
+
 	offsets = [];
 	offsets["start"] = startOrigin;
 	offsets["end"] = endOrigin;
@@ -1756,7 +1755,7 @@ getOriginOffsets( goalNode )
 travelToNode( goalNode )
 {
 	originOffets = getOriginOffsets( goalNode );
-	
+
 	if ( originOffets["start"] != self.origin )
 	{
 		// motion change via node
@@ -1770,17 +1769,17 @@ travelToNode( goalNode )
 			heli_speed = 30+randomInt(20);
 			heli_accel = 15+randomInt(15);
 		}
-		
+
 		self Vehicle_SetSpeed( heli_speed, heli_accel );
 		self setvehgoalpos( originOffets["start"] + (0,0,30), 0 );
 		// calculate ideal yaw
 		self setgoalyaw( goalNode.angles[ 1 ] + level.heli_angle_offset );
-		
+
 		//println( "setting goal to startOrigin" );
-		
+
 		self waittill ( "goal" );
 	}
-	
+
 	if ( originOffets["end"] != goalNode.origin )
 	{
 		// motion change via node
@@ -1794,14 +1793,14 @@ travelToNode( goalNode )
 			heli_speed = 30+randomInt(20);
 			heli_accel = 15+randomInt(15);
 		}
-		
+
 		self Vehicle_SetSpeed( heli_speed, heli_accel );
 		self setvehgoalpos( originOffets["end"] + (0,0,30), 0 );
 		// calculate ideal yaw
 		self setgoalyaw( goalNode.angles[ 1 ] + level.heli_angle_offset );
 
 		//println( "setting goal to endOrigin" );
-		
+
 		self waittill ( "goal" );
 	}
 }
@@ -1815,15 +1814,15 @@ heli_fly_simple_path( startNode )
 	// only one thread instance allowed
 	self notify( "flying");
 	self endon( "flying" );
-	
+
 	heli_reset();
-	
+
 	currentNode = startNode;
 	while ( isDefined( currentNode.target ) )
 	{
 		nextNode = getEnt( currentNode.target, "targetname" );
 		assertEx( isDefined( nextNode ), "Next node in path is undefined, but has targetname" );
-		
+
 		if( isDefined( currentNode.script_airspeed ) && isDefined( currentNode.script_accel ) )
 		{
 			heli_speed = currentNode.script_airspeed;
@@ -1836,7 +1835,7 @@ heli_fly_simple_path( startNode )
 		}
 
 		self Vehicle_SetSpeed( heli_speed, heli_accel );
-		
+
 		// end of the path
 		if ( !isDefined( nextNode.target ) )
 		{
@@ -1855,7 +1854,7 @@ heli_fly_simple_path( startNode )
 
 		currentNode = nextNode;
 	}
-	
+
 	printLn( currentNode.origin );
 	printLn( self.origin );
 }
@@ -1870,17 +1869,17 @@ heli_fly_loop_path( startNode )
 	// only one thread instance allowed
 	self notify( "flying");
 	self endon( "flying" );
-	
+
 	heli_reset();
-	
+
 	self thread heli_loop_speed_control( startNode );
-	
+
 	currentNode = startNode;
 	while ( isDefined( currentNode.target ) )
 	{
 		nextNode = getEnt( currentNode.target, "targetname" );
 		assertEx( isDefined( nextNode ), "Next node in path is undefined, but has targetname" );
-		
+
 		if( isDefined( currentNode.script_airspeed ) && isDefined( currentNode.script_accel ) )
 		{
 			self.desired_speed = currentNode.script_airspeed;
@@ -1891,13 +1890,13 @@ heli_fly_loop_path( startNode )
 			self.desired_speed = 30 + randomInt( 20 );
 			self.desired_accel = 15 + randomInt( 15 );
 		}
-		
+
 		if ( self.heliType == "flares" )
 		{
 			self.desired_speed *= 0.5;
 			self.desired_accel *= 0.5;
 		}
-		
+
 		if ( isDefined( nextNode.script_delay ) && isDefined( self.primaryTarget ) && !self heli_is_threatened() )
 		{
 			self setVehGoalPos( nextNode.origin+(self.zOffset), true );
@@ -1936,26 +1935,26 @@ heli_loop_speed_control( currentNode )
 		self.desired_speed = 30 + randomInt( 20 );
 		self.desired_accel = 15 + randomInt( 15 );
 	}
-	
+
 	lastSpeed = 0;
 	lastAccel = 0;
-	
+
 	while ( 1 )
 	{
 		goalSpeed = self.desired_speed;
 		goalAccel = self.desired_accel;
-		
+
 		if ( self.heliType != "flares" && isDefined( self.primaryTarget ) && !self heli_is_threatened() )
 			goalSpeed *= 0.25;
-					
+
 		if ( lastSpeed != goalSpeed || lastAccel != goalAccel )
 		{
 			self Vehicle_SetSpeed( goalSpeed, goalAccel );
-			
+
 			lastSpeed = goalSpeed;
 			lastAccel = goalAccel;
 		}
-		
+
 		wait ( 0.05 );
 	}
 }
@@ -1968,8 +1967,8 @@ heli_is_threatened()
 
 	if ( self.currentState == "heavy smoke" )
 		return true;
-		
-	return false;	
+
+	return false;
 }
 
 
@@ -1982,12 +1981,12 @@ heli_fly_well( destNodes )
 	self endon ( "crashing" );
 	self endon ( "leaving" );
 
-	for ( ;; )	
+	for ( ;; )
 	{
 		currentNode = self get_best_area_attack_node( destNodes );
-	
+
 		travelToNode( currentNode );
-		
+
 		// motion change via node
 		if( isdefined( currentNode.script_airspeed ) && isdefined( currentNode.script_accel ) )
 		{
@@ -1999,15 +1998,15 @@ heli_fly_well( destNodes )
 			heli_speed = 30+randomInt(20);
 			heli_accel = 15+randomInt(15);
 		}
-		
-		self Vehicle_SetSpeed( heli_speed, heli_accel );	
+
+		self Vehicle_SetSpeed( heli_speed, heli_accel );
 		self setvehgoalpos( currentNode.origin + self.zOffset, 1 );
-		self setgoalyaw( currentNode.angles[ 1 ] + level.heli_angle_offset );	
+		self setgoalyaw( currentNode.angles[ 1 ] + level.heli_angle_offset );
 
 		if ( level.heli_forced_wait != 0 )
 		{
 			self waittill( "near_goal" ); //self waittillmatch( "goal" );
-			wait ( level.heli_forced_wait );			
+			wait ( level.heli_forced_wait );
 		}
 		else if ( !isdefined( currentNode.script_delay ) )
 		{
@@ -2016,8 +2015,8 @@ heli_fly_well( destNodes )
 			wait ( 5 + randomInt( 5 ) );
 		}
 		else
-		{				
-			self waittillmatch( "goal" );				
+		{
+			self waittillmatch( "goal" );
 			wait ( currentNode.script_delay );
 		}
 	}
@@ -2036,13 +2035,13 @@ heli_leave()
 	self notify( "leaving" );
 
 	leaveNode = level.heli_leave_nodes[ randomInt( level.heli_leave_nodes.size ) ];
-	
+
 	self heli_reset();
-	self Vehicle_SetSpeed( 100, 45 );	
+	self Vehicle_SetSpeed( 100, 45 );
 	self setvehgoalpos( leaveNode.origin, 1 );
 	self waittillmatch( "goal" );
 	self notify( "death" );
-	
+
 	// give "death" notify time to process
 	wait ( 0.05 );
 	self delete();
@@ -2112,7 +2111,7 @@ draw_line( from, to, color, frames )
 		{
 			line( from, to, color );
 			wait 0.05;
-		}		
+		}
 	}
 	else
 	{
@@ -2128,13 +2127,13 @@ draw_line( from, to, color, frames )
 
 addToHeliList()
 {
-	level.helis[self getEntityNumber()] = self;	
+	level.helis[self getEntityNumber()] = self;
 }
 
 removeFromHeliList( entityNumber )
 {
 	level.helis[entityNumber] = undefined;
-}	
+}
 
 
 playFlareFx()
@@ -2155,7 +2154,7 @@ deployFlares()
 	flareObject.angles = level.ac130.planemodel.angles;
 
 	flareObject moveGravity( (0, 0, 0), 5.0 );
-	
+
 	flareObject thread deleteAfterTime( 5.0 );
 
 	return flareObject;
@@ -2165,26 +2164,26 @@ deployFlares()
 heli_flares_monitor()
 {
 	level endon ( "game_ended" );
-	
+
 	for ( ;; )
 	{
 		level waittill ( "stinger_fired", player, missile, lockTarget );
-		
+
 		if ( !IsDefined( lockTarget ) || (lockTarget != self) )
 			continue;
-		
+
 		missile endon ( "death" );
-		
-		self thread playFlareFx();	
+
+		self thread playFlareFx();
 		newTarget = self deployFlares();
 		missile Missile_SetTargetEnt( newTarget );
 		return;
-	}	
+	}
 }
 
 deleteAfterTime( delay )
 {
 	wait ( delay );
-	
+
 	self delete();
 }

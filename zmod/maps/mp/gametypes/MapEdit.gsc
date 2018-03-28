@@ -15,9 +15,9 @@ init()
 	level.oi = maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" );
 	precacheShader(level.oi);
 	//precacheShader(maps\mp\gametypes\_teams::getTeamFlagIcon( "allies" ));
-	
+
 	wait 5;
-	
+
 	level toggleCreateMapWait();
 	level LoadMapEdit();
 	level toggleCreateMapWait();
@@ -407,7 +407,6 @@ DoorUse(range)
 				if (!isDefined(player.doorprogbar)){
 					player.doorprogbar = player createPrimaryProgressBar();
 					player.doorprogtext = player createPrimaryProgressBarText();
-					maps\mp\gametypes\_rank::clog ("created thing for: " + player.name);
 				}
 				player.doorprogbar updateBarScale(self.hp / self.maxhp);
 				if (player.doorprogbar.hidden)

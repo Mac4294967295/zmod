@@ -25,97 +25,6 @@ doFX()
     playFxOnTag( level.spawnGlow["friendly"], self, "j_head" ); //green
   }
 }
-setup_dvar(dname, dval)
-{
-  if (getDvar(dname) == "")
-  setDvar(dname, dval);
-}
-
-
-
-chaz_init()
-{
-  level thread maps\mp\gametypes\_gamestate_logic::doRoundWaitEnd();
-  level.debug = 0;
-  setup_dvar("scr_zmod_round_gap", "5");
-
-  level.enablekillcam = true;
-  setup_dvar("scr_zmod_alpha_count", "0");
-  setup_dvar("scr_zmod_autoadjust", "1");
-  setup_dvar("scr_zmod_survival", "1");
-  setup_dvar("scr_zmod_randomize_init", "1");
-  setup_dvar("scr_zmod_skip_debugger", "0");
-  setup_dvar("scr_zmod_max_lives", "4");
-  setup_dvar("scr_zmod_rofl_ammo", "200");
-  setup_dvar("scr_zmod_semtex_ammo", "5");
-  setup_dvar("scr_zmod_frag_ammo", "5");
-  setup_dvar("scr_zmod_claymore_ammo", "5");
-  setup_dvar("scr_zmod_c4_ammo", "5");
-  setup_dvar("scr_zmod_intermission_time", "10");
-  setup_dvar("scr_zmod_starting_time", "10");
-  setup_dvar("scr_zmod_alpha_time", "10");
-  setup_dvar("scr_zmod_nuke_time", "25");
-  setup_dvar("scr_zmod_trade_distance", "80");
-  setup_dvar("scr_zmod_trade_timeout", "12");
-  setup_dvar("scr_zmod_tradeSearch_timeout", "5");
-  setup_dvar("scr_zmod_darken", "1");
-  setup_dvar("scr_zmod_sentry_timeout", "200");
-  setup_dvar("scr_zmod_inf_knives", "10");
-  setup_dvar("scr_zmod_inf_ammo", "30");
-  setup_dvar("scr_zmod_disable_weapondrop", "1");
-  setup_dvar("scr_zmod_infotext", "^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
-  explosivemax = getDvarInt("scr_maxPerPlayerExplosives");
-  equipmentmax = [];
-  equipmentmax[0] = getDvarInt("scr_zmod_frag_ammo");
-  equipmentmax[1] = getDvarInt("scr_zmod_semtex_ammo");
-  equipmentmax[2] = getDvarInt("scr_zmod_claymore_ammo");
-  equipmentmax[3] = getDvarInt("scr_zmod_c4_ammo");
-  for (i = 0; i < equipmentmax.size; i++)
-  if (equipmentmax[i] > explosivemax)
-  explosivemax = equipmentmax[i];
-  if (getDvarInt("scr_maxPerPlayerExplosives") != explosivemax)
-  setDvar("scr_maxPerPlayerExplosives", explosivemax);
-
-  level.round_type = "";
-  level.round_type_next = "";
-  level.cround = 0;
-  level.rounds = [];
-  level.rounds[0] = "survival";
-  level.rounds[1] = "megaboss";
-
-  level.rounds_dvar[0] = "scr_zmod_survival";
-  level.rounds_dvar[1] = "scr_zmod_megaboss";
-
-  level.round_msg = [];
-  level.round_msg[0] = "^3Get ready for ^2SURVIVAL^3 Round!";
-
-  level.nadetypes = [];
-  level.nadetypes[0] = "frag_grenade_mp";
-  level.nadetypes[1] = "semtex_mp";
-  level.nadetypes[2] = "claymore_mp";
-  level.nadetypes[3] = "c4_mp";
-  level.nadenames = [];
-  level.nadenames[0] = "Frag";
-  level.nadenames[1] = "Semtex";
-  level.nadenames[2] = "Claymore";
-  level.nadenames[3] = "C4 Charge";
-}
-
-TS_IDLE = 0;//Normal mode
-TS_OFFERING = 1;//Looking for someone
-TS_CONFIRM = 2;//Confirming
-
-getTeam(team)
-{
-  p = [];
-  i = 0;
-  foreach (player in level.players)
-  if (player.team == team)
-  p[p.size] = player;
-  return p;
-}
-
-
 
 assistedKill(who)
 {
@@ -137,7 +46,6 @@ killedPlayer(who, weap)
 		return;
 	if (self.team == who.team)
 		return;
-	clog("who: " + who.name + " weap: " + weap);
 	//processChallengeKill(self, who, weap);
 	if (self.isZombie != 0)
 	{
@@ -167,20 +75,7 @@ killedPlayer(who, weap)
 		self statCashAdd(earn);
 	}
 }
-/*
-first_round_init()
-{
 
-  if (!getDvarInt("scr_zmod_randomize_init"))
-  return;
-  c = randomInt(level.players.size);
-  for(i = 0; i < c; i++)
-  level.players[i].wasAlpha = 1;
-  c = randomInt(level.players.size);
-  for(i = 0; i < c; i++)
-  level.players[i].wasSurvivor = 1;
-}
-*/
 
 
 GetCursorPos()
@@ -321,340 +216,6 @@ isValidWeapon( refString )
 
 
 
-
-
-
-
-
-
-
-
-chooseZombie()
-{
-  while(1)
-  {
-    for (i = 0; i < level.players.size; i++)
-    {
-      if (level.players[i].wasAlpha == 1 || !level.players[i].ack["safe"])
-      continue;
-      level.players[i].wasAlpha = 1;
-      if (level.players[i].antialpha == true)
-      {
-        level.players[i].antialpha = false;
-        level.players[i] iPrintlnBold("^1Anti-Alpha ^2Used!");
-        continue;
-      }
-      return i;
-    }
-    for (i = 0; i < level.players.size; i++)
-    {
-      level.players[i].wasAlpha = 0;
-    }
-    if (level.players.size == 0)
-    return -1;
-  }
-  return -1;
-}
-
-
-ibroadcast(msg)
-{
-  foreach (player in level.players)
-  player iprintlnbold(msg);
-}
-
-ibroadcastTeam(msg, team)
-{
-  foreach (player in level.players)
-  if (player.team == team)
-  player iprintlnbold(msg);
-}
-
-ibroadcastDelay(time, msg, team)
-{
-  wait time;
-  if (isDefined(team))
-  ibroadcastTeam(msg, team);
-  else
-  ibroadcast(msg);
-}
-
-doPlaceMsgLoop()
-{
-  level endon("game_ended");
-  for (;;)
-  {
-    if (level.msgtexttime > 0)
-    {
-      level.msgtexttime--;
-      if (level.msgtexttime == 0){
-        level.msgtext changeFontScaleOverTime(0.2);
-        level.msgtext.fontScale = 6;
-        level.msgtext fadeOverTime(0.2);
-        level.msgtext.alpha = 0;
-        if (isDefined(level.msgtexttitle))
-        {
-          level.msgtexttitle changeFontScaleOverTime(0.2);
-          level.msgtexttitle.fontScale = 6;
-          level.msgtexttitle fadeOverTime(0.2);
-          level.msgtexttitle.alpha = 0;
-        }
-      }
-    }
-    wait 1;
-  }
-}
-
-
-
-doPlaceMsgText(title, txt, time)
-{
-  level.msgtext destroy();
-  level.msgtexttitle destroy();
-  level.msgtext = level createServerFontString("objective");
-  level.msgtext setPoint( "CENTER", "CENTER");
-
-  level.msgtext setText(txt);
-  level.msgtext.alpha = 0;
-  level.msgtext.fontScale = 6;
-  level.msgtext changeFontScaleOverTime(0.15);
-  level.msgtext.fontScale = 1.3;
-  level.msgtext fadeOverTime(0.15);
-  level.msgtext.alpha = 1;
-
-
-  if (isDefined(title))
-  {
-    level.msgtexttitle = level createServerFontString("objective");
-    level.msgtexttitle setPoint( "CENTER", "CENTER");
-    level.msgtexttitle.y = -30;
-    level.msgtexttitle setText(title);
-    level.msgtexttitle.alpha = 0;
-    level.msgtexttitle.fontScale = 6;
-    level.msgtexttitle changeFontScaleOverTime(0.15);
-    level.msgtexttitle.fontScale = 2.5;
-    level.msgtexttitle fadeOverTime(0.15);
-    level.msgtexttitle.alpha = 1;
-  }
-  else
-  level.msgtexttitle = undefined;
-
-  level.msgtexttime = time;
-}
-
-doPlaceTimerText(txt)
-{
-  level.TimerText destroy();
-  level.TimerText = level createServerFontString( "objective", 1.5 );
-  level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
-  if (isDefined(txt))
-  level.TimerText setText(txt);
-}
-
-
-
-
-
-
-
-
-
-
-
-doDvars()
-{
-  setDvar("painVisionTriggerHealth", 0);
-  setDvar("player_sprintUnlimited", 1);
-}
-
-TR_HUD_LABEL_X = -5;
-TR_HUD_VALUE_X = 48;
-TR_HUD_VALUE_ALIGNX = "right";
-TR_HUD_LABEL_ALIGNX = "right";
-
-textPulseInit()
-{
-  self.baseFontScale = self.fontScale;
-}
-
-doTextPulse(type, scale)
-{
-  self thread textPulseThread(type, scale);
-}
-
-textPulseThread(type, scale)
-{
-  self notify("textpulse"+type);
-  self endon("death");
-
-  self ChangeFontScaleOverTime(0.05);
-  if (isDefined(scale))
-  self.fontScale *= scale;
-  else
-  self.fontScale *= 1.5;
-  wait 0.1;
-  self ChangeFontScaleOverTime(0.1);
-  self.fontScale = self.baseFontScale;
-}
-
-doHealth()
-{
-  self endon("disconnect");
-  self endon("death");
-  self.curhealth = 0;
-  self.healthtext = NewClientHudElem( self );
-  self.healthtext.alignX = TR_HUD_VALUE_ALIGNX;
-  self.healthtext.alignY = "top";
-  self.healthtext.horzAlign = "right";
-  self.healthtext.vertAlign = "top";
-  self.healthtext.y = -25;
-  self.healthtext.x = TR_HUD_VALUE_X;
-  self.healthtext.foreground = true;
-  self.healthtext.fontScale = 0.75;
-  self.healthtext.font = "hudbig";
-  self.healthtext.alpha = 1;
-  self.healthtext.glow = 1;
-  self.healthtext.glowColor = ( 2.55, 0, 0 );
-  self.healthtext.glowAlpha = 1;
-  self.healthtext.color = ( 1.0, 1.0, 1.0 );
-
-
-  self.healthlabel = NewClientHudElem( self );
-  self.healthlabel.alignX = TR_HUD_LABEL_ALIGNX;
-  self.healthlabel.alignY = "top";
-  self.healthlabel.horzAlign = "right";
-  self.healthlabel.vertAlign = "top";
-  self.healthlabel.y = -25;
-  self.healthlabel.x = TR_HUD_LABEL_X;
-  self.healthlabel.foreground = true;
-  self.healthlabel.fontScale = 0.75;
-  self.healthlabel.font = "hudbig";
-  self.healthlabel.alpha = 1;
-  self.healthlabel.glow = 1;
-  self.healthlabel.glowColor = ( 2.55, 0, 0 );
-  self.healthlabel.glowAlpha = 1;
-  self.healthlabel.color = ( 1.0, 1.0, 1.0 );
-  self.healthlabel setText("Max HP: ");
-
-  self.healthlabel textPulseInit();
-  self.healthtext textPulseInit();
-
-  while(1)
-  {
-    self.healthtext setValue(self.maxhealth);
-    self.healthtext doTextPulse();
-    self waittill("HEALTH");
-  }
-}
-
-doCash()
-{
-  self endon("disconnect");
-  self endon("death");
-  self.cashlabel = NewClientHudElem( self );
-
-  self.cashlabel.alignX = TR_HUD_LABEL_ALIGNX;
-  self.cashlabel.alignY = "top";
-  self.cashlabel.horzAlign = "right";
-  self.cashlabel.vertAlign = "top";
-  self.cashlabel.foreground = true;
-  self.cashlabel.y = -10;
-  self.cashlabel.x = TR_HUD_LABEL_X;
-  self.cashlabel.fontScale = 0.75;
-  self.cashlabel.font = "hudbig";
-  self.cashlabel.alpha = 1;
-  self.cashlabel.glow = 1;
-  self.cashlabel.glowAlpha = 1;
-  self.cashlabel.color = ( 1.0, 1.0, 1.0 );
-  self.cashlabel setText("Cash: ");
-
-  self.cash = NewClientHudElem( self );
-  self.cash.alignX = TR_HUD_VALUE_ALIGNX;
-  self.cash.alignY = "top";
-  self.cash.horzAlign = "right";
-  self.cash.vertAlign = "top";
-  self.cash.foreground = true;
-  self.cash.y = -10;
-  self.cash.x = TR_HUD_VALUE_X;
-  self.cash.fontScale = 0.75;
-  self.cash.font = "hudbig";
-  self.cash.alpha = 1;
-  self.cash.glow = 1;
-  self.cash.glowAlpha = 1;
-  self.cash.color = ( 1.0, 1.0, 1.0 );
-
-  self.cash textPulseInit();
-  self.cashlabel textPulseInit();
-
-  while(1)
-  {
-    if (level.showcreditshop == false)
-    {
-      self.cashlabel.glowColor = ( 0, 1, 0 );
-      self.cash.glowColor = ( 0, 1, 0 );
-      self.cashlabel setText("Cash: ");
-      self.cash setValue(self.bounty);
-    }
-    else
-    {
-      self.cashlabel.glowColor = ( 0, 0, 1 );
-      self.cash.glowColor = ( 0, 0, 1 );
-      self.cashlabel setText("Credits: ");
-      self.cash setValue(self.credits);
-    }
-    self waittill("CASH");
-  }
-}
-
-doLives()
-{
-  self endon("disconnect");
-  self endon("death");
-  curlives = -1;
-  wait 0.2;
-  self.lifetext = NewClientHudElem( self );
-  self.lifetext.alignX = TR_HUD_VALUE_ALIGNX;
-  self.lifetext.alignY = "top";
-  self.lifetext.horzAlign = "right";
-  self.lifetext.vertAlign = "top";
-  self.lifetext.y = 5;
-  self.lifetext.x = TR_HUD_VALUE_X;
-  self.lifetext.foreground = true;
-  self.lifetext.fontScale = 0.75;
-  self.lifetext.font = "hudbig";
-  self.lifetext.alpha = 1;
-  self.lifetext.glow = 1;
-  self.lifetext.glowColor = ( 0.45, 0.45, 1 );
-  self.lifetext.glowAlpha = 1;
-  self.lifetext.color = ( 1.0, 1.0, 1.0 );
-
-  self.lifelabel = NewClientHudElem( self );
-  self.lifelabel.alignX = TR_HUD_LABEL_ALIGNX;
-  self.lifelabel.alignY = "top";
-  self.lifelabel.horzAlign = "right";
-  self.lifelabel.vertAlign = "top";
-  self.lifelabel.y = 5;
-  self.lifelabel.x = TR_HUD_LABEL_X;
-  self.lifelabel.foreground = true;
-  self.lifelabel.fontScale = 0.75;
-  self.lifelabel.font = "hudbig";
-  self.lifelabel.alpha = 1;
-  self.lifelabel.glow = 1;
-  self.lifelabel.glowColor = ( 0.45, 0.45, 1 );
-  self.lifelabel.glowAlpha = 1;
-  self.lifelabel.color = ( 1.0, 1.0, 1.0 );
-  self.lifelabel setText("Lives: ");
-
-  self.lifetext textPulseInit();
-  self.lifelabel textPulseInit();
-
-  while(1)
-  {
-    self.lifetext setValue(self getCItemVal("life", "in_use"));
-    self waittill("LIVES");
-  }
-}
-
 statCashAdd(amount)
 {
   if (self.bounty + amount < 99999)
@@ -662,7 +223,7 @@ statCashAdd(amount)
   else
   self.bounty = 99999;
   self notify("CASH");
-  self.cash doTextPulse("cash");
+  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash");
 }
 
 statCashSub(amount)
@@ -672,7 +233,7 @@ statCashSub(amount)
   else
   self.bounty = 0;
   self notify("CASH");
-  self.cash doTextPulse("cash", 0.6);
+  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash", 0.6);
 }
 
 
@@ -682,7 +243,7 @@ statLivesInc(amount)
   if (self.lives < level.maxlives)
   self.lives++;
   self notify("LIVES");
-  self.lifetext doTextPulse("life");
+  self.lifetext maps\mp\gametypes\_zmod_hud::doTextPulse("life");
 }
 
 statLivesDec(amount)
@@ -690,7 +251,7 @@ statLivesDec(amount)
   if (self.lives > 0)
   self.lives--;
   self notify("LIVES");
-  self.lifetext doTextPulse("life", 0.6);
+  self.lifetext maps\mp\gametypes\_zmod_hud::doTextPulse("life", 0.6);
 }
 
 statMaxHealthAdd(amount)
@@ -698,7 +259,7 @@ statMaxHealthAdd(amount)
   self.maxhealth += amount;
   self.health += amount;
   self notify("HEALTH");
-  self.healthtext doTextPulse("health");
+  self.healthtext maps\mp\gametypes\_zmod_hud::doTextPulse("health");
 }
 
 doInit()
@@ -707,9 +268,8 @@ doInit()
   level.ShowCreditShop = false;
   level weaponInit();
   level CreateServerHUD();
-  level.infotext setText(getDvar("scr_zmod_infotext"));
+  level.infotext setText("^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
   level thread OverRider();
-  level thread doPlaceMsgLoop();
   maps\mp\gametypes\_gamestate_logic::CleanupKillstreaks();
   level.mapwait = 0;
 
@@ -1045,7 +605,10 @@ init()
   }
   maps\mp\gametypes\_missions::buildChallegeInfo();
 
-  chaz_init();
+  setDvar("scr_zmod_intermission_time", "10");
+  setDvar("scr_zmod_starting_time", "10");
+  setDvar("scr_zmod_alpha_time", "10");
+  setDvar("scr_zmod_sentry_timeout", "200");
   level thread onPlayerConnect();
   level thread doInit();
 
@@ -1242,21 +805,6 @@ onDisconnect()
 {
   self waittill("disconnect");
 }
-
-clog(msg)
-{
-  if (level.debug == 0)
-  return;
-  if (!isDefined(msg))
-  level.msgs[level.msgs_size] = "Log message is undefined!";
-  else
-  level.msgs[level.msgs_size] = msg;
-  level.msgs_size += 1;
-}
-
-
-
-
 
 roundUp( floatVal )
 {

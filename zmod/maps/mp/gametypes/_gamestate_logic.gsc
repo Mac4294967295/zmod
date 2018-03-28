@@ -3,24 +3,11 @@
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_shop_menu;
 
-doRoundWaitEnd()
-{
-  level waittill("game_ended");
-  foreach (player in level.players)
-  {
-
-    player.kills = player.savedStat["kills"];
-    player.assists = player.savedStat["assists"];
-    player.deaths = player.savedStat["deaths"];
-    player.score = player.savedStat["score"];
-  }
-}
 
 doIntermission()
 {
   level.gameState = "intermission";
   level notify("gamestatechange");
-  level.maxlives = getDvarInt("scr_zmod_max_lives");
   level.lastAlive = 0;
   level thread doIntermissionTimer();
 
@@ -41,7 +28,6 @@ doIntermission()
   level.ShowCreditShop = false;
   level thread doZombieTimer();
   CleanupKillstreaks();
-  if (getdvarint("scr_zmod_darken") != 0)
   VisionSetNaked("icbm", 5);
 }
 
@@ -118,7 +104,6 @@ doGameStarter()
 
   level.gameState = "starting";
   level notify("gamestatechange");
-  level.maxlives = getDvarInt("scr_zmod_max_lives");
   level.lastAlive = 0;
   level waittill("CREATED");
   level thread doStartTimer();
@@ -133,7 +118,6 @@ doGameStarter()
   }
   wait getdvarint("scr_zmod_starting_time");
   level thread doZombieTimer();
-  if (getdvarint("scr_zmod_darken"))
   VisionSetNaked("icbm", 5);
 }
 
@@ -160,7 +144,7 @@ doStartTimer()
 
 doPlaying()
 {
-  wait getdvarInt("scr_zmod_round_gap");
+  wait 5;
   level.TimerText destroy();
   while(1)
   {
@@ -452,5 +436,5 @@ statCreditsSub(amount)
   self.credits = 0;
   self notify("CASH");
 
-  self.cash maps\mp\gametypes\_rank::doTextPulse("cash", 0.6);
+  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash", 0.6);
 }

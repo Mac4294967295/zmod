@@ -14,15 +14,15 @@ init()
 	level._effect[ "nuke_aftermath" ] = loadfx( "dust/nuke_aftermath_mp" );
 
 	game["strings"]["nuclear_strike"] = &"MP_TACTICAL_NUKE";
-	
+
 	level.killstreakFuncs["nuke"] = ::tryUseNuke;
 
 	//setDvarIfUninitialized( "scr_nukeTimer", 10 );
 	setDvarIfUninitialized( "scr_nukeCancelMode", 0 );
-	
-	level.nukeTimer = getDvarInt( "scr_zmod_nuke_time" );//Longer for intense zmod action
+
+	level.nukeTimer = 25;//Longer for intense zmod action
 	level.cancelMode = /*getDvarInt( "scr_nukeCancelMode" )*/1;//Work even HARDER against the zombies, you must survive for salvation :D
-	
+
 	/#
 	setDevDvarIfUninitialized( "scr_nukeDistance", 5000 );
 	setDevDvarIfUninitialized( "scr_nukeEndsGame", true );
@@ -35,7 +35,7 @@ tryUseNuke( lifeId, allowCancel )
 	if( isDefined( level.nukeIncoming ) )
 	{
 		self iPrintLnBold( &"MP_NUKE_ALREADY_INBOUND" );
-		return false;	
+		return false;
 	}
 
 	if ( self isUsingRemote() && ( !isDefined( level.gtnw ) || !level.gtnw ) )
@@ -46,40 +46,40 @@ tryUseNuke( lifeId, allowCancel )
 
 	self thread doNuke( allowCancel );
 	self notify( "used_nuke" );
-	
+
 	return true;
 }
 
 delaythread_nuke( delay, func )
 {
 	level endon ( "nuke_cancelled" );
-	
+
 	wait ( delay );
-	
+
 	thread [[ func ]]();
 }
 
 doNuke( allowCancel )
 {
 	level endon ( "nuke_cancelled" );
-	
+
 	level.nukeInfo = spawnStruct();
 	level.nukeInfo.player = self;
 	level.nukeInfo.team = self.pers["team"];
 
 	level.nukeIncoming = true;
-	
+
 	maps\mp\gametypes\_gamelogic::pauseTimer();
 	level.timeLimitOverride = true;
 	setGameEndTime( int( gettime() + (level.nukeTimer * 1000) ) );
 	setDvar( "ui_bomb_timer", 4 ); // Nuke sets '4' to avoid briefcase icon showing
-	
+
 	if ( level.teambased )
 	{
 		thread teamPlayerCardSplash( "used_nuke", self, self.team );
 		/*
 		players = level.players;
-		
+
 		foreach( player in level.players )
 		{
 			playerteam = player.pers["team"];
@@ -107,7 +107,7 @@ doNuke( allowCancel )
 	level thread nukeAftermathEffect();
 
 	if ( level.cancelMode && allowCancel )
-		level thread cancelNukeOnDeath( self ); 
+		level thread cancelNukeOnDeath( self );
 
 	// leaks if lots of nukes are called due to endon above.
 	clockObject = spawn( "script_origin", (0,0,0) );
@@ -136,17 +136,17 @@ cancelNukeOnDeath( player )
 	level.timeLimitOverride = false;
 
 	setDvar( "ui_bomb_timer", 0 ); // Nuke sets '4' to avoid briefcase icon showing
-	
+
 	foreach (player in level.players)
 		player thread maps\mp\gametypes\_hud_message::hintMessage("^3NUKE ^1ABORTED!");
-	
+
 	level notify ( "nuke_cancelled" );
 }
 
 nukeSoundIncoming()
 {
 	level endon ( "nuke_cancelled" );
-	
+
 	foreach( player in level.players )
 		player playlocalsound( "nuke_incoming" );
 }
@@ -177,7 +177,7 @@ nukeEffects()
 		playerForward = anglestoforward( player.angles );
 		playerForward = ( playerForward[0], playerForward[1], 0 );
 		playerForward = VectorNormalize( playerForward );
-	
+
 		nukeDistance = 5000;
 		/# nukeDistance = getDvarInt( "scr_nukeDistance" );	#/
 
@@ -213,7 +213,7 @@ nukeAftermathEffect()
 	level endon ( "nuke_cancelled" );
 
 	level waittill ( "spawning_intermission" );
-	
+
 	afermathEnt = getEntArray( "mp_global_intermission", "classname" );
 	afermathEnt = afermathEnt[0];
 	up = anglestoup( afermathEnt.angles );
@@ -249,11 +249,11 @@ nukeVision()
 nukeDeath()
 {
 	level endon ( "nuke_cancelled" );
-	
+
 	level notify( "nuke_death" );
-	
+
 	maps\mp\gametypes\_hostmigration::waitTillHostMigrationDone();
-	
+
 	AmbientStop(1);
 
 	foreach( player in level.players )

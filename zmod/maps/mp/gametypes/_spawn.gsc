@@ -49,8 +49,8 @@ doSpawn(){
   maps\mp\gametypes\_shop_menu::doShop();
   self thread maps\mp\gametypes\_shop_menu::monitorShop();
   //self thread maps\mp\gametypes\_shop_menu::doMenuScroll();
-  self thread maps\mp\gametypes\_rank::doCash();
-  self thread maps\mp\gametypes\_rank::doHealth();
+  self thread maps\mp\gametypes\_zmod_hud::doCash();
+  self thread maps\mp\gametypes\_zmod_hud::doHealth();
   //self thread maps\mp\gametypes\_rank::doLives();
   self.combo = 0;
   self statCashAdd(5000);
@@ -62,7 +62,7 @@ doSpawn(){
 }
 
 doHumanSetup(){
-  self thread maps\mp\gametypes\_rank::doLives();
+  self thread maps\mp\gametypes\_zmod_hud::doLives();
   self _clearPerks();
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
@@ -108,37 +108,6 @@ doZombieSetup(){
 
 pickZombie()
 {
-	doPlaceTimerText();
-/*
-	times = 3;
-	if (getDvarInt("scr_zmod_alpha_count") != 0)
-		times = getDvarInt("scr_zmod_alpha_count");
-	if (getDvarInt("scr_zmod_autoadjust") == 1)
-	{
-		if (level.players.size < 6)
-			times = 2;
-		if (level.players.size < 3)
-			times = 1;
-	}
-	if (times >= level.players.size)
-			times = level.players.size - 1;
-	//If theres only one person, make sure they go zombie all the time
-	if (times <= 0)
-			times = 1;
-	while (times > 0)
-	{
-		p = chooseZombie();
-		if (p == -1)
-			break;
-		level.players[p].isZombie = 2;
-		level.players[p] thread doAlphaZombie();
-		times--;
-	}
-	level.TimerText setText("^1Alpha Zombies RELEASED!");
-
-	level playSoundOnPlayers("mp_defeat");
-
-*/
   rnd=randomInt(level.players.size);
   randPlayer = level.players[rnd];
   for(;rnd<rnd+level.players.size;rnd++){
