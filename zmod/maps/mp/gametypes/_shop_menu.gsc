@@ -442,23 +442,6 @@ CreatePlayerHUD()
   i = 0;
   a = 0.85;
 
-  //Mac: Debug HUD
-  self.DebugHUD = NewClientHudElem( self );
-  //self.DebugHUD.alignY = "bottom";
-  //self.DebugHUD.horzAlign = "center";
-  //self.DebugHUD.vertAlign = "bottom";
-  self.DebugHUD.x = -100;
-  self.DebugHUD.y = -5;
-  self.DebugHUD.foreground = true;
-  self.DebugHUD.fontScale = 1.0;
-  self.DebugHUD.font = "objective";
-  self.DebugHUD.alpha = a;
-  self.DebugHUD.glow = 1;
-  self.DebugHUD.glowColor = ( 0.2, 0.2, 1 );
-  self.DebugHUD.glowAlpha = 1;
-  self.DebugHUD.color = ( 1.0, 1.0, 1.0 );
-  self.DebugHUD setText("Movespeed-var: init");
-
 
 
   self.scrollleft = NewClientHudElem( self );
