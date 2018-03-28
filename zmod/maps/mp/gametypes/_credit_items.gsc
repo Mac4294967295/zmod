@@ -49,7 +49,6 @@ cash(){
 gives the player the items on respawn
 */
 giveCreditUpgrades(){
-	self iPrintlnBold(self getCItemVal("tacticalinsertion", "in_use"));
 	if(self getCItemVal("tacticalinsertion", "in_use")==1){
 		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
 	}
