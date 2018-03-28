@@ -25,7 +25,7 @@ doSpawn(){
       if(self.team!="axis"){
         self notify("menuresponse", game["menu_team"], "axis");
   		  wait .1;
-  		  self notify("menuresponse", "changeclass", "class1");
+  		  self notify("menuresponse", "changeclass", "class3");
         return;
       }
       self doZombieSetup();
@@ -153,9 +153,9 @@ pickZombie()
   randPlayer.isZombie=1;
 	level.gameState = "playing";
 	level notify("gamestatechange");
-	level thread doPlaying();
-	level thread doPlayingTimer();
-	level thread inGameConstants();
+	level thread maps\mp\gametypes\_gamestate_logic::doPlaying();
+	level thread maps\mp\gametypes\_gamestate_logic::doPlayingTimer();
+	level thread maps\mp\gametypes\_gamestate_logic::inGameConstants();
 }
 
 onPlayerSpawned()
