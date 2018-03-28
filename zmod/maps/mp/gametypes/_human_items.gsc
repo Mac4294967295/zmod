@@ -125,7 +125,6 @@ repair(){
 			if (self.bounty >= self getHItemVal("repair", "cost")){
 				self statCashSub(self getHItemVal("repair", "cost"));
 				self setHItemVal("repair", "in_use", 15);
-				self iPrintlnBold("^2Bought Door Repair Tool!");
 				self giveWeapon("defaultweapon_mp");
 				self switchToWeapon("defaultweapon_mp");
 				self setWeaponAmmoClip("defaultweapon_mp", 0);

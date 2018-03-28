@@ -53,4 +53,7 @@ giveCreditUpgrades(){
 	if(self getCItemVal("tacticalinsertion", "in_use")==1){
 		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
 	}
+	if(self getCItemVal("finalstand", "in_use")==1){
+		self maps\mp\perks\_perks::givePerk("specialty_finalstand");
+	}
 }

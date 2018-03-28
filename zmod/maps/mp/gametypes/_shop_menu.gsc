@@ -389,6 +389,7 @@ monitorShop(){
 			self setCItemVal("cash", "print_text", "text2");
 		}
 		wait 0.5;
+
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/

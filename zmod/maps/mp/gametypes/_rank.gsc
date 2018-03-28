@@ -315,10 +315,48 @@ assistedKill(who)
   else
   if (self.team == "axis")
   earn = 50;
-  self justScorePopup("Assist: +$" + earn);
+  //self justScorePopup("Assist: +$" + earn);
+  self justScorePopup("Assist: +$");
   self statCashAdd(earn);
 }
+killedPlayer(who, weap)
+{
+	if (self.team == who.team || level.gameState != "playing")
+		return;
+	if (self.team == who.team)
+		return;
+	clog("who: " + who.name + " weap: " + weap);
+	//processChallengeKill(self, who, weap);
+	if (self.isZombie != 0)
+	{
+		amount = 100 + (50 * self.combo);
 
+		self statCashAdd(amount);
+		self.combo++;
+		if (self.combo > 1)
+			self thread justScorePopup("Kill Combo! x" + self.combo + " +$" + amount);
+		else
+			self thread justScorePopup("Killed Human! +$" + amount);
+		self notify("CASH");
+	}
+	else
+	{
+		who statCashAdd(50);
+		who justScorePopup("Died! +$50");
+
+		earn = 50;
+		if (weap == "melee_mp")
+		{
+			earn *= 4;
+			self thread justScorePopup("Melee Kill! +$" + earn);
+		}
+		else
+			self thread justScorePopup("Killed Zombie! +$" + earn);
+		self statCashAdd(earn);
+	}
+}
+
+/*
 killedPlayer(who, weap)
 {
   if (self.team == who.team || level.gameState != "playing")
@@ -360,7 +398,7 @@ killedPlayer(who, weap)
     self statCashAdd(earn);
   }
 }
-
+*/
 init_player_extra()
 {
   self.isRepairing = false;
@@ -3187,40 +3225,40 @@ justScorePopup( text )
   self.hud_scorePopup.glowColor = hudColor;
   self.hud_scorePopup.glowAlpha = glowAlpha;
   self.hud_scorePopup setText(text);
-  self.hud_scorePopup.alpha = 0;
+  self.hud_scorePopup.alpha = 0.85;
   self.hud_scorePopup thread fontPulseNew( self );
 }
 
 scorePopup( amount, bonus, hudColor, glowAlpha )
 {
-  self endon( "disconnect" );
-  self endon( "joined_team" );
-  self endon( "joined_spectators" );
-  if ( amount == 0 )
-  {
-    return;
-  }
-  self notify( "scorePopup" );
-  self endon( "scorePopup" );
-  self.xpUpdateTotal += amount;
-  self.bonusUpdateTotal += bonus;
-  wait ( 0.05 );
-
-  increment = max( int( self.bonusUpdateTotal / 20 ), 1 );
-  if ( self.bonusUpdateTotal )
-  {
-    while ( self.bonusUpdateTotal > 0 )
-    {
-      self.xpUpdateTotal += min( self.bonusUpdateTotal, increment );
-      self.bonusUpdateTotal -= min( self.bonusUpdateTotal, increment );
-      wait ( 0.05 );
-    }
-  }
-  else
-  {
-    wait ( 1.0 );
-  }
-  self.xpUpdateTotal = 0;
+	self endon( "disconnect" );
+	self endon( "joined_team" );
+	self endon( "joined_spectators" );
+	if ( amount == 0 )
+	{
+		return;
+	}
+	self notify( "scorePopup" );
+	self endon( "scorePopup" );
+	self.xpUpdateTotal += amount;
+	self.bonusUpdateTotal += bonus;
+	wait ( 0.05 );
+	increment = max( int( self.bonusUpdateTotal / 20 ), 1 );
+	if ( self.bonusUpdateTotal )
+	{
+		while ( self.bonusUpdateTotal > 0 )
+		{
+			self.xpUpdateTotal += min( self.bonusUpdateTotal, increment );
+			self.bonusUpdateTotal -= min( self.bonusUpdateTotal, increment );
+			//self.hud_scorePopup setValue( self.xpUpdateTotal );
+			wait ( 0.05 );
+		}
+	}
+	else
+		{
+			wait ( 1.0 );
+		}
+	self.xpUpdateTotal = 0;
 }
 removeRankHUD()
 {

@@ -50,7 +50,6 @@ coldblood(){
 				self statCashSub(self getZItemVal("coldblood", "cost"));
 				self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
 				self maps\mp\perks\_perks::givePerk("specialty_spygame");
-				self iPrintlnBold("^2Coldblood bought!");
 				self setZItemVal("coldblood", "print_text", "text2");
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}

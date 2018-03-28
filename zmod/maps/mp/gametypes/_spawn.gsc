@@ -63,7 +63,6 @@ doSpawn(){
 
 doHumanSetup(){
   self thread maps\mp\gametypes\_rank::doLives();
-  self iPrintLnBold("humasteup");
   self _clearPerks();
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
@@ -140,7 +139,14 @@ pickZombie()
 	level playSoundOnPlayers("mp_defeat");
 
 */
-  randPlayer = level.players[randomInt(level.players.size)];
+  rnd=randomInt(level.players.size);
+  randPlayer = level.players[rnd];
+  for(;rnd<rnd+level.players.size;rnd++){
+    randPlayer = level.players[rnd%level.players.size];
+    if( randPlayer getCItemVal("antialpha", "in_use")==0){
+      break;
+    }
+  }
 	randPlayer notify("menuresponse", game["menu_team"], "axis");
 	wait .1;
 	randPlayer notify("menuresponse", "changeclass", "class3");
