@@ -8,6 +8,7 @@ doSpawn(){
 //  self iPrintlnBold("dospawn");
   //self notify("death");
   self.menu=0;
+  self.grenades=6;
   self.isRepairing=false;
   //self iPrintLnBold(self.team);
   if(level.gameState=="playing" || level.gameState=="ending"){
@@ -87,6 +88,10 @@ doHumanSetup(){
   wait 0.2;
 	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
   //self thread doHW();
+  self SetOffhandPrimaryClass( "frag" );
+  self _giveWeapon("frag_grenade_mp", 1);
+  self thread monitorGrenades();
+  //self setWeaponAmmoStock( "frag_grenade_mp", 6);
 
 }
 
@@ -158,6 +163,20 @@ OMAExploitFix()
       self takeAllWeapons();
     }
     wait .5;
+  }
+}
+
+monitorGrenades(){
+  while(1){
+    if(self.grenades>0){
+      if(self getWeaponAmmoStock("frag_grenade_mp")==0){
+        self.grenades--;
+        self SetOffhandPrimaryClass( "frag" );
+			  self _giveWeapon("frag_grenade_mp", 0);
+        self setWeaponAmmoStock("frag_grenade_mp", 1);
+      }
+    }
+    wait .2;
   }
 }
 /*

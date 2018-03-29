@@ -10,6 +10,7 @@ ammo(){
 				self GiveMaxAmmo(primary);
 			}
 		}
+		self.grenades=6;
 		//self.nades = getDefaultNadeAmmo(self.nadetype);
 	}else self iPrintlnBold("^1Not Enough ^3Cash");
 	self notify("MENUCHANGE_2");
