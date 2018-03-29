@@ -389,7 +389,11 @@ monitorShop(){
 			self setCItemVal("cash", "print_text", "text2");
 		}
 		wait 0.5;
-
+		string ="";
+		for(i=0;i<21;i++){
+			string+=" "+i+":"+(int(i/6)+1);
+		}
+		self iPrintlnBold(string);
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/

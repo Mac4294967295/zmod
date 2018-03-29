@@ -108,20 +108,26 @@ doZombieSetup(){
 
 pickZombie()
 {
-  rnd=randomInt(level.players.size);
-  randPlayer = level.players[rnd];
-  for(;rnd<rnd+level.players.size;rnd++){
-    randPlayer = level.players[rnd%level.players.size];
-    if( randPlayer getCItemVal("antialpha", "in_use")==0){
-      break;
+  numberOfZombies=int(level.players.size/6)+1;
+  for(i=0;i<numberOfZombies;i++){
+    while(1){
+      rnd = randomInt(level.players.size);
+      if(!isDefined(level.players[rnd])) return;
+      randPlayer = level.players[rnd];
+      if( randPlayer getCItemVal("antialpha", "in_use")==0){
+        break;
+      }else{
+        randPlayer setCItemVal("antialpha", "in_use", 0);
+        randPlayer iPrintlnBold("^2Anti-Alpha used!");
+      }
     }
+  	randPlayer notify("menuresponse", game["menu_team"], "axis");
+  	wait .1;
+  	randPlayer notify("menuresponse", "changeclass", "class3");
+    randPlayer.isZombie=1;
+  	level.gameState = "playing";
+  	level notify("gamestatechange");
   }
-	randPlayer notify("menuresponse", game["menu_team"], "axis");
-	wait .1;
-	randPlayer notify("menuresponse", "changeclass", "class3");
-  randPlayer.isZombie=1;
-	level.gameState = "playing";
-	level notify("gamestatechange");
 	level thread maps\mp\gametypes\_zmod_gamelogic::doPlaying();
 	level thread maps\mp\gametypes\_zmod_gamelogic::doPlayingTimer();
 	level thread maps\mp\gametypes\_zmod_gamelogic::inGameConstants();

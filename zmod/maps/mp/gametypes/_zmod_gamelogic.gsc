@@ -275,7 +275,6 @@ doEnding()
     player _clearPerks();
     player resetZMenu();
     player resetHMenu();
-    player resetCMenu();
     player.moveSpeedScaler = 1;
     player freezeControls(true);
     player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
