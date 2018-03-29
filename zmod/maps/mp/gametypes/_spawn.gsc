@@ -27,6 +27,7 @@ doSpawn(){
         self notify("menuresponse", game["menu_team"], "axis");
   		  wait .1;
   		  self notify("menuresponse", "changeclass", "class3");
+        self.bounty=0;
         return;
       }
       self doZombieSetup();

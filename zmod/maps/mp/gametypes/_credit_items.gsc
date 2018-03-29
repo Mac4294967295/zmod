@@ -41,6 +41,7 @@ cash(){
 	if(self.bounty >= self getCItemVal("cash", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("cash", "cost"));
 		self setCItemVal("cash", "in_use", 1);
+		self.bounty=200;
 	}else self iPrintlnBold("^1Not Enough ^3Cash");
 	self notify("MENUCHANGE_2");
 }

@@ -79,12 +79,13 @@ doIntermission()
   setDvar("cg_drawCrosshairNames", 1);
   setDvar("cg_drawFriendlyNames", 1);
   dropDead();
-  foreach(player in level.players)
-  player.bounty = 0;
+  foreach(player in level.players){
+    player.bounty = 0;
+    if(player getCItemVal("cash", "in_use")==1)   player.bounty=200;
+  }
 
   level.ShowCreditShop = true;
-  foreach(player in level.players)
-  //player thread doSetup();
+
 
   wait getdvarInt("scr_zmod_intermission_time");
   level.ShowCreditShop = false;

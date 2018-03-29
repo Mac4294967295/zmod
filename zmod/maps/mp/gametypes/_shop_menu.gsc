@@ -162,7 +162,7 @@ initializeCMenu(){
 	initCShopItem("tacticalinsertion", 250, 0, 1, "[Human] Buy Tactical Insertion for extra lives - ", "^1Tactical Insertion equipped");
 	initCShopItem("finalstand", 500, 0, 2, "[Human] Buy Finalstand - ", "^1Finalstand activated");
 	initCShopItem("antialpha", 200, 1, 0, "Buy Anti-Alpha ", "^1Anti-Alpha activated");
-	initCShopItem("cash", 200, 1, 1, "Buy 200 Starting Cash ", "^1Starting Cash acquired");
+	initCShopItem("cash", 200, 1, 1, "Buy 200 Starting Cash (Human & Alpha Zombie) ", "^1Starting Cash acquired");
 
 }
 /*
