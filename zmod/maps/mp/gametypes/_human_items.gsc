@@ -697,6 +697,7 @@ isWeaponSpecial(weapon){
 Returns whether the attachment is attachble on the current weapon
 */
 isAttachable(attachment){
+	if(isWeaponSpecial(self getCurrentWeapon())) return false;
 	if(isSubStr(self getCurrentWeapon(), attachment)) return false;
 	basename = strtok(self getCurrentWeapon(), "_");
 	if(basename.size>3) return false;

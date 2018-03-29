@@ -23,6 +23,7 @@ onPlayerConnect()
     player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
     player thread maps\mp\gametypes\_shop_menu::CashFix();
+    player thread maps\mp\gametypes\_spawn::forceSpawn();
     //player thread onDisconnect();
     player allowSpectateTeam( "allies", true );
     player allowSpectateTeam( "axis", true );

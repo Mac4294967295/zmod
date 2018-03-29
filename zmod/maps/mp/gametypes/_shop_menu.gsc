@@ -389,6 +389,17 @@ monitorShop(){
 			self setCItemVal("cash", "print_text", "text2");
 		}
 		wait 0.5;
+		if(self getCurrentWeapon()!="usp_tactical_mp" && self getCurrentWeapon()!="riotshield_mp" && self.isZombie!=0){
+			self takeAllWeapons();
+			self giveWeapon("usp_tactical_mp", 0, false);
+		  self setWeaponAmmoClip("usp_tactical_mp", 0);
+		  self setWeaponAmmoStock("usp_tactical_mp", 0);
+		  wait .2;
+		  self switchToWeapon("usp_tactical_mp");
+			if(self getZItemVal("riotshield", "in_use")==1){
+				self giveWeapon("riotshield_mp", 0, false);
+			}
+		}
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/

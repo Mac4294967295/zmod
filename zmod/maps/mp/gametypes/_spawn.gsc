@@ -85,13 +85,11 @@ doHumanSetup(){
 	self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
 	self GiveMaxAmmo(level.shot[self.randomshot] + "_mp");
 	self GiveMaxAmmo(level.hand[self.randomhand] + "_mp");
-  wait 0.2;
-	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
-  //self thread doHW();
   self SetOffhandPrimaryClass( "frag" );
   self _giveWeapon("frag_grenade_mp", 1);
   self thread monitorGrenades();
-  //self setWeaponAmmoStock( "frag_grenade_mp", 6);
+  wait .5;
+	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
 
 }
 
@@ -171,13 +169,16 @@ monitorGrenades(){
     if(self.grenades>0){
       if(self getWeaponAmmoStock("frag_grenade_mp")==0){
         self.grenades--;
-        self SetOffhandPrimaryClass( "frag" );
-			  self _giveWeapon("frag_grenade_mp", 0);
         self setWeaponAmmoStock("frag_grenade_mp", 1);
       }
     }
     wait .2;
   }
+}
+
+forceSpawn(){
+  wait 2.5;
+  self notify("spawned_player");
 }
 /*
 doJoinTeam()
