@@ -43,8 +43,7 @@ initCShopItem(name, cost, page, pos, text1, text2){
 	self.CMenu[name]["text2"] = text2;
 	self.CMenu[name]["print_text"] = "text1";
 	self.CMenu[name]["in_use"] = 0;
-	self.CArray[page][pos] = name; //initializes ZArray
-	//level.ZFuncArray[page][pos] = ::name;
+	self.CArray[page][pos] = name; //initializes CArray
 }
 /*
 (re)sets the items and its variables
@@ -194,13 +193,13 @@ initializeHMenu(){
 	initHShopItem("extendedmags", 150, 0, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
 	initHShopItem("sight", 50, 0, 2, "Unlock Sights - ", "Swap Sight");
 
-	initHShopItem("smg", 150, 1, 0, "Exchange current weapon for SMG - ", "Swap SMG");
+	initHShopItem("smg", 100, 1, 0, "Exchange current weapon for SMG - ", "Swap SMG");
 	initHShopItem("assault", 150, 1, 1, "Exchange current weapon for AR - ", "Swap AR");
-	initHShopItem("lmg", 150, 1, 2, "Exchange current weapon for LMG - ", "Swap LMG");
+	initHShopItem("lmg", 200, 1, 2, "Exchange current weapon for LMG - ", "Swap LMG");
 
-	initHShopItem("pistol", 150, 2, 0, "Exchange current weapon for Pistol - ", "Swap Pistol");
+	initHShopItem("pistol", 100, 2, 0, "Exchange current weapon for Pistol - ", "Swap Pistol");
 	initHShopItem("shotgun", 150, 2, 1, "Exchange current weapon for Shotgun - ", "Swap Shotgun");
-	initHShopItem("sniper", 150, 2, 2, "Exchange current weapon for Sniper - ", "Swap Sniper");
+	initHShopItem("sniper", 200, 2, 2, "Exchange current weapon for Sniper - ", "Swap Sniper");
 
 	initHShopItem("riotshield", 200, 3, 0, "Buy Riotshield - ", "^1Riotshield already equipped");
 	initHShopItem("akimbo", 50, 3, 1, "Buy Akimbo - ", "^1Akimbo unavailable");
@@ -389,6 +388,10 @@ monitorShop(){
 			self setCItemVal("cash", "print_text", "text2");
 		}
 		wait 0.5;
+	//	string="1";
+	//	if(string=="1") string = tableLookup( "mp/statsTable.csv", 1, 3000, 0 );
+	//	self iPrintlnBold(string);
+
 		if(self getCurrentWeapon()!="usp_tactical_mp" && self getCurrentWeapon()!="riotshield_mp" && self.isZombie!=0){
 			self takeAllWeapons();
 			self giveWeapon("usp_tactical_mp", 0, false);

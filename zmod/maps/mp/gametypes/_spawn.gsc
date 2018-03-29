@@ -101,6 +101,9 @@ doZombieSetup(){
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
+  self SetOffhandPrimaryClass("");
+  self setWeaponAmmoClip("frag_grenade_mp", 0);
+  self setWeaponAmmoStock("frag_grenade_mp", 0);
   self takeAllWeapons();
 	self giveWeapon("usp_tactical_mp", 0, false);
   self setWeaponAmmoClip("usp_tactical_mp", 0);
@@ -178,7 +181,7 @@ monitorGrenades(){
 }
 
 forceSpawn(){
-  wait 2.5;
+  wait 4;
   self notify("spawned_player");
 }
 /*
