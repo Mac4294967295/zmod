@@ -169,8 +169,10 @@ OMAExploitFix()
 }
 
 monitorGrenades(){
-  while(1){
-    if(self.grenades>0){
+  self endon("disconnect");
+  self endon("death");
+  while(self.isZombie==0){
+    if(self.grenades>0 ){
       if(self getWeaponAmmoStock("frag_grenade_mp")==0){
         self.grenades--;
         self setWeaponAmmoStock("frag_grenade_mp", 1);
