@@ -43,8 +43,7 @@ initCShopItem(name, cost, page, pos, text1, text2){
 	self.CMenu[name]["text2"] = text2;
 	self.CMenu[name]["print_text"] = "text1";
 	self.CMenu[name]["in_use"] = 0;
-	self.CArray[page][pos] = name; //initializes ZArray
-	//level.ZFuncArray[page][pos] = ::name;
+	self.CArray[page][pos] = name; //initializes CArray
 }
 /*
 (re)sets the items and its variables
@@ -162,7 +161,7 @@ initializeCMenu(){
 	initCShopItem("tacticalinsertion", 250, 0, 1, "[Human] Buy Tactical Insertion for extra lives - ", "^1Tactical Insertion equipped");
 	initCShopItem("finalstand", 500, 0, 2, "[Human] Buy Finalstand - ", "^1Finalstand activated");
 	initCShopItem("antialpha", 200, 1, 0, "Buy Anti-Alpha ", "^1Anti-Alpha activated");
-	initCShopItem("cash", 200, 1, 1, "Buy 200 Starting Cash ", "^1Starting Cash acquired");
+	initCShopItem("cash", 200, 1, 1, "Buy 200 Starting Cash (Human & Alpha Zombie) ", "^1Starting Cash acquired");
 
 }
 /*
@@ -194,13 +193,13 @@ initializeHMenu(){
 	initHShopItem("extendedmags", 150, 0, 1, "Buy Extended Mags - ", "^1Extended Mags equipped");
 	initHShopItem("sight", 50, 0, 2, "Unlock Sights - ", "Swap Sight");
 
-	initHShopItem("smg", 150, 1, 0, "Exchange current weapon for SMG - ", "Swap SMG");
-	initHShopItem("assault", 150, 1, 1, "Exchange current weapon for AR - ", "Swap AR");
-	initHShopItem("lmg", 150, 1, 2, "Exchange current weapon for LMG - ", "Swap LMG");
+	initHShopItem("smg", 100, 1, 0, "Buy SMG - ", "Swap SMG");
+	initHShopItem("assault", 150, 1, 1, "Buy AR - ", "Swap AR");
+	initHShopItem("lmg", 200, 1, 2, "Buy LMG - ", "Swap LMG");
 
-	initHShopItem("pistol", 150, 2, 0, "Exchange current weapon for Pistol - ", "Swap Pistol");
-	initHShopItem("shotgun", 150, 2, 1, "Exchange current weapon for Shotgun - ", "Swap Shotgun");
-	initHShopItem("sniper", 150, 2, 2, "Exchange current weapon for Sniper - ", "Swap Sniper");
+	initHShopItem("pistol", 100, 2, 0, "Buy Pistol - ", "Swap Pistol");
+	initHShopItem("shotgun", 150, 2, 1, "Buy Shotgun - ", "Swap Shotgun");
+	initHShopItem("sniper", 200, 2, 2, "Buy Sniper - ", "Swap Sniper");
 
 	initHShopItem("riotshield", 200, 3, 0, "Buy Riotshield - ", "^1Riotshield already equipped");
 	initHShopItem("akimbo", 50, 3, 1, "Buy Akimbo - ", "^1Akimbo unavailable");
@@ -389,6 +388,22 @@ monitorShop(){
 			self setCItemVal("cash", "print_text", "text2");
 		}
 		wait 0.5;
+		//self iPrintlnBold(self getNumberOfWeapons());
+	//	string="1";
+	//	if(string=="1") string = tableLookup( "mp/statsTable.csv", 1, 3000, 0 );
+	//	self iPrintlnBold(string);
+
+		if(self getCurrentWeapon()!="usp_tactical_mp" && self getCurrentWeapon()!="riotshield_mp" && self.isZombie!=0){
+			self takeAllWeapons();
+			self giveWeapon("usp_tactical_mp", 0, false);
+		  self setWeaponAmmoClip("usp_tactical_mp", 0);
+		  self setWeaponAmmoStock("usp_tactical_mp", 0);
+		  wait .2;
+		  self switchToWeapon("usp_tactical_mp");
+			if(self getZItemVal("riotshield", "in_use")==1){
+				self giveWeapon("riotshield_mp", 0, false);
+			}
+		}
 		/*
 		Updates text to print for when akimbo is available/unavailable
 		*/

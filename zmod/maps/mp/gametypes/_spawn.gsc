@@ -8,6 +8,7 @@ doSpawn(){
 //  self iPrintlnBold("dospawn");
   //self notify("death");
   self.menu=0;
+  self.hasAnaconda=false; //is true when player had the .44 Magnum  before he bought better devils
   self.grenades=6;
   self.isRepairing=false;
   //self iPrintLnBold(self.team);
@@ -27,6 +28,7 @@ doSpawn(){
         self notify("menuresponse", game["menu_team"], "axis");
   		  wait .1;
   		  self notify("menuresponse", "changeclass", "class3");
+        self.bounty=0;
         return;
       }
       self doZombieSetup();
@@ -80,18 +82,16 @@ doHumanSetup(){
 	self.randomhand = randomInt(level.hand.size);
   self takeAllWeapons();
 	self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
-	self giveWeapon(level.shot[self.randomshot] + "_mp", 0, false);
-	self giveWeapon(level.hand[self.randomhand] + "_mp", 0, false);
+	//self giveWeapon(level.shot[self.randomshot] + "_mp", 0, false);
+//	self giveWeapon(level.hand[self.randomhand] + "_mp", 0, false);
 	self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
-	self GiveMaxAmmo(level.shot[self.randomshot] + "_mp");
-	self GiveMaxAmmo(level.hand[self.randomhand] + "_mp");
-  wait 0.2;
-	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
-  //self thread doHW();
+//	self GiveMaxAmmo(level.shot[self.randomshot] + "_mp");
+//	self GiveMaxAmmo(level.hand[self.randomhand] + "_mp");
   self SetOffhandPrimaryClass( "frag" );
   self _giveWeapon("frag_grenade_mp", 1);
   self thread monitorGrenades();
-  //self setWeaponAmmoStock( "frag_grenade_mp", 6);
+  wait .5;
+	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
 
 }
 
@@ -102,6 +102,9 @@ doZombieSetup(){
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
+  self SetOffhandPrimaryClass("");
+  self setWeaponAmmoClip("frag_grenade_mp", 0);
+  self setWeaponAmmoStock("frag_grenade_mp", 0);
   self takeAllWeapons();
 	self giveWeapon("usp_tactical_mp", 0, false);
   self setWeaponAmmoClip("usp_tactical_mp", 0);
@@ -167,17 +170,23 @@ OMAExploitFix()
 }
 
 monitorGrenades(){
-  while(1){
-    if(self.grenades>0){
+  self endon("disconnect");
+  self endon("death");
+  while(self.isZombie==0){
+    if(self.grenades>0 ){
       if(self getWeaponAmmoStock("frag_grenade_mp")==0){
         self.grenades--;
-        self SetOffhandPrimaryClass( "frag" );
-			  self _giveWeapon("frag_grenade_mp", 0);
         self setWeaponAmmoStock("frag_grenade_mp", 1);
       }
     }
     wait .2;
   }
+}
+
+forceSpawn(){
+  self endon("spawned_player");
+  //wait 4;
+  self notify("spawned_player");
 }
 /*
 doJoinTeam()

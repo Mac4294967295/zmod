@@ -23,6 +23,7 @@ onPlayerConnect()
     player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
     player thread maps\mp\gametypes\_shop_menu::CashFix();
+    //player thread maps\mp\gametypes\_spawn::forceSpawn();
     //player thread onDisconnect();
     player allowSpectateTeam( "allies", true );
     player allowSpectateTeam( "axis", true );
@@ -78,12 +79,13 @@ doIntermission()
   setDvar("cg_drawCrosshairNames", 1);
   setDvar("cg_drawFriendlyNames", 1);
   dropDead();
-  foreach(player in level.players)
-  player.bounty = 0;
+  foreach(player in level.players){
+    player.bounty = 0;
+    if(player getCItemVal("cash", "in_use")==1)   player.bounty=200;
+  }
 
   level.ShowCreditShop = true;
-  foreach(player in level.players)
-  //player thread doSetup();
+
 
   wait getdvarInt("scr_zmod_intermission_time");
   level.ShowCreditShop = false;

@@ -201,6 +201,8 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 
 	if(self getZItemVal("riotshield", "in_use")==1){
 		self giveWeapon("riotshield_mp", 0, false);
+		wait 0.2;
+		self switchToWeapon("riotshield_mp");
 	}
 
 	if(self getZItemVal("wallhack", "in_use")==1){
