@@ -230,7 +230,7 @@ doBetterdevils(){
 			self statCashSub(self getHItemVal("betterdevils", "cost"));
 			self setHItemVal("betterdevils", "in_use", 1);
 			prevweapon = self GetCurrentWeapon(); 							//remembers what weapon player previously had
-			hasAnaconda = self HasWeapon("coltanaconda_mp");
+			self.hasAnaconda = self HasWeapon("coltanaconda_mp");
 			anacondaAmmoStock = self getWeaponAmmoStock("coltanaconda_mp"); //keeps track of normal .44 ammo
 			anacondaAmmoClip = self getWeaponAmmoClip("coltanaconda_mp");
 			self giveWeapon("coltanaconda_mp", 0, true); 					//gives player a .44
@@ -252,11 +252,12 @@ doBetterdevils(){
 			}
 			self setHItemVal("betterdevils", "in_use", 0);
 			self takeWeapon("coltanaconda_mp");
-			if(hasAnaconda){
+			if(self.hasAnaconda){
 				self giveWeapon("coltanaconda_mp");								//if player previously had a .44, gives it back to him
 				self setWeaponAmmoClip("coltanaconda_mp", anacondaAmmoClip);
 				self setWeaponAmmoStock("coltanaconda_mp", anacondaAmmoStock);
 			}
+			self.hasAnaconda=false;
 			self SwitchToWeapon(prevweapon);
 			wait 0.2;
 		}
@@ -574,16 +575,20 @@ exchangeWeapon(weaponclass){
 			if(self.bounty >= self getHItemVal(weaponclass, "cost")){
 				self statCashSub(self getHItemVal(weaponclass, "cost"));
 				rand = randomInt(weaponClassArray.size); 						//number representing index of weapon in weaponClassArray
-				randWeapon = weaponClassArray[rand];
-																				//makes sure to not give a weapon which the player already has
-				while(isSubStr(self getWeaponsListPrimaries()[0], randWeapon) || isSubStr(self getWeaponsListPrimaries()[1], randWeapon) || isSubStr(self getWeaponsListPrimaries()[2], randWeapon)){
-					rand = (rand+1)%weaponClassArray.size;
+				randWeapon = weaponClassArray[rand];								//makes sure to not give a weapon which the player already has
+				hasWeapon=true;
+				while(hasWeapon){
+					hasWeapon=false;
 					randWeapon = weaponClassArray[rand];
+					foreach(weapon in self getWeaponsListPrimaries()){
+						if(isSubStr(weapon, randWeapon)) hasWeapon=true;
+					}
+					rand = (rand+1)%weaponClassArray.size;
 				}
-				randWeapon = weaponClassArray[rand];
 				self setHItemVal(weaponclass, "in_use", 1);
 				self setHItemVal(weaponclass, "print_text", "text2");
-				self takeWeapon(self getCurrentWeapon());
+				self iPrintlnBold(self getNumberOfWeapons());
+				if(self getNumberOfWeapons()>2) self takeWeapon(self getCurrentWeapon());
 				self giveWeapon(randWeapon + "_mp", 0, true); 					//gives player the weapon
 				self GiveMaxAmmo(randWeapon + "_mp"); 							//gives full ammo for new weapon
 				if(self getHItemVal("extendedmags", "in_use")==1){ 				//makes sure to give extended mags to new gun if xmags were acquired before
@@ -713,4 +718,13 @@ vector_scal(vec, scale)
 {
   vec = (vec[0] * scale, vec[1] * scale, vec[2] * scale);
   return vec;
+}
+
+getNumberOfWeapons(){
+	numberOfWeapons = 0;
+	foreach(weapon in self getWeaponsListPrimaries()){
+		if(!isWeaponSpecial(weapon)) numberOfWeapons++;
+	}
+	if(self.hasAnaconda) numberOfWeapons++;
+	return numberOfWeapons;
 }

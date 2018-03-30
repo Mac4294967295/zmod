@@ -8,6 +8,7 @@ doSpawn(){
 //  self iPrintlnBold("dospawn");
   //self notify("death");
   self.menu=0;
+  self.hasAnaconda=false; //is true when player had the .44 Magnum  before he bought better devils
   self.grenades=6;
   self.isRepairing=false;
   //self iPrintLnBold(self.team);
@@ -81,11 +82,11 @@ doHumanSetup(){
 	self.randomhand = randomInt(level.hand.size);
   self takeAllWeapons();
 	self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
-	self giveWeapon(level.shot[self.randomshot] + "_mp", 0, false);
-	self giveWeapon(level.hand[self.randomhand] + "_mp", 0, false);
+	//self giveWeapon(level.shot[self.randomshot] + "_mp", 0, false);
+//	self giveWeapon(level.hand[self.randomhand] + "_mp", 0, false);
 	self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
-	self GiveMaxAmmo(level.shot[self.randomshot] + "_mp");
-	self GiveMaxAmmo(level.hand[self.randomhand] + "_mp");
+//	self GiveMaxAmmo(level.shot[self.randomshot] + "_mp");
+//	self GiveMaxAmmo(level.hand[self.randomhand] + "_mp");
   self SetOffhandPrimaryClass( "frag" );
   self _giveWeapon("frag_grenade_mp", 1);
   self thread monitorGrenades();
@@ -183,7 +184,8 @@ monitorGrenades(){
 }
 
 forceSpawn(){
-  wait 4;
+  self endon("spawned_player");
+  //wait 4;
   self notify("spawned_player");
 }
 /*
