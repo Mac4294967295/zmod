@@ -2,7 +2,7 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_shop_menu;
 health(){
-	if(self getZItemVal("health", "in_use") < 18){ 																	//max health threshold
+	if(self.maxhealth < 1000){ 																	//max health threshold
 		if(self.bounty >= self getZItemVal("health", "cost")){ 								//check if enough cash
 			self setZItemVal("health", "in_use", self getZItemVal("health", "in_use")+1); 	//signals how much health has been acquired
 			self statMaxHealthAdd(50); 														//adds 50 health (max & current)
@@ -124,6 +124,7 @@ blastshield(){
 			self maps\mp\perks\_perkfunctions::toggleBlastShield(false);
 			self maps\mp\perks\_perks::givePerk("specialty_blastshield");
 			self maps\mp\perks\_perkfunctions::toggleBlastShield(true);
+			self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
 			self setZItemVal("blastshield", "print_text", "text2");
 			self iPrintlnBold("^2Bought Blast Shield!");
 		}else self iPrintlnBold("^1Not Enough ^3Cash");
@@ -145,7 +146,7 @@ zriotshield(){
 
 giveZUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
 
-	self.maxhealth = 100+self getZItemVal("health", "in_use")*50;
+	self.maxhealth = 200+self getZItemVal("health", "in_use")*50;
 	self.health = self.maxhealth;
 	self notify("HEALTH");
 
@@ -172,6 +173,7 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 	if (self getZItemVal("blastshield", "in_use")==1)
 	{
 		self maps\mp\perks\_perks::givePerk("specialty_blastshield");
+		self maps\mp\perks\_perkfunctions::toggleBlastShield(self _hasPerk("_specialty_blastshield"));
 	}
 
 	if(self getZItemVal("throwingknife", "in_use")>0)
