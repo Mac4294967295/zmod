@@ -115,6 +115,7 @@ initializeItemFuncArray(){
 
 	level.HFuncArray[8][0]=::betterdevils;
 	level.HFuncArray[8][1]=::grimreaper;
+	level.HFuncArray[8][2]=::grenade;
 }
 /*
 resets all the "in_use" variables of the items
@@ -223,6 +224,7 @@ initializeHMenu(){
 
 	initHShopItem("betterdevils", 500, 8, 0, "Buy Better Devils - ", "");
 	initHShopItem("grimreaper", 500, 8, 1, "Buy Grimreaper - ", "");
+	initHShopItem("grenade", 150, 8, 2, "Unlock Explosives - ", "Swap Explosive");
 }
 getZItemVal(item_name, var){
 	return self.ZMenu[item_name][var];

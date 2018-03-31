@@ -18,7 +18,7 @@ onPlayerConnect()
     player.wasAlpha = 0;
     player.wasSurvivor = 0;
     //player.credits = player getCreditsPersistent();
-    player.credits = 50000;
+    //player.credits = 50000;
     player iniButtons();
     player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
@@ -614,14 +614,10 @@ weaponInit()
   level.weapname["m21"] = "M21 EBR";
 
   level.explosives = [];
-  level.explosives[0] = "frag";
-  level.weapname["frag"] = "FRAG";
+  level.explosives[0] = "frag_grenade";
   level.explosives[1] = "semtex";
-  level.weapname["semtex"] = "SEMTEX";
   level.explosives[2] = "claymore";
-  level.weapname["claymore"] = "CLAYMORE";
   level.explosives[3] = "c4";
-  level.weapname["c4"] = "C4 CHARGE";
 
   level.weapname["riotshield"] = "Riotshield";
 

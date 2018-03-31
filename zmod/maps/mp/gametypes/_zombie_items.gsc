@@ -75,7 +75,7 @@ movespeed(){
 			if(self.bounty >= self getZItemVal("movespeed", "cost")){
 				statCashSub(self getZItemVal("movespeed", "cost"));
 				self setZItemVal("movespeed", "in_use", getZItemVal("movespeed", "in_use")+1);
-				self.moveSpeedScaler += 0.1;
+				self.moveSpeedScaler += 0.05;
 				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 				self iPrintlnBold("^2Speed Bought!");
 				if(self getZItemVal("movespeed", "in_use")==5){
@@ -151,7 +151,7 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 	self notify("HEALTH");
 
 	if(self getZItemVal("movespeed", "in_use")>0){
-		self.moveSpeedScaler = 1.0+self getZItemVal("movespeed", "in_use")*0.1;
+		self.moveSpeedScaler = 1.0+self getZItemVal("movespeed", "in_use")*0.05;
 		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 	}else{
 		self.moveSpeedScaler = 1;
