@@ -154,6 +154,10 @@ GetModifiedDamage(iDamage, sWeapon, sHitLoc)
 		case "left_foot":
 			damageMultiplier = 0.3;
 			break;
+		
+		case "none":
+			damageMultiplier = 1;
+			break;
 			
 		default:
 			damageMultiplier = 0;
