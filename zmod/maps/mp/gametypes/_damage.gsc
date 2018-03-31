@@ -1055,6 +1055,9 @@ giveRecentShieldXP()
 Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime )
 {
 	iprintln("iDamage Prev: " + iDamage);
+	//iprintln("WeaponClass : " + getWeaponClass(sWeapon));
+	iprintln("WeaponName : " + sWeapon);
+	iprintln("Hitloc : " + sHitloc);
 	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedDamage(iDamage, sWeapon, sHitLoc);
 	iprintln("iDamage After: " + iDamage);
 	
@@ -1477,7 +1480,7 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 
 		victim incPlayerStat( "damagetaken", iDamage );
 	}*/
-
+	iprintlnbold("Victim HP: " + victim.health);
 	prof_end( "PlayerDamage log" );
 }
 

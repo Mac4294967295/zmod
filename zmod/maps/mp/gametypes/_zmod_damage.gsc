@@ -3,16 +3,96 @@
 
 GetModifiedDamage(iDamage, sWeapon, sHitLoc)
 {
-	damageMultiplier = 1;
+	//Killstreaks
+	switch(sWeapon)
+	{
+		case "ac130_105mm_mp":
+			return int(iDamage * 0.6);
+			
+		case "ac130_40mm_mp":
+			return int(iDamage * 0.8);
+
+		case "ac130_25mm_mp":
+			return int(iDamage * 0.2);
+			
+		case "remotemissile_projectile_mp":
+			return int(iDamage * 1);
+
+		case "cobra_player_minigun_mp":
+			return int(iDamage * 1.4);
+
+		case "sentry_minigun_mp":
+			return int(iDamage * 1.2);
+		
+		case "harrier_20mm_mp":
+			return int(iDamage * 1.2);
+		
+		case "pavelow_minigun_mp":
+			return int(iDamage * 1.4);
+			
+		default:
+			break;
+	}					
 	
+	//Player Explosives
+	switch(sWeapon)
+	{
+		case "rpg_mp":
+			if(sHitLoc == "none")
+				return int(iDamage * 3.5);
+			return int(iDamage * 1);
+
+		case "at4_mp":
+			return int(iDamage * 1);
+			
+		case "frag_grenade_mp":
+			return int(iDamage * 3);			
+			
+		case "semtex_mp":
+			return int(iDamage * 6);			
+			
+		case "claymore_mp":
+			return int(iDamage * 6);			
+
+		case "c4_mp":
+			return int(iDamage * 6);			
+			
+		default:
+			break;
+	}		
+	
+	//Sniper Balancing
+	if(getWeaponClass(sWeapon) == "weapon_sniper")
+	{
+		switch(sWeapon)
+		{
+			case "cheytac_mp":
+			iDamage = int(iDamage * 1.5);
+			break;	
+			
+			case "barrett_mp":
+			iDamage = int(iDamage * 1.3);
+			break;
+			
+			case "wa2000_mp":
+			iDamage = int(iDamage * 1.3);
+			break;	
+
+			case "m21_mp":
+			iDamage = int(iDamage * 1);
+			break;	
+		}
+	}
+	
+	//Hitlocation Mulipliers for Player Weapons
 	switch( sHitLoc )
 	{
 		case "helmet":
-			damageMultiplier = 1.6;
+			damageMultiplier = 1.5;
 			break;
 		
 		case "head":
-			damageMultiplier = 1.6;
+			damageMultiplier = 1.5;
 			break;
 			
 		case "neck":
@@ -24,7 +104,7 @@ GetModifiedDamage(iDamage, sWeapon, sHitLoc)
 			break;
 			
 		case "torso_lower":
-			damageMultiplier = 0.9;
+			damageMultiplier = 1.1;
 			break;
 			
 		case "right_arm_upper":
@@ -49,10 +129,6 @@ GetModifiedDamage(iDamage, sWeapon, sHitLoc)
 			
 		case "left_hand":
 			damageMultiplier = 0.3;
-			break;
-			
-		case "gun":
-			damageMultiplier = 0;
 			break;
 			
 		case "right_leg_upper":
@@ -80,32 +156,32 @@ GetModifiedDamage(iDamage, sWeapon, sHitLoc)
 			break;
 			
 		default:
-			damageMultiplier = 1;
+			damageMultiplier = 0;
 			break;
 	}
 
 
-	//mp/statsTable.csv
+	//WeaponClass Table: mp/statsTable.csv
+	//WeaponClass Multipliers
 	switch( getWeaponClass(sWeapon))
 	{
 		case "weapon_projectile":
-			damageMultiplier = damageMultiplier * 3;
 			break;	
 			
 		case "weapon_pistol":
-			damageMultiplier = damageMultiplier * 1.1;
+			damageMultiplier = damageMultiplier * 1;
 			break;			
 		
 		case "weapon_machine_pistol":
-			damageMultiplier = damageMultiplier * 1.1;
+			damageMultiplier = damageMultiplier * 1;
 			break;	
 			
 		case "weapon_shotgun":
-			damageMultiplier = damageMultiplier * 1;
+			damageMultiplier = damageMultiplier * 0.9;
 			break;
 
 		case "weapon_assault":
-			damageMultiplier = damageMultiplier * 1.2;
+			damageMultiplier = damageMultiplier * 1.1;
 			break;
 
 		case "weapon_lmg":
@@ -113,21 +189,18 @@ GetModifiedDamage(iDamage, sWeapon, sHitLoc)
 			break;
 			
 		case "weapon_sniper":
-			damageMultiplier = damageMultiplier * 2.2;
+			damageMultiplier = damageMultiplier * 1.2;
 			break;			
 
 		case "weapon_grenade":
-			damageMultiplier = damageMultiplier * 3;
 			break;				
 
 		case "weapon_explosive":
-			damageMultiplier = damageMultiplier * 3;
 			break;				
 				
 		default: 
 			break;
 	}
-
 	
 	return int(iDamage * damageMultiplier);
 }
