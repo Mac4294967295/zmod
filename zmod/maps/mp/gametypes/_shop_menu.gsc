@@ -183,7 +183,7 @@ initializeZMenu(){
 	initZShopItem("commando", 200, 2, 2, "Buy Commando - ", "^1Commando activated");
 
 	initZShopItem("blastshield", 300, 3, 0, "Buy Blastshield - ", "^1Equip/Unequip Blastshield");
-	initZShopItem("riotshield", 300, 3, 1, "Buy Riotshield - ", "^1 Riotshield equipped");
+	initZShopItem("riotshield", 150, 3, 1, "Buy Riotshield - ", "^1 Riotshield equipped");
 	initZShopItem("suicide", "", 3, 2, "Suicide", "");
 }
 initializeHMenu(){

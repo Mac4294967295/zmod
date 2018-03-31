@@ -241,12 +241,14 @@ doBetterdevils(){
 			while(ammoCount>0){ 																						//tracks amount of shots fired
 				self waittill ( "weapon_fired" );
 				if(self GetCurrentWeapon()=="coltanaconda_mp"){ 														//makes sure player shot the .44 and not another gun
-					forward = self getTagOrigin("j_head");
-					end = self thread vector_scal(anglestoforward(self getPlayerAngles()),1000000);
-					explosionLocation = BulletTrace( forward, end, 0, self )[ "position" ]; 							//tracks the explosion exposion should happen
-					level.chopper_fx["explode"]["small"] = loadfx ("explosions/helicopter_explosion_secondary_small"); 	//creates a chopper explosion animation
-					playfx(level.chopper_fx["explode"]["small"], explosionLocation);
-					RadiusDamage( explosionLocation, 110, 1000, 200, self );												//specifies the radius, max damage, min damage, attacker
+
+
+					forward = self getTagOrigin("tag_weapon_left");
+					end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
+					location = BulletTrace( forward, end, true, self )[ "position" ]; 							//tracks the explosion exposion should happen
+					  	//creates a chopper explosion animation
+					playfx(loadfx ("explosions/helicopter_explosion_secondary_small"), location);
+					RadiusDamage( location, 110, 1000, 200, self );												//specifies the radius, max damage, min damage, attacker
 					ammoCount -= 1;
 				}
 			}

@@ -201,11 +201,8 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 		break;
 	}
 
-	if(self getZItemVal("riotshield", "in_use")==1){
-		self giveWeapon("riotshield_mp", 0, false);
-		wait 0.2;
-		self switchToWeapon("riotshield_mp");
-	}
+	self setZItemVal("riotshield", "in_use", 0);
+	self setZItemVal("riotshield", "print_text", "text1");
 
 	if(self getZItemVal("wallhack", "in_use")==1){
 		self ThermalVisionFOFOverlayOn();
