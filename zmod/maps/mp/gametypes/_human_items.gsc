@@ -11,6 +11,7 @@ ammo(){
 			}
 		}
 		self.grenades=6;
+		self _giveWeapon(level.explosives[self getHItemVal("grenade", "in_use")]+"_mp", 1);
 		//self.nades = getDefaultNadeAmmo(self.nadetype);
 	}else self iPrintlnBold("^1Not Enough ^3Cash");
 	self notify("MENUCHANGE_2");
@@ -401,7 +402,8 @@ grenade(){
 			//self iPrintlnBold(newGrenade);
 			if (self getHItemVal("grenade", "in_use")==0) self SetOffhandPrimaryClass( "frag" );
 			else self SetOffhandPrimaryClass( "other" );
-			self _giveWeapon(newGrenade, 1);
+			if(self.grenades!=0) self _giveWeapon(newGrenade, 1);
+			//else self _giveWeapon(newGrenade, 0);
 			//self setWeaponAmmoStock(newGrenade, 1);
 			//self setWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")+1]+"_mp", 1);
 		}

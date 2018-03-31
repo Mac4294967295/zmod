@@ -31,7 +31,7 @@ init()
 	level.scavenger_secondary = true;
 
 	// 0 is not valid
-	level.maxPerPlayerExplosives = max( getIntProperty( "scr_maxPerPlayerExplosives", 2 ), 1 );
+	level.maxPerPlayerExplosives = 11111;
 	level.riotShieldXPBullets = getIntProperty( "scr_riotShieldXPBullets", 15 );
 
 	switch ( getIntProperty( "perk_scavengerMode", 0 ) )

@@ -9,7 +9,7 @@ doSpawn(){
   //self notify("death");
   self.menu=0;
   self.hasAnaconda=false; //is true when player had the .44 Magnum  before he bought better devils
-  self.grenades=6;
+  self.grenades=5;
   self.isRepairing=false;
   //self iPrintLnBold(self.team);
   if(level.gameState=="playing" || level.gameState=="ending"){
@@ -175,11 +175,14 @@ monitorGrenades(){
   self endon("disconnect");
   self endon("death");
   while(self.isZombie==0){
-    if(self.grenades>0 ){
-      if(self getWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")]+"_mp")==0){
-        self.grenades--;
-        self setWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")]+"_mp", 1);
+    if(self.c4array.size==0){
+      if(self.grenades>0 ){
+        if(self getWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")]+"_mp")==0){
+          self.grenades--;
+          self setWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")]+"_mp", 1);
+        }
       }
+    wait .2;
     }
     wait .2;
   }
