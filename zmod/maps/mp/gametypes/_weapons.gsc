@@ -1112,7 +1112,8 @@ beginGrenadeTracking()
 	self endon( "disconnect" );
 	self endon( "offhand_end" );
 	self endon( "weapon_change" );
-
+	self endon ( "end_explode" );
+	
 	startTime = getTime();
 
 	self waittill( "grenade_fire", grenade, weaponName );

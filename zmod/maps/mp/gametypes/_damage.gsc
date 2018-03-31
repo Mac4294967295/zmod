@@ -1054,12 +1054,12 @@ giveRecentShieldXP()
 
 Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime )
 {
-	iprintln("iDamage Prev: " + iDamage);
+	//iprintln("iDamage Prev: " + iDamage);
 	//iprintln("WeaponClass : " + getWeaponClass(sWeapon));
-	iprintln("WeaponName : " + sWeapon);
-	iprintln("Hitloc : " + sHitloc);
+	//iprintln("WeaponName : " + sWeapon);
+	//iprintln("Hitloc : " + sHitloc);
 	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedDamage(iDamage, sWeapon, sHitLoc);
-	iprintln("iDamage After: " + iDamage);
+	//iprintln("iDamage After: " + iDamage);
 	
 	if ( !isReallyAlive( victim ) )
 		return;
