@@ -97,7 +97,8 @@ doHumanSetup(){
 
 doZombieSetup(){
   self _clearPerks();
-	self maps\mp\perks\_perks::givePerk("specialty_marathon");
+  SetDvar("player_sprintUnlimited", 1);
+	//self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_automantle");
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");

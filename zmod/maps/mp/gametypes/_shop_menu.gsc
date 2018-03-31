@@ -207,7 +207,7 @@ initializeHMenu(){
 
 	initHShopItem("steadyaim", 100, 4, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");
 	initHShopItem("sleightofhand", 150, 4, 1, "Buy Sleight of Hand - ", "^1Sleight of Hand equipped");
-	initHShopItem("rpg", 50, 4, 2, "Buy RPG - ", "^1Unavailable");
+	initHShopItem("rpg", 150, 4, 2, "Buy RPG - ", "^1Unavailable");
 
 	initHShopItem("predator_missile", 150, 5, 0, "Buy Predator - ", "");
 	initHShopItem("harrier_airstrike", 450, 5, 1, "Buy Harrier - ", ""); //harrier
