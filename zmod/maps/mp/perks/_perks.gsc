@@ -284,6 +284,7 @@ cac_modified_damage( victim, attacker, damage, meansofdeath, weapon, impactPoint
 	assert( isPlayer( victim ) );
 	assert( isDefined( victim.team ) );
 	
+	
 	damageAdd = 0;
 
 	if ( isPrimaryDamage( meansOfDeath ) )

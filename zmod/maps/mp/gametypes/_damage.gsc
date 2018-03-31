@@ -1054,12 +1054,14 @@ giveRecentShieldXP()
 
 Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime )
 {
-	//iprintln("iDamage Prev: " + iDamage);
+	
 	//iprintln("WeaponClass : " + getWeaponClass(sWeapon));
 	//iprintln("WeaponName : " + sWeapon);
-	//iprintln("Hitloc : " + sHitloc);
-	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedDamage(iDamage, sWeapon, sHitLoc);
-	//iprintln("iDamage After: " + iDamage);
+	//iprintln("sMeansOfDeath: " + sMeansOfDeath);
+	iprintln("Hitloc : " + sHitloc);
+	iprintln("iDamage Prev: " + iDamage);
+	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc);
+	iprintln("iDamage Attacker: " + iDamage);
 	
 	if ( !isReallyAlive( victim ) )
 		return;
@@ -1115,7 +1117,8 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 				shieldDamage = 25;
 			else
 				shieldDamage = maps\mp\perks\_perks::cac_modified_damage( victim, eAttacker, iDamage, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc );
-
+				//shieldDamage = maps\mp\gametypes\_zmod_damage::GetModifiedVictimDamage(victim, sMeansOfDeath, iDamage);
+			
 			victim.shieldDamage += shieldDamage;
 
 			// fix turret + shield challenge exploits
@@ -1154,9 +1157,11 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 		}
 		else if ( iDFlags & level.iDFLAGS_SHIELD_EXPLOSIVE_SPLASH )
 		{
+			/*
 			if ( isDefined( eInflictor ) && isDefined( eInflictor.stuckEnemyEntity ) && eInflictor.stuckEnemyEntity == victim ) //does enough damage to shield carrier to ensure death
 				iDamage = 101;
-
+	
+			*/
 			victim thread maps\mp\gametypes\_missions::genericChallenge( "shield_explosive_hits", 1 );
 			sHitLoc = "none";	// code ignores any damage to a "shield" bodypart.
 		}
@@ -1175,8 +1180,12 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 	}
 
 	if ( !attackerIsHittingTeammate )
-		iDamage = maps\mp\perks\_perks::cac_modified_damage( victim, eAttacker, iDamage, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc );
-
+	{
+		iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedVictimDamage(victim, sMeansOfDeath, iDamage);
+		iprintln("iDamage Victim: " + iDamage);
+		//iDamage = maps\mp\perks\_perks::cac_modified_damage( victim, eAttacker, iDamage, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc );
+	}	
+	
 	if ( !iDamage )
 		return false;
 
