@@ -117,6 +117,7 @@ doZombieSetup(){
 
 pickZombie()
 {
+  if(level.players.size==0) return;
   numberOfZombies=int(level.players.size/6)+1;
   for(i=0;i<numberOfZombies;i++){
     while(1){
@@ -175,9 +176,9 @@ monitorGrenades(){
   self endon("death");
   while(self.isZombie==0){
     if(self.grenades>0 ){
-      if(self getWeaponAmmoStock("frag_grenade_mp")==0){
+      if(self getWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")]+"_mp")==0){
         self.grenades--;
-        self setWeaponAmmoStock("frag_grenade_mp", 1);
+        self setWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")]+"_mp", 1);
       }
     }
     wait .2;

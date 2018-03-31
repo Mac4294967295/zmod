@@ -385,6 +385,28 @@ artillery(){
 	}
 }
 
+grenade(){
+	if(self getHItemVal("grenade", "print_text")=="text1"){
+			if(self.bounty >= self getHItemVal("greande", "cost")){
+				//self setHItemVal("grenade", "in_use", 1);
+				self statCashSub(self getHItemVal("grenade", "cost"));
+
+
+				self setHItemVal("grenade", "print_text", "text2");
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
+		}else{
+			self takeWeapon(level.explosives[self getHItemVal("grenade", "in_use")]+"_mp");
+			self setHItemVal("grenade", "in_use", (self getHItemVal("grenade", "in_use")+1)%level.explosives.size);
+			newGrenade = level.explosives[self getHItemVal("grenade", "in_use")]+"_mp";
+			//self iPrintlnBold(newGrenade);
+			if (self getHItemVal("grenade", "in_use")==0) self SetOffhandPrimaryClass( "frag" );
+			else self SetOffhandPrimaryClass( "other" );
+			self _giveWeapon(newGrenade, 1);
+			//self setWeaponAmmoStock(newGrenade, 1);
+			//self setWeaponAmmoStock(level.explosives[self  getHItemVal("grenade", "in_use")+1]+"_mp", 1);
+		}
+		self notify("MENUCHANGE_2");
+}
 /*
 Upgrades current gun with next possible sight
 */
