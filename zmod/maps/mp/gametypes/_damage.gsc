@@ -1060,7 +1060,7 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 	//iprintln("sMeansOfDeath: " + sMeansOfDeath);
 	iprintln("Hitloc : " + sHitloc);
 	iprintln("iDamage Prev: " + iDamage);
-	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc);
+	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc, sMeansOfDeath);
 	iprintln("iDamage Attacker: " + iDamage);
 	
 	if ( !isReallyAlive( victim ) )

@@ -1,8 +1,14 @@
 #include maps\mp\_utility;
 
 //Returns the modified base damage of a weapon
-GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc)
+GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc, sMeansOfDeath)
 {
+	//Melee & Throwing Knife
+	if(sMeansOfDeath == "MOD_MELEE" || sMeansOfDeath == "MOD_IMPACT")
+	{
+		return iDamage;
+	}
+	
 	//Killstreaks
 	switch(sWeapon)
 	{
