@@ -137,30 +137,71 @@ repair(){
 	}
 }
 
-steadyaim(){
-	if(self getHItemVal("steadyaim", "in_use")==0){
-			if(self.bounty >= self getHItemVal("steadyaim", "cost")){
-				self setHItemVal("steadyaim", "in_use", 1);
-				self statCashSub(self getHItemVal("steadyaim", "cost"));
-				self maps\mp\perks\_perks::givePerk("specialty_bulletaccuracy");
-				self maps\mp\perks\_perks::givePerk("specialty_holdbreath");
-				self setHItemVal("steadyaim", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
+recoilcontrol(){
+	if(self getHItemVal("recoilcontrol", "in_use")<3){
+			if(self.bounty >= self getHItemVal("recoilcontrol", "cost")){
+				self statCashSub(self getHItemVal("recoilcontrol", "cost"));
+				switch(self getHItemVal("recoilcontrol", "in_use")){
+					case 0:
+						self _setperk("specialty_bulletaccuracy");
+						self SetClientDvar("perk_weapSpreadMultiplier", "0.8");
+						self player_recoilScaleOn(1.0);
+						self setHItemVal("recoilcontrol", "in_use", 1);
+						self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (1/3) - ");
+					break;
+					case 1:
+						self SetClientDvar("perk_weapSpreadMultiplier", "0.6");
+						self player_recoilScaleOn(0.01);
+						self setHItemVal("recoilcontrol", "in_use", 2);
+						self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (2/3) - ");
+					break;
+					case 2:
+						self SetClientDvar("perk_weapSpreadMultiplier", "0.4");
+						self player_recoilScaleOn(0.99);
+						self setHItemVal("recoilcontrol", "in_use", 3);
+						self setHItemVal("recoilcontrol", "print_text", "text2");
+					break;
+					default:
+					break;
+				}
+			}else self iPrintlnBold("^1Not Enough ^3Cash");;
 		}
-		self notify("MENUCHANGE_2");
 }
 
-sleightofhand(){
-	if(self getHItemVal("sleightofhand", "in_use")==0){
-			if(self.bounty >= self getHItemVal("sleightofhand", "cost")){
-				self setHItemVal("sleightofhand", "in_use", 1);
-				self statCashSub(self getHItemVal("sleightofhand", "cost"));
-				self maps\mp\perks\_perks::givePerk("specialty_fastreload");
-				self maps\mp\perks\_perks::givePerk("specialty_quickdraw");
-				self setHItemVal("sleightofhand", "print_text", "text2");
-			}else self iPrintlnBold("^1Not Enough ^3Cash");
+weaponhandling(){
+	if(self getHItemVal("weaponhandling", "in_use")<3){
+			if(self.bounty >= self getHItemVal("weaponhandling", "cost")){
+				self statCashSub(self getHItemVal("weaponhandling", "cost"));
+				switch(self getHItemVal("weaponhandling", "in_use")){
+					case 0:
+						self _setperk("specialty_holdbreath");
+						self _setperk("specialty_fastreload");
+						self _setperk("specialty_quickdraw");
+						self SetClientDvar("perk_quickDrawSpeedScale", "1.4");
+						self SetClientDvar("perk_weapReloadMultiplier", "0.8");
+						self SetClientDvar("perk_improvedExtraBreath", "2");
+						self setHItemVal("weaponhandling", "in_use", 1);
+						self setHItemVal("weaponhandling", "text1", "Upgrade Weapon Handling (1/3) - ");
+					break;
+					case 1:
+						self SetClientDvar("perk_quickDrawSpeedScale", "1.8");
+						self SetClientDvar("perk_weapReloadMultiplier", "0.6");
+						self SetClientDvar("perk_improvedExtraBreath", "4");
+						self setHItemVal("weaponhandling", "in_use", 2);
+						self setHItemVal("weaponhandling", "text1", "Upgrade Weapon Handling (2/3) - ");
+					break;
+					case 2:
+						self SetClientDvar("perk_quickDrawSpeedScale", "2.2");
+						self SetClientDvar("perk_weapReloadMultiplier", "0.4");
+						self SetClientDvar("perk_improvedExtraBreath", "6");
+						self setHItemVal("weaponhandling", "in_use", 3);
+						self setHItemVal("weaponhandling", "print_text", "text2");
+					break;
+					default:
+					break;
+				}
+			}else self iPrintlnBold("^1Not Enough ^3Cash");;
 		}
-		self notify("MENUCHANGE_2");
 }
 
 rpg(){

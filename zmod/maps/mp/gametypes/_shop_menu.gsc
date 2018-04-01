@@ -97,8 +97,8 @@ initializeItemFuncArray(){
 	level.HFuncArray[3][1]=::akimbo;
 	level.HFuncArray[3][2]=::repair;
 
-	level.HFuncArray[4][0]=::steadyaim;
-	level.HFuncArray[4][1]=::sleightofhand;
+	level.HFuncArray[4][0]=::recoilcontrol;
+	level.HFuncArray[4][1]=::weaponhandling;
 	level.HFuncArray[4][2]=::rpg;
 
 	level.HFuncArray[5][0]=::predator_missile;
@@ -206,8 +206,8 @@ initializeHMenu(){
 	initHShopItem("akimbo", 50, 3, 1, "Buy Akimbo - ", "^1Akimbo unavailable");
 	initHShopItem("repair", 250, 3, 2, "Buy Repair Tool  - ", "^1Unavailable");
 
-	initHShopItem("steadyaim", 100, 4, 0, "Buy Steady Aim - ", "^1Steady Aim equipped");
-	initHShopItem("sleightofhand", 150, 4, 1, "Buy Sleight of Hand - ", "^1Sleight of Hand equipped");
+	initHShopItem("recoilcontrol", 100, 4, 0, "Upgrade Recoil Control (0/3) - ", "^1Recoil Control (3/3)");
+	initHShopItem("weaponhandling", 100, 4, 1, "Upgrade Weapon Handling (0/3) - ", "^1Weapon Handling (3/3)");
 	initHShopItem("rpg", 150, 4, 2, "Buy RPG - ", "^1Unavailable");
 
 	initHShopItem("predator_missile", 150, 5, 0, "Buy Predator - ", "");
