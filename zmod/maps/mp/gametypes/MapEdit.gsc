@@ -717,7 +717,7 @@ LoadMapEdit()
 			CreateBlocks((653, -2180, -9), (0, 0, -90));
 			CreateBlocks((653, -2210, -20), (0, 0, -90));
 			CreateBlocks((865, -1933, 114), (0, 0, 90));
-			CreateBlocks((798, -1564, 89), (0, 0, 0));	
+			CreateBlocks((798, -1564, 89), (0, 0, 0));
 			break;
 
 		case "mp_highrise":	/** HighRise **/
@@ -729,7 +729,36 @@ LoadMapEdit()
 			break;
 
 		case "mp_storm":	/** Storm **/
-			//no map
+		CreateGrids((3520, -790, 460), (3730, -933, 460), (0, 0, 0));
+		CreateGrids((3142, -935, 460), (3200, -1015, 460), (0, 0, 0));
+
+		CreateBlocks((3130, -885, 611), (0, -90, 0));
+		CreateBlocks((3130, -942, 611), (0, -90, 0));
+		CreateBlocks((3220, -1413, 481), (0, 0, 0));
+		CreateBlocks((3220, -1451, 481), (0, 0, 0));
+
+		CreateBlocks((3490, -1413, 481), (0, 0, 0));
+		CreateBlocks((3490, -1451, 481), (0, 0, 0));
+
+		CreateBlocks((3762, -1413, 481), (0, 0, 0));
+		CreateBlocks((3762, -1451, 481), (0, 0, 0));
+
+		CreateBlocks((4074, -1413, 481), (0, 0, 0));
+		CreateBlocks((4074, -1451, 481), (0, 0, 0));
+
+		CreateWalls((3730, -967, 460), (3525, -967, 550));
+
+		CreateElevator((1527, -600, -66), (2578, -747, 624), (0, 0, 0));
+
+
+		CreateDoors((-2699, -3215, 220), (-2699, -3301, 220), (90, 0, 0), 3, 1, 20, 80);
+		CreateElevator((-836, 463, -7.6), (-2398, -3406, 50), (0, 180, 0));
+		CreateElevator((2627, -1151, -64), (49, -59, 0), (0, 140, 0));
+		CreateElevator((-2176, -3151, 550), (49, -59, 0), (0, 140, 0));
+
+		CreateWalls((-2615, -3210, 630), (-2618, -2985, 629));
+		CreateBlocks((-2605, -2940, 584), (0, -90, 0));
+		CreateBlocks((-2592, -3215, 584), (0, -90, 0));
 			break;
 
 		case "mp_invasion":	/** Invasion **/
@@ -842,7 +871,21 @@ LoadMapEdit()
 			break;
 
 		case "mp_underpass":	 /** Underpass **/
-			//high potential, shit map edit
+		CreateBlocks((1020, 2763, 489),(0, 0, 0));
+		CreateBlocks((1020, 2778, 504),(0, 0, 0));
+		CreateBlocks((1020, 2793, 519),(0, 0, 0));
+		CreateBlocks((1020, 2808, 534),(0, 0, 0));
+		CreateBlocks((1020, 2823, 549),(0, 0, 0));
+		CreateBlocks((1020, 2838, 564),(0, 0, 0));
+		CreateBlocks((1020, 2853, 579),(0, 0, 0));
+		CreateBlocks((1020, 2868, 594),(0, 0, 0));
+		CreateElevator((1160, 2865, 624),(-1165, 2897, 424), (0, -90, 0));
+		CreateElevator((-3310, 541, 414),(-2907, -422, 2138), (0, 59, 0));
+		CreateElevator((-3326, 1865, 415),(1560, 1266, 876), (0, -106, 0));
+		CreateDoors((-2521, 1859, 460), (-2521, 1859, 400), (90, 90, -90), 5, 2, 20, 120);
+		CreateDoors((-2180, 549, 460), (-2180, 549, 400), (90, 90, -90), 5, 2, 20, 120);
+		CreateRamps((1129, 948, 935),(1126, 656, 995));
+		CreateBlocks((1129, 948, 940),(0, 0, 0));
 			break;
 
 		case "mp_abandon":	/** Carnaval **/
