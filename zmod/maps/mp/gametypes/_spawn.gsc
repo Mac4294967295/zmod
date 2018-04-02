@@ -38,7 +38,7 @@ doSpawn(){
     if (self.team == "axis" || self.team == "spectator"){
       self notify("menuresponse", game["menu_team"], "allies");
       wait .1;
-      self notify("menuresponse", "changeclass", "class1");
+      self notify("menuresponse", "changeclass", "class0");
       return;
     }
     //self.team="allies";
@@ -67,11 +67,18 @@ doSpawn(){
 doHumanSetup(){
   self thread maps\mp\gametypes\_zmod_hud::doLives();
   self _clearPerks();
+  self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (0/3) - ");
+  self _unsetperk("specialty_bulletaccuracy");
+  self SetClientDvar("perk_weapSpreadMultiplier", "1");
+  //self player_recoilScaleOn(1);
+  self _unsetperk("specialty_holdbreath");
+  self _unsetperk("specialty_fastreload");
+  self _unsetperk("specialty_quickdraw");
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
-	self maps\mp\perks\_perks::givePerk("specialty_automantle");
-	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
-	self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
-	self maps\mp\perks\_perks::givePerk("specialty_quieter");
+	//self maps\mp\perks\_perks::givePerk("specialty_automantle");
+	//self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
+	//self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
+	//self maps\mp\perks\_perks::givePerk("specialty_quieter");
   self.maxhealth = 100;
   self.randomlmg = randomInt(level.lmg.size);
 	self.randomar = randomInt(level.assault.size);

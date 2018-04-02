@@ -10,6 +10,7 @@ onPlayerConnect()
 
     level waittill( "connected", player );
     player.isZombie=0;
+    player.credits=0;
     player initializeZMenu();
     player initializeHMenu();
     player initializeCMenu();
