@@ -1058,7 +1058,8 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 	//iprintln("WeaponClass : " + getWeaponClass(sWeapon));
 	//iprintln("WeaponName : " + sWeapon);
 	//iprintln("sMeansOfDeath: " + sMeansOfDeath);
-	iprintln("Hitloc : " + sHitloc);
+	//iprintln("WeaponPlayer DMG: " + sWeapon.damage);
+	//iprintln("Hitloc : " + sHitloc);
 	iprintln("iDamage Prev: " + iDamage);
 	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc, sMeansOfDeath);
 	iprintln("iDamage Attacker: " + iDamage);
