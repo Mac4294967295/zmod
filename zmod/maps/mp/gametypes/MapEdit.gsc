@@ -224,7 +224,7 @@ CreateDoors(open, close, angle, size, height, hp, range)
 		door EnableLinkTo();
 		door LinkTo(center);
 		for(h = 1; h < height; h++){
-			door = spawn("script_model", open + ((0, 30, 0) * offset) - ((70, 0, 0) * h));
+			door = spawn("script_model", open + ((0, 30, 0) * offset) - ((83, 0, 0) * h));
 			door setModel("com_plasticcase_enemy");
 			door Solid();
 			door CloneBrushmodelToScriptmodel( level.airDropCrateCollision );
@@ -664,7 +664,60 @@ LoadMapEdit()
 			break;
 
 		case "mp_fuel2":	/** Fuel **/
-			//no map
+			//Hall
+			CreateBlocks((1160, -432, 76), (90, -90, 0));
+			CreateBlocks((1129, -432, 76), (90, -90, 0));
+			CreateBlocks((1189, -666, 164), (180, -180, 90));
+			CreateBlocks((1143, -666, 164), (180, -180, 90));
+			CreateBlocks((1035, -729, 50), (180, -180, 90));
+			CreateBlocks((1446, -317, 120), (180, 90, 90));
+			CreateBlocks((1446, -237, 120), (180, 90, 90));
+			CreateBlocks((1279, -163, 111), (180, -180, 90));
+			CreateBlocks((1126, 39, 60), (-90, 135, 135));
+			CreateBlocks((1096, 39, 60), (-90, 135, 135));
+			CreateBlocks((1039, 39, 60), (-90, 135, 135));
+			CreateBlocks((1009, 39, 60), (-90, 135, 135));
+			CreateBlocks((1126, 39, 149), (-90, 135, 135));
+			CreateBlocks((1096, 39, 149), (-90, 135, 135));
+			CreateBlocks((1039, 39, 149), (-90, 135, 135));
+			CreateBlocks((1009, 39, 149), (-90, 135, 135));
+			CreateBlocks((952, -23, 100), (0, 90, -90));
+			CreateBlocks((952, -96, 100), (0, 90, -90));
+			CreateBlocks((1198, 378, 307), (0, 90, -90));
+			CreateBlocks((1298, 424, 208), (0, -180, 90));
+			CreateBlocks((1251, 424, 208), (0, -180, 90));
+			CreateBlocks((1987, -153, -144), (90, -180, 180));
+			CreateBlocks((1987, -183, -144), (90, -180, 180));
+			CreateBlocks((1987, -213, -144), (90, -180, 180));
+			CreateBlocks((1987, -243, -144), (90, -180, 180));
+			CreateBlocks((616, -147, 320), (0, 0, 90));
+			CreateBlocks((616, 284, 300), (0, 0, 90));
+			CreateDoors((1420, -72, -220), (1600, -8, -170), (90, 135, 45), 5, 2, 40, 100);
+			//House
+			CreateBlocks((168, -1551, 107), (-90, -90, 0));
+			CreateBlocks((915, -2416, -57), (-90, -90, -90));
+			CreateBlocks((848, -1569, -212), (-90, -90, 0));
+			CreateBlocks((818, -1569, -212), (-90, -90, 0));
+			CreateBlocks((1004, -1989, -224), (0, -90, -90));
+			CreateBlocks((1004, -1989, -179), (0, -90, -90));
+			CreateBlocks((851, -1946, -203), (0, 0, -90));
+			CreateBlocks((851, -1946, -173), (0, 0, -90));
+			CreateWalls((200, -1750, -220), (345, -1810, -210));
+			CreateWalls((200, -1750, -175), (345, -1810, -165));
+			CreateWalls((345, -1810, -175), (586, -1810, -165));
+			CreateBlocks((168, -1613, -192), (0, 90, 90));
+			CreateBlocks((168, -1613, -162), (0, 90, 90));
+			CreateBlocks((396, -1660, -192), (0, 0, 90));
+			CreateBlocks((457, -1660, -133), (0, 0, 90));
+			CreateDoors((614, -1552, -85), (614, -1602, -85), (90, 0, 180), 2, 2, 40, 60);
+			CreateBlocks((600, -1681, -15), (180, 90, -90));
+			CreateBlocks((540, -1923, -22), (180, 90, 90));
+			CreateBlocks((540, -1863, -22), (180, 90, 90));
+			CreateBlocks((479, -1740, -14), (0, 0, 0));
+			CreateBlocks((653, -2180, -9), (0, 0, -90));
+			CreateBlocks((653, -2210, -20), (0, 0, -90));
+			CreateBlocks((865, -1933, 114), (0, 0, 90));
+			CreateBlocks((798, -1564, 89), (0, 0, 0));	
 			break;
 
 		case "mp_highrise":	/** HighRise **/
