@@ -97,7 +97,7 @@ initializeItemFuncArray(){
 	level.HFuncArray[3][1]=::akimbo;
 	level.HFuncArray[3][2]=::repair;
 
-	level.HFuncArray[4][0]=::recoilcontrol;
+	level.HFuncArray[4][0]=::grenade;
 	level.HFuncArray[4][1]=::weaponhandling;
 	level.HFuncArray[4][2]=::rpg;
 
@@ -115,7 +115,7 @@ initializeItemFuncArray(){
 
 	level.HFuncArray[8][0]=::betterdevils;
 	level.HFuncArray[8][1]=::grimreaper;
-	level.HFuncArray[8][2]=::grenade;
+
 }
 /*
 resets all the "in_use" variables of the items
@@ -206,7 +206,7 @@ initializeHMenu(){
 	initHShopItem("akimbo", 50, 3, 1, "Buy Akimbo - ", "^1Akimbo unavailable");
 	initHShopItem("repair", 250, 3, 2, "Buy Repair Tool  - ", "^1Unavailable");
 
-	initHShopItem("recoilcontrol", 100, 4, 0, "Upgrade Recoil Control (0/3) - ", "^1Recoil Control (3/3)");
+	initHShopItem("grenade", 150, 4, 0, "Unlock Explosives - ", "Swap Explosive");
 	initHShopItem("weaponhandling", 100, 4, 1, "Upgrade Weapon Handling (0/3) - ", "^1Weapon Handling (3/3)");
 	initHShopItem("rpg", 150, 4, 2, "Buy RPG - ", "^1Unavailable");
 
@@ -224,7 +224,6 @@ initializeHMenu(){
 
 	initHShopItem("betterdevils", 500, 8, 0, "Buy Better Devils - ", "");
 	initHShopItem("grimreaper", 500, 8, 1, "Buy Grimreaper - ", "");
-	initHShopItem("grenade", 150, 8, 2, "Unlock Explosives - ", "Swap Explosive");
 }
 getZItemVal(item_name, var){
 	return self.ZMenu[item_name][var];

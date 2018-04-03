@@ -137,43 +137,14 @@ repair(){
 	}
 }
 
-recoilcontrol(){
-	if(self getHItemVal("recoilcontrol", "in_use")<3){
-			if(self.bounty >= self getHItemVal("recoilcontrol", "cost")){
-				self statCashSub(self getHItemVal("recoilcontrol", "cost"));
-				switch(self getHItemVal("recoilcontrol", "in_use")){
-					case 0:
-						self _setperk("specialty_bulletaccuracy");
-						self SetClientDvar("perk_weapSpreadMultiplier", "0.8");
-						self player_recoilScaleOn(1.0);
-						self setHItemVal("recoilcontrol", "in_use", 1);
-						self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (1/3) - ");
-					break;
-					case 1:
-						self SetClientDvar("perk_weapSpreadMultiplier", "0.6");
-						self player_recoilScaleOn(0.01);
-						self setHItemVal("recoilcontrol", "in_use", 2);
-						self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (2/3) - ");
-					break;
-					case 2:
-						self SetClientDvar("perk_weapSpreadMultiplier", "0.4");
-						self player_recoilScaleOn(0.99);
-						self setHItemVal("recoilcontrol", "in_use", 3);
-						self setHItemVal("recoilcontrol", "print_text", "text2");
-					break;
-					default:
-					break;
-				}
-			}else self iPrintlnBold("^1Not Enough ^3Cash");;
-		}
-}
-
 weaponhandling(){
 	if(self getHItemVal("weaponhandling", "in_use")<3){
 			if(self.bounty >= self getHItemVal("weaponhandling", "cost")){
 				self statCashSub(self getHItemVal("weaponhandling", "cost"));
 				switch(self getHItemVal("weaponhandling", "in_use")){
 					case 0:
+						self _setperk("specialty_bulletaccuracy");
+						self SetClientDvar("perk_weapSpreadMultiplier", "0.8");
 						self _setperk("specialty_holdbreath");
 						self _setperk("specialty_fastreload");
 						self _setperk("specialty_quickdraw");
@@ -184,6 +155,7 @@ weaponhandling(){
 						self setHItemVal("weaponhandling", "text1", "Upgrade Weapon Handling (1/3) - ");
 					break;
 					case 1:
+						self SetClientDvar("perk_weapSpreadMultiplier", "0.6");
 						self SetClientDvar("perk_quickDrawSpeedScale", "1.8");
 						self SetClientDvar("perk_weapReloadMultiplier", "0.6");
 						self SetClientDvar("perk_improvedExtraBreath", "4");
@@ -191,6 +163,7 @@ weaponhandling(){
 						self setHItemVal("weaponhandling", "text1", "Upgrade Weapon Handling (2/3) - ");
 					break;
 					case 2:
+						self SetClientDvar("perk_weapSpreadMultiplier", "0.4");
 						self SetClientDvar("perk_quickDrawSpeedScale", "2.2");
 						self SetClientDvar("perk_weapReloadMultiplier", "0.4");
 						self SetClientDvar("perk_improvedExtraBreath", "6");
@@ -272,20 +245,17 @@ doBetterdevils(){
 			self statCashSub(self getHItemVal("betterdevils", "cost"));
 			self setHItemVal("betterdevils", "in_use", 1);
 			prevweapon = self GetCurrentWeapon(); 							//remembers what weapon player previously had
-			self.hasAnaconda = self HasWeapon("coltanaconda_mp");
-			anacondaAmmoStock = self getWeaponAmmoStock("coltanaconda_mp"); //keeps track of normal .44 ammo
-			anacondaAmmoClip = self getWeaponAmmoClip("coltanaconda_mp");
-			self giveWeapon("coltanaconda_mp", 0, true); 					//gives player a .44
-			self setWeaponAmmoClip("coltanaconda_mp", 6);
-			self setWeaponAmmoStock("coltanaconda_mp", 12);
-			self switchToWeapon("coltanaconda_mp");
+			self giveWeapon("coltanaconda_fmj_mp", 0, true); 					//gives player a .44
+			self setWeaponAmmoClip("coltanaconda_fmj_mp", 6);
+			self setWeaponAmmoStock("coltanaconda_fmj_mp", 12);
+			self switchToWeapon("coltanaconda_fmj_mp");
 			ammoCount = 18;
 			while(ammoCount>0){ 																						//tracks amount of shots fired
 				self waittill ( "weapon_fired" );
-				if(self GetCurrentWeapon()=="coltanaconda_mp"){ 														//makes sure player shot the .44 and not another gun
+				if(self GetCurrentWeapon()=="coltanaconda_fmj_mp"){ 														//makes sure player shot the .44 and not another gun
 
 
-					forward = self getTagOrigin("tag_weapon_left");
+					forward = self getTagOrigin("tag_eye");
 					end = self thread vector_Scal(anglestoforward(self getPlayerAngles()),1000000);
 					location = BulletTrace( forward, end, true, self )[ "position" ]; 							//tracks the explosion exposion should happen
 					  	//creates a chopper explosion animation
@@ -295,13 +265,7 @@ doBetterdevils(){
 				}
 			}
 			self setHItemVal("betterdevils", "in_use", 0);
-			self takeWeapon("coltanaconda_mp");
-			if(self.hasAnaconda){
-				self giveWeapon("coltanaconda_mp");								//if player previously had a .44, gives it back to him
-				self setWeaponAmmoClip("coltanaconda_mp", anacondaAmmoClip);
-				self setWeaponAmmoStock("coltanaconda_mp", anacondaAmmoStock);
-			}
-			self.hasAnaconda=false;
+			self takeWeapon("coltanaconda_fmj_mp");
 			self SwitchToWeapon(prevweapon);
 			wait 0.2;
 		}
@@ -759,7 +723,7 @@ returns true if the current weapon is a "special" weapon (betterdevils,grimreape
 */
 isWeaponSpecial(weapon){
 	return
-	((self getHItemVal("betterdevils", "in_use")!=0 && weapon=="coltanaconda_mp") ||
+	((self getHItemVal("betterdevils", "in_use")!=0 && weapon=="coltanaconda_fmj_mp") ||
 	(self getHItemVal("rpg", "in_use")!=0 && weapon=="rpg_mp") ||
 	(self getHItemVal("grimreaper", "in_use")!=0 && weapon=="at4_mp") ||
 	weapon=="riotshield_mp"||
@@ -792,6 +756,6 @@ getNumberOfWeapons(){
 	foreach(weapon in self getWeaponsListPrimaries()){
 		if(!isWeaponSpecial(weapon)) numberOfWeapons++;
 	}
-	if(self.hasAnaconda) numberOfWeapons++;
+	//if(self.hasAnaconda) numberOfWeapons++;
 	return numberOfWeapons;
 }

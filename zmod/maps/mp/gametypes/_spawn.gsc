@@ -8,7 +8,7 @@ doSpawn(){
 //  self iPrintlnBold("dospawn");
   //self notify("death");
   self.menu=0;
-  self.hasAnaconda=false; //is true when player had the .44 Magnum  before he bought better devils
+  //self.hasAnaconda=false; //is true when player had the .44 Magnum  before he bought better devils
   self.grenades=5;
   self.isRepairing=false;
   //self iPrintLnBold(self.team);
