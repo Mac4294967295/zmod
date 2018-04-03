@@ -2193,7 +2193,8 @@ endGame( winner, endReasonText, nukeDetonated )
 	}
 
 	processLobbyData();
-
+	vote\_vote_menu::BeginVoteForMatch();
+	
 	wait ( 1.0 );
 
 	if ( matchMakingGame() )
