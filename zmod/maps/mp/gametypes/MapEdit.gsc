@@ -203,7 +203,7 @@ ElevatorThink(enter, exit, angle)
 	{
 		foreach(player in level.players)
 		{
-			if(Distance(enter, player.origin) <= 50){
+			if(Distance(enter, player.origin) <= 35){
 				player SetOrigin(exit);
 				player SetPlayerAngles(angle);
 			}
