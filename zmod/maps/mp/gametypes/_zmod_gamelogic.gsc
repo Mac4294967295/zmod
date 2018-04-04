@@ -48,7 +48,7 @@ doInit()
   level.ShowCreditShop = false;
   level weaponInit();
   level maps\mp\gametypes\_zmod_hud::CreateServerHUD();
-  level.infotext setText("^2Cycle Menu: ^3[{+actionslot 3}]^7/^3[{+actionslot 1}]");
+  level.infotext setText("Cycle Menu: [{+actionslot 3}]/[{+actionslot 1}]");
   level thread OverRider();
   maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
   level.mapwait = 0;
