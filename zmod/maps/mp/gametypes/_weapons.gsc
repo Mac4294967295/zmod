@@ -598,6 +598,8 @@ mayDropWeapon( weapon )
 
 dropWeaponForDeath( attacker )
 {
+	return;
+	/*
 	weapon = self.lastDroppableWeapon;
 
 	if ( isdefined( self.droppedDeathWeapon ) )
@@ -698,6 +700,7 @@ dropWeaponForDeath( attacker )
 
 	if( detach_model == self.tag_stowed_hip )
 		self detach_hip_weapon();
+		*/
 }
 
 
@@ -1113,7 +1116,7 @@ beginGrenadeTracking()
 	self endon( "offhand_end" );
 	self endon( "weapon_change" );
 	self endon ( "end_explode" );
-	
+
 	startTime = getTime();
 
 	self waittill( "grenade_fire", grenade, weaponName );
