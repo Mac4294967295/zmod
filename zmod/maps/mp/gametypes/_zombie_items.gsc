@@ -71,7 +71,7 @@ ninja(){
 }
 
 movespeed(){
-	if(self getZItemVal("movespeed", "in_use")<5){ //allows a max of 5 movespeed upgrades
+	if(self getZItemVal("movespeed", "in_use")<3){ //allows a max of 5 movespeed upgrades
 			if(self.bounty >= self getZItemVal("movespeed", "cost")){
 				statCashSub(self getZItemVal("movespeed", "cost"));
 				self setZItemVal("movespeed", "in_use", getZItemVal("movespeed", "in_use")+1);
@@ -150,13 +150,9 @@ giveZUpgrades(){ //gives the player the upgrades which he acquired through the s
 	self.health = self.maxhealth;
 	self notify("HEALTH");
 
-	if(self getZItemVal("movespeed", "in_use")>0){
-		self.moveSpeedScaler = 1.0+self getZItemVal("movespeed", "in_use")*0.05;
-		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	}else{
-		self.moveSpeedScaler = 1;
-		self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	}
+	self.moveSpeedScaler = 1.07+self getZItemVal("movespeed", "in_use")*0.05;
+	self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+
 	if(self getZItemVal("coldblood", "in_use")>0){
 		self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
 		self maps\mp\perks\_perks::givePerk("specialty_spygame");

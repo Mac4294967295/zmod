@@ -261,8 +261,6 @@ doCreditShop()
 	while(level.showcreditshop)
 	{
 		doMenuScroll(numberOfPages);
-		//self.perkztext3 setText("Lives: "+self getCItemVal("life", "in_use") );
-		//self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
 		self.menutext setText("Credit Shop " + (self.menu+1) + "/" + numberOfPages);
 		item0 = self.CArray[self.menu][0]; //returns "name" of the item
@@ -299,8 +297,6 @@ doZombieShop()
 	{
 		doMenuScroll(numberOfPages);
 		self.menutext setText("Zombie Shop " + (self.menu+1) + "/" + numberOfPages);
-		self.perkztext3 setText("Movespeed: "+self.moveSpeedScaler+"x");
-		self.perkztext3.glowColor = ( 1, 0, 0 );
 		//new way of printing the menu; uses ZArray
 		item0 = self.ZArray[self.menu][0]; //returns "name" of the item
 		item1 = self.ZArray[self.menu][1];
@@ -339,8 +335,6 @@ doHumanShop()
 	{
 		doMenuScroll(numberOfPages);
 		self.menutext setText("Human Shop " + (self.menu+1) + "/" + numberOfPages);
-		self.perkztext3 setText("");
-		self.perkztext3.glowColor = ( 1, 0, 0 );
 		item0 = self.HArray[self.menu][0]; //returns "name" of the item
 		item1 = self.HArray[self.menu][1];
 		item2 = self.HArray[self.menu][2];
@@ -555,92 +549,6 @@ CreatePlayerHUD()
   self.option3.glowColor = ( 0, 0, 1 );
   self.option3.glowAlpha = 1;
   self.option3.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  b = 50;
-  s = 15;
-  i = 0;
-  x = 40;
-
-  self.perkztext1 = NewClientHudElem( self );
-  self.perkztext1.alignX = "right";
-  self.perkztext1.alignY = "top";
-  self.perkztext1.horzAlign = "right";
-  self.perkztext1.vertAlign = "top";
-  self.perkztext1.x = x;
-  self.perkztext1.y = b + (s * i);
-  self.perkztext1.foreground = true;
-  self.perkztext1.fontScale = .45;
-  self.perkztext1.font = "hudbig";
-  self.perkztext1.alpha = a;
-  self.perkztext1.glow = 1;
-  self.perkztext1.glowColor = ( 1, 0, 0 );
-  self.perkztext1.glowAlpha = 1;
-  self.perkztext1.color = ( 1.0, 1.0, 1.0 );
-  i++;
-  self.perkztext2 = NewClientHudElem( self );
-  self.perkztext2.alignX = "right";
-  self.perkztext2.alignY = "top";
-  self.perkztext2.horzAlign = "right";
-  self.perkztext2.vertAlign = "top";
-  self.perkztext2.x = x;
-  self.perkztext2.y = b + (s * i);
-  self.perkztext2.foreground = true;
-  self.perkztext2.fontScale = .45;
-  self.perkztext2.font = "hudbig";
-  self.perkztext2.alpha = a;
-  self.perkztext2.glow = 1;
-  self.perkztext2.glowColor = ( 1, 0, 0 );
-  self.perkztext2.glowAlpha = 1;
-  self.perkztext2.color = ( 1.0, 1.0, 1.0 );
-  self.perkztext3 = NewClientHudElem( self );
-  i++;
-  self.perkztext3.alignX = "right";
-  self.perkztext3.alignY = "top";
-  self.perkztext3.horzAlign = "right";
-  self.perkztext3.vertAlign = "top";
-  self.perkztext3.x = x;
-  self.perkztext3.y = b + (s * i);
-  self.perkztext3.foreground = true;
-  self.perkztext3.fontScale = .45;
-  self.perkztext3.font = "hudbig";
-  self.perkztext3.alpha = a;
-  self.perkztext3.glow = 1;
-  self.perkztext3.glowColor = ( 1, 0, 0 );
-  self.perkztext3.glowAlpha = 1;
-  self.perkztext3.color = ( 1.0, 1.0, 1.0 );
-  i++;
-  self.perkztext4 = NewClientHudElem( self );
-  self.perkztext4.alignX = "right";
-  self.perkztext4.alignY = "top";
-  self.perkztext4.horzAlign = "right";
-  self.perkztext4.vertAlign = "top";
-  self.perkztext4.x = x;
-  self.perkztext4.y = b + (s * i);
-  self.perkztext4.foreground = true;
-  self.perkztext4.fontScale = .45;
-  self.perkztext4.font = "hudbig";
-  self.perkztext4.alpha = a;
-  self.perkztext4.glow = 1;
-  self.perkztext4.glowColor = ( 1, 0, 0 );
-  self.perkztext4.glowAlpha = 1;
-  self.perkztext4.color = ( 1.0, 1.0, 1.0 );
-  i++;
-  self.perkztext5 = NewClientHudElem( self );
-  self.perkztext5.alignX = "right";
-  self.perkztext5.alignY = "top";
-  self.perkztext5.horzAlign = "right";
-  self.perkztext5.vertAlign = "top";
-  self.perkztext5.x = x;
-  self.perkztext5.y = b + (s * i);
-  self.perkztext5.foreground = true;
-  self.perkztext5.fontScale = .45;
-  self.perkztext5.font = "hudbig";
-  self.perkztext5.alpha = a;
-  self.perkztext5.glow = 1;
-  self.perkztext5.glowColor = ( 1, 0, 0 );
-  self.perkztext5.glowAlpha = 1;
-  self.perkztext5.color = ( 1.0, 1.0, 1.0 );
 }
 
 destroyOnDeath()
@@ -661,11 +569,6 @@ destroyOnDeath()
 	  self.option3 destroy();
 	  self.scrollleft destroy();
 	  self.scrollright destroy();
-	  self.perkztext1 destroy();
-	  self.perkztext2 destroy();
-	  self.perkztext3 destroy();
-	  self.perkztext4 destroy();
-	  self.perkztext5 destroy();
 	  self.DebugHUD destroy();
 	}
 }

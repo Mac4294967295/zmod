@@ -9,7 +9,7 @@ doSpawn(){
   //self notify("death");
   self.menu=0;
   //self.hasAnaconda=false; //is true when player had the .44 Magnum  before he bought better devils
-  self.grenades=5;
+  self.grenades=3;
   self.isRepairing=false;
   //self iPrintLnBold(self.team);
   if(level.gameState=="playing" || level.gameState=="ending"){
@@ -75,6 +75,9 @@ doHumanSetup(){
   self _unsetperk("specialty_fastreload");
   self _unsetperk("specialty_quickdraw");
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
+  self maps\mp\perks\_perks::givePerk("specialty_fastsprintrecovery");
+  self.moveSpeedScaler = 1.07;
+	self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 	//self maps\mp\perks\_perks::givePerk("specialty_automantle");
 	//self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	//self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
@@ -106,10 +109,12 @@ doZombieSetup(){
   self _clearPerks();
   SetDvar("player_sprintUnlimited", 1);
 	//self maps\mp\perks\_perks::givePerk("specialty_marathon");
-	self maps\mp\perks\_perks::givePerk("specialty_automantle");
+	self maps\mp\perks\_perks::givePerk("specialty_fastsprintrecovery");
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
+  self.moveSpeedScaler = 1.07;
+  self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
   self SetOffhandPrimaryClass("");
   self setWeaponAmmoClip("frag_grenade_mp", 0);
   self setWeaponAmmoStock("frag_grenade_mp", 0);

@@ -298,23 +298,18 @@ doLastAlive()
 {
   self endon("disconnect");
   self endon("death");
-  wait 2;
-  self GiveMaxAmmo(self getCurrentWeapon());
-  if (self.commandopro == true)
-  {
-    self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
-    self maps\mp\perks\_perks::givePerk("specialty_falldamage");
+  foreach ( primary in self getWeaponsListPrimaries()){
+    if(!maps\mp\gametypes\_human_items::isWeaponSpecial(primary)){ //makes sure to not give ammo for "special" weapons
+      self GiveMaxAmmo(primary);
+    }
   }
+  self.grenades=3;
+  self _giveWeapon(level.explosives[self getHItemVal("grenade", "in_use")]+"_mp", 1);
+  self maps\mp\perks\_perks::givePerk("specialty_extendedmelee");
+  self maps\mp\perks\_perks::givePerk("specialty_falldamage");
   self thread maps\mp\gametypes\_quickmessages::quickstatements("7");
   self iPrintlnBold("^2You are ^1LAST-ALIVE! ^5SPEED BOOST ^2AND ^5FULL AMMO!");
-  self.moveSpeedScaler = 1.4;
-  for(;;)
-  {
-    self _unsetPerk("specialty_coldblooded");
-    self _unsetPerk("specialty_spygame");
-    self.perkz["coldblooded"] = 3;
-    wait .4;
-  }
+  self.moveSpeedScaler = 1.17;
 }
 
 inGameConstants()

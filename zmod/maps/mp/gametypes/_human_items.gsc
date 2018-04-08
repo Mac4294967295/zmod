@@ -10,7 +10,7 @@ ammo(){
 				self GiveMaxAmmo(primary);
 			}
 		}
-		self.grenades=6;
+		self.grenades=3;
 		self _giveWeapon(level.explosives[self getHItemVal("grenade", "in_use")]+"_mp", 1);
 		//self.nades = getDefaultNadeAmmo(self.nadetype);
 	}else self iPrintlnBold("^1Not Enough ^3Cash");
