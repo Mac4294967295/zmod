@@ -48,6 +48,7 @@ coldblood(){
 			if(self.bounty >= self getZItemVal("coldblood", "cost")){
 				self setZItemVal("coldblood", "in_use", 1);
 				self statCashSub(self getZItemVal("coldblood", "cost"));
+				self thread monitorColdblood();
 				self maps\mp\perks\_perks::givePerk("specialty_coldblooded");
 				self maps\mp\perks\_perks::givePerk("specialty_spygame");
 				self setZItemVal("coldblood", "print_text", "text2");
@@ -236,4 +237,15 @@ monitorThrowingKnife()
 		self notify("MENUCHANGE_2");
 	}
 	self setZItemVal("throwingknife", "print_text", "text1");
+}
+
+monitorColdblood(){
+	for(i=90; i>=0;i--){
+		self setZItemVal("coldblood", "text2", "^1Coldblood activated ("+i+")");
+		wait 1;
+	}
+	self setZItemVal("coldblood", "print_text", "text1");
+	self setZItemVal("coldblood", "in_use", 0);
+	_unsetPerk("specialty_coldblooded");
+	_unsetPerk("specialty_spygame");
 }

@@ -175,7 +175,7 @@ initializeZMenu(){
 	initZShopItem("wallhack", 200, 0, 1, "Buy Wallhack - ", "^1Wallhack activated");
 	initZShopItem("throwingknife", 300, 0, 2, "Buy a Throwing Knife - ", "^1Throwing Knife equipped");
 
-	initZShopItem("coldblood", 250, 1, 0, "Buy Coldblood - ", "^1Coldblood activated");
+	initZShopItem("coldblood", 150, 1, 0, "Buy Coldblood - ", "^1Coldblood activated ()");
 	initZShopItem("ninja", 100, 1, 1, "Buy Ninja - ", "^1Ninja activated");
 	initZShopItem("movespeed", 50, 1, 2, "Buy Movespeed - ", "^1Max Movespeed achieved");
 
@@ -383,11 +383,7 @@ monitorShop(){
 			self setCItemVal("cash", "print_text", "text2");
 		}
 		wait 0.5;
-		//self iPrintlnBold(self getNumberOfWeapons());
-	//	string="1";
-	//	if(string=="1") string = tableLookup( "mp/statsTable.csv", 1, 3000, 0 );
-	//	self iPrintlnBold(string);
-
+		/*Takes all weapons from zombie which Zombies cant have (i.e.: Picking up weapons from ground)*/
 		if(self getCurrentWeapon()!="usp_tactical_mp" && self getCurrentWeapon()!="riotshield_mp" && self.isZombie!=0){
 			self takeAllWeapons();
 			self giveWeapon("usp_tactical_mp", 0, false);
@@ -399,17 +395,14 @@ monitorShop(){
 				self giveWeapon("riotshield_mp", 0, false);
 			}
 		}
-		/*
-		Updates text to print for when akimbo is available/unavailable
-		*/
+		/*Updates text to print for when akimbo is available/unavailable*/
 		if(isAttachable("akimbo")) self setHItemVal("akimbo", "print_text", "text1");
 		else self setHItemVal("akimbo", "print_text", "text2");
 
 		if(self getHItemVal("sight", "in_use")==1){
 			self setHItemVal("sight", "print_text", "text2");
-		}
-		else self setHItemVal("sight", "print_text", "text1");
-
+		}else self setHItemVal("sight", "print_text", "text1");
+		/*Updates what text to print for all the weapon swapping "items", either "swap smg/ar/lmg/etc." or "exchange curr weapon for smg/ar/lmg"*/
 		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
 			foreach(weaponclass in level.weaponclasses){
 			basename = strtok(weaponclass, "_");
