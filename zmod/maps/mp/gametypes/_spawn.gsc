@@ -127,9 +127,13 @@ doZombieSetup(){
 	self maps\mp\gametypes\_zombie_items::giveZUpgrades();
 }
 
-pickZombie()
-{
-  if(level.players.size==0) return;
+pickZombie(){
+  noPlayers=false;
+  while(level.players.size==0){
+    wait 4;
+    noPlayers=true;
+  }
+  if(noPlayers) wait 10;
   numberOfZombies=int(level.players.size/6)+1;
   for(i=0;i<numberOfZombies;i++){
     while(1){
@@ -143,16 +147,18 @@ pickZombie()
         randPlayer iPrintlnBold("^2Anti-Alpha used!");
       }
     }
-  	randPlayer notify("menuresponse", game["menu_team"], "axis");
-  	wait .1;
-  	randPlayer notify("menuresponse", "changeclass", "class3");
+    randPlayer notify("menuresponse", game["menu_team"], "axis");
+    wait .1;
+    randPlayer notify("menuresponse", "changeclass", "class3");
     randPlayer.isZombie=1;
-  	level.gameState = "playing";
-  	level notify("gamestatechange");
+    level.gameState = "playing";
+    level notify("gamestatechange");
   }
-	level thread maps\mp\gametypes\_zmod_gamelogic::doPlaying();
-	level thread maps\mp\gametypes\_zmod_gamelogic::doPlayingTimer();
-	level thread maps\mp\gametypes\_zmod_gamelogic::inGameConstants();
+  level.gameState = "playing";
+  level notify("gamestatechange");
+  level thread maps\mp\gametypes\_zmod_gamelogic::doPlaying();
+  level thread maps\mp\gametypes\_zmod_gamelogic::doPlayingTimer();
+  level thread maps\mp\gametypes\_zmod_gamelogic::inGameConstants();
 }
 
 onPlayerSpawned()
@@ -205,49 +211,3 @@ forceSpawn(){
   //wait 4;
   self notify("spawned_player");
 }
-/*
-doJoinTeam()
-{
-//	if(self.CONNECT == 1)
-	//	{
-			notifyHello = spawnstruct();
-			notifyHello.titleText = "Welcome to the [UD]Ultimate Zombie Server";
-			notifyHello.notifyText = "Please read rules at bottom!";
-			notifyHello.notifyText2 = "Modified by Chaz & [UD]Funky ";
-			notifyHello.glowColor = (0.0, 0.6, 0.3);
-			if(level.gameState == "intermission" || level.gameState == "starting")
-			{
-				self notify("menuresponse", game["menu_team"], "allies");
-				self thread maps\mp\gametypes\_hud_message::notifyMessage( notifyHello );
-			}
-			if(level.gameState == "playing" || level.gameState == "ending"){
-			self notify("menuresponse", game["menu_team"], "allies");
-			}
-//		self.CONNECT = 0;
-	//	}
-}
-*/
-/*
-onJoinedTeam()
-{
-	self endon("disconnect");
-	for(;;)
-	{
-		self waittill( "joined_team" );
-    //self iPrintlnBold("onJoinedTeam");
-		self thread removeRankHUD();
-		self thread doJoinTeam();
-	}
-}
-*/
-/*
-onJoinedSpectators()
-{
-	self endon("disconnect");
-	for(;;)
-	{
-		self waittill( "joined_spectators" );
-		self thread removeRankHUD();
-	}
-}
-*/
