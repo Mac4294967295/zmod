@@ -176,227 +176,272 @@ CreateStockMapArray()
 	level.iw4xmaps["afghan"]["localised_name"] = "Afghan";
 	level.iw4xmaps["afghan"]["preview_name"] = "preview_mp_afghan";
 	level.iw4xmaps["afghan"]["zone_name"] = "mp_afghan";
+	level.iw4xmaps["afghan"]["map_credits"] = "";
 	
 	level.iw4xmaps["bailout"] = [];
 	level.iw4xmaps["bailout"]["localised_name"] = "Bailout";
 	level.iw4xmaps["bailout"]["preview_name"] = "preview_mp_complex";
 	level.iw4xmaps["bailout"]["zone_name"] = "mp_complex";
+	level.iw4xmaps["bailout"]["map_credits"] = "";
 	
 	level.iw4xmaps["bloc"] = [];
 	level.iw4xmaps["bloc"]["localised_name"] = "Bloc";
 	level.iw4xmaps["bloc"]["preview_name"] = "preview_mp_bloc";
 	level.iw4xmaps["bloc"]["zone_name"] = "mp_bloc";
+	level.iw4xmaps["bloc"]["map_credits"] = "";
 	
 	level.iw4xmaps["bog"] = [];
 	level.iw4xmaps["bog"]["localised_name"] = "Bog";
 	level.iw4xmaps["bog"]["preview_name"] = "preview_mp_bog_sh";
 	level.iw4xmaps["bog"]["zone_name"] = "mp_bog_sh";
+	level.iw4xmaps["bog"]["map_credits"] = "";	
 	
 	level.iw4xmaps["carnival"] = [];
 	level.iw4xmaps["carnival"]["localised_name"] = "Carnival";
 	level.iw4xmaps["carnival"]["preview_name"] = "preview_mp_abandon";
 	level.iw4xmaps["carnival"]["zone_name"] = "mp_abandon";
+	level.iw4xmaps["carnival"]["map_credits"] = "";	
 	
 	level.iw4xmaps["chemicalplant"] = [];
 	level.iw4xmaps["chemicalplant"]["localised_name"] = "Chemical Plant";
 	level.iw4xmaps["chemicalplant"]["preview_name"] = "preview_mp_storm_spring";
 	level.iw4xmaps["chemicalplant"]["zone_name"] = "mp_storm_spring";
+	level.iw4xmaps["chemicalplant"]["map_credits"] = "";
 	
 	level.iw4xmaps["crash"] = [];
 	level.iw4xmaps["crash"]["localised_name"] = "Crash";
 	level.iw4xmaps["crash"]["preview_name"] = "preview_mp_crash";
 	level.iw4xmaps["crash"]["zone_name"] = "mp_crash";
+	level.iw4xmaps["crash"]["map_credits"] = "";
 	
 	level.iw4xmaps["crashtropical"] = [];
 	level.iw4xmaps["crashtropical"]["localised_name"] = "Crash: Tropical";
 	level.iw4xmaps["crashtropical"]["preview_name"] = "preview_mp_crash_tropical";
 	level.iw4xmaps["crashtropical"]["zone_name"] = "mp_crash_tropical";
+	level.iw4xmaps["crashtropical"]["map_credits"] = "Mapedit created by [UD]Praetorian and [UD]Dan";
 	
 	level.iw4xmaps["crossfire"] = [];
 	level.iw4xmaps["crossfire"]["localised_name"] = "Crossfire";
 	level.iw4xmaps["crossfire"]["preview_name"] = "preview_mp_cross_fire";
 	level.iw4xmaps["crossfire"]["zone_name"] = "mp_cross_fire";
+	level.iw4xmaps["crossfire"]["map_credits"] = "";
 	
 	level.iw4xmaps["derail"] = [];
 	level.iw4xmaps["derail"]["localised_name"] = "Derail";
 	level.iw4xmaps["derail"]["preview_name"] = "preview_mp_derail";
 	level.iw4xmaps["derail"]["zone_name"] = "mp_derail";
+	level.iw4xmaps["derail"]["map_credits"] = "";
 	
 	level.iw4xmaps["estate"] = [];
 	level.iw4xmaps["estate"]["localised_name"] = "Estate";
 	level.iw4xmaps["estate"]["preview_name"] = "preview_mp_estate";
 	level.iw4xmaps["estate"]["zone_name"] = "mp_estate";
+	level.iw4xmaps["estate"]["map_credits"] = "";
 	
 	level.iw4xmaps["estatetropical"] = [];
 	level.iw4xmaps["estatetropical"]["localised_name"] = "Estate: Tropical";
 	level.iw4xmaps["estatetropical"]["preview_name"] = "preview_mp_estate_tropical";
 	level.iw4xmaps["estatetropical"]["zone_name"] = "mp_estate_tropical";
+	level.iw4xmaps["estatetropical"]["map_credits"] = "";
 	
 	level.iw4xmaps["favela"] = [];
 	level.iw4xmaps["favela"]["localised_name"] = "Favela";
 	level.iw4xmaps["favela"]["preview_name"] = "preview_mp_favela";
 	level.iw4xmaps["favela"]["zone_name"] = "mp_favela";
+	level.iw4xmaps["favela"]["map_credits"] = "";
 	
 	level.iw4xmaps["favelatropical"] = [];
 	level.iw4xmaps["favelatropical"]["localised_name"] = "Favela: Tropical";
 	level.iw4xmaps["favelatropical"]["preview_name"] = "preview_mp_fav_tropical";
 	level.iw4xmaps["favelatropical"]["zone_name"] = "mp_fav_tropical";
+	level.iw4xmaps["favelatropical"]["map_credits"] = "";
 	
 	level.iw4xmaps["firingrange"] = [];
 	level.iw4xmaps["firingrange"]["localised_name"] = "Firing Range";
 	level.iw4xmaps["firingrange"]["preview_name"] = "preview_mp_firingrange";
 	level.iw4xmaps["firingrange"]["zone_name"] = "mp_firingrange";
+	level.iw4xmaps["firingrange"]["map_credits"] = "";
 	
 	level.iw4xmaps["forgottencity"] = [];
 	level.iw4xmaps["forgottencity"]["localised_name"] = "Forgotten City";
 	level.iw4xmaps["forgottencity"]["preview_name"] = "preview_mp_bloc_sh";
 	level.iw4xmaps["forgottencity"]["zone_name"] = "mp_bloc_sh";
+	level.iw4xmaps["forgottencity"]["map_credits"] = "";
 	
 	level.iw4xmaps["freighter"] = [];
 	level.iw4xmaps["freighter"]["localised_name"] = "Freighter";
 	level.iw4xmaps["freighter"]["preview_name"] = "preview_mp_cargoship_sh";
 	level.iw4xmaps["freighter"]["zone_name"] = "mp_cargoship_sh";
+	level.iw4xmaps["freighter"]["map_credits"] = "";
 	
 	level.iw4xmaps["fuel"] = [];
 	level.iw4xmaps["fuel"]["localised_name"] = "Fuel";
 	level.iw4xmaps["fuel"]["preview_name"] = "preview_mp_fuel2";
 	level.iw4xmaps["fuel"]["zone_name"] = "mp_fuel2";
+	level.iw4xmaps["fuel"]["map_credits"] = "Mapedit created by [UD]Praetorian";
 	
 	level.iw4xmaps["highrise"] = [];
 	level.iw4xmaps["highrise"]["localised_name"] = "Highrise";
 	level.iw4xmaps["highrise"]["preview_name"] = "preview_mp_highrise";
 	level.iw4xmaps["highrise"]["zone_name"] = "mp_highrise";
+	level.iw4xmaps["highrise"]["map_credits"] = "";
 	
 	level.iw4xmaps["invasion"] = [];
 	level.iw4xmaps["invasion"]["localised_name"] = "Invasion";
 	level.iw4xmaps["invasion"]["preview_name"] = "preview_mp_invasion";
 	level.iw4xmaps["invasion"]["zone_name"] = "mp_invasion";
+	level.iw4xmaps["invasion"]["map_credits"] = "Mapedit created by [UD]Praetorian";
 	
 	level.iw4xmaps["karachi"] = [];
 	level.iw4xmaps["karachi"]["localised_name"] = "Karachi";
 	level.iw4xmaps["karachi"]["preview_name"] = "preview_mp_checkpoint";
 	level.iw4xmaps["karachi"]["zone_name"] = "mp_checkpoint";
-
+	level.iw4xmaps["karachi"]["map_credits"] = "Mapedit created by [UD]Mac";
+	
 	level.iw4xmaps["killhouse"] = [];
 	level.iw4xmaps["killhouse"]["localised_name"] = "Killhouse";
 	level.iw4xmaps["killhouse"]["preview_name"] = "preview_mp_killhouse";
 	level.iw4xmaps["killhouse"]["zone_name"] = "mp_killhouse";
+	level.iw4xmaps["killhouse"]["map_credits"] = "";
 	
 	level.iw4xmaps["nuketown"] = [];
 	level.iw4xmaps["nuketown"]["localised_name"] = "Nuketown";
 	level.iw4xmaps["nuketown"]["preview_name"] = "preview_mp_nuked";
 	level.iw4xmaps["nuketown"]["zone_name"] = "mp_nuked";
+	level.iw4xmaps["nuketown"]["map_credits"] = "";
 	
 	level.iw4xmaps["oilrig"] = [];
 	level.iw4xmaps["oilrig"]["localised_name"] = "Oil Rig";
 	level.iw4xmaps["oilrig"]["preview_name"] = "preview_oilrig";
 	level.iw4xmaps["oilrig"]["zone_name"] = "oilrig";
+	level.iw4xmaps["oilrig"]["map_credits"] = "";
 	
 	level.iw4xmaps["overgrown"] = [];
 	level.iw4xmaps["overgrown"]["localised_name"] = "Overgrown";
 	level.iw4xmaps["overgrown"]["preview_name"] = "preview_mp_overgrown";
 	level.iw4xmaps["overgrown"]["zone_name"] = "mp_overgrown";
+	level.iw4xmaps["overgrown"]["map_credits"] = "";
 	
 	level.iw4xmaps["quarry"] = [];
 	level.iw4xmaps["quarry"]["localised_name"] = "Quarry";
 	level.iw4xmaps["quarry"]["preview_name"] = "preview_mp_quarry";
 	level.iw4xmaps["quarry"]["zone_name"] = "mp_quarry";
+	level.iw4xmaps["quarry"]["map_credits"] = "";
 	
 	level.iw4xmaps["rundown"] = [];
 	level.iw4xmaps["rundown"]["localised_name"] = "Rundown";
 	level.iw4xmaps["rundown"]["preview_name"] = "preview_mp_rundown";
 	level.iw4xmaps["rundown"]["zone_name"] = "mp_rundown";
+	level.iw4xmaps["rundown"]["map_credits"] = "";
 	
 	level.iw4xmaps["rust"] = [];
 	level.iw4xmaps["rust"]["localised_name"] = "Rust";
 	level.iw4xmaps["rust"]["preview_name"] = "preview_mp_rust";
 	level.iw4xmaps["rust"]["zone_name"] = "mp_rust";
+	level.iw4xmaps["rust"]["map_credits"] = "Original Mapedit created by Unknown, Map reworked by [UD]Dan";
 	
 	level.iw4xmaps["rustlong"] = [];
 	level.iw4xmaps["rustlong"]["localised_name"] = "Rust: Long";
 	level.iw4xmaps["rustlong"]["preview_name"] = "preview_mp_rust_long";
 	level.iw4xmaps["rustlong"]["zone_name"] = "mp_rust_long";
+	level.iw4xmaps["rustlong"]["map_credits"] = "";
 	
 	level.iw4xmaps["salvage"] = [];
 	level.iw4xmaps["salvage"]["localised_name"] = "Salvage";
 	level.iw4xmaps["salvage"]["preview_name"] = "preview_mp_compact";
 	level.iw4xmaps["salvage"]["zone_name"] = "mp_compact";
+	level.iw4xmaps["salvage"]["map_credits"] = "";
 	
 	level.iw4xmaps["scrapyard"] = [];
 	level.iw4xmaps["scrapyard"]["localised_name"] = "Scrapyard";
 	level.iw4xmaps["scrapyard"]["preview_name"] = "preview_mp_boneyard";
 	level.iw4xmaps["scrapyard"]["zone_name"] = "mp_boneyard";
+	level.iw4xmaps["scrapyard"]["map_credits"] = "";
 	
 	level.iw4xmaps["shipment"] = [];
 	level.iw4xmaps["shipment"]["localised_name"] = "Shipment";
 	level.iw4xmaps["shipment"]["preview_name"] = "preview_mp_shipment";
 	level.iw4xmaps["shipment"]["zone_name"] = "mp_shipment";
+	level.iw4xmaps["shipment"]["map_credits"] = "";
 	
 	level.iw4xmaps["shipmentlong"] = [];
 	level.iw4xmaps["shipmentlong"]["localised_name"] = "Shipment: Long";
 	level.iw4xmaps["shipmentlong"]["preview_name"] = "preview_mp_shipment_long";
 	level.iw4xmaps["shipmentlong"]["zone_name"] = "mp_shipment_long";
+	level.iw4xmaps["shipmentlong"]["map_credits"] = "";
 	
 	level.iw4xmaps["skidrow"] = [];
 	level.iw4xmaps["skidrow"]["localised_name"] = "Skidrow";
 	level.iw4xmaps["skidrow"]["preview_name"] = "preview_mp_nightshift";
 	level.iw4xmaps["skidrow"]["zone_name"] = "mp_nightshift";
-
+	level.iw4xmaps["skidrow"]["map_credits"] = "";
+	
 	level.iw4xmaps["storm"] = [];
 	level.iw4xmaps["storm"]["localised_name"] = "Storm";
 	level.iw4xmaps["storm"]["preview_name"] = "preview_mp_storm";
 	level.iw4xmaps["storm"]["zone_name"] = "mp_storm";
+	level.iw4xmaps["afghan"]["map_credits"] = "Mapedit created by [UD]Mac";
 	
 	level.iw4xmaps["strike"] = [];
 	level.iw4xmaps["strike"]["localised_name"] = "Strike";
 	level.iw4xmaps["strike"]["preview_name"] = "preview_mp_strike";
 	level.iw4xmaps["strike"]["zone_name"] = "mp_strike";
+	level.iw4xmaps["strike"]["map_credits"] = "";
 	
 	level.iw4xmaps["subbase"] = [];
 	level.iw4xmaps["subbase"]["localised_name"] = "Sub Base";
 	level.iw4xmaps["subbase"]["preview_name"] = "preview_mp_subbase";
 	level.iw4xmaps["subbase"]["zone_name"] = "mp_subbase";
+	level.iw4xmaps["subbase"]["map_credits"] = "Mapedit created by Unknown";
 	
 	level.iw4xmaps["terminal"] = [];
 	level.iw4xmaps["terminal"]["localised_name"] = "Terminal";
 	level.iw4xmaps["terminal"]["preview_name"] = "preview_mp_terminal";
 	level.iw4xmaps["terminal"]["zone_name"] = "mp_terminal";
+	level.iw4xmaps["terminal"]["map_credits"] = "Mapedit created by [UD]Praetorian";
 	
 	level.iw4xmaps["trailerpark"] = [];
 	level.iw4xmaps["trailerpark"]["localised_name"] = "Trailer Park";
 	level.iw4xmaps["trailerpark"]["preview_name"] = "preview_mp_trailerpark";
 	level.iw4xmaps["trailerpark"]["zone_name"] = "mp_trailerpark";
+	level.iw4xmaps["trailerpark"]["map_credits"] = "Original Map created by Unknown, Map reworked by [UD]Mac";
 	
 	level.iw4xmaps["underpass"] = [];
 	level.iw4xmaps["underpass"]["localised_name"] = "Underpass";
 	level.iw4xmaps["underpass"]["preview_name"] = "preview_mp_underpass";
 	level.iw4xmaps["underpass"]["zone_name"] = "mp_underpass";
+	level.iw4xmaps["underpass"]["map_credits"] = "Mapedit created by [UD]Mac";
 	
 	level.iw4xmaps["vacant"] = [];
 	level.iw4xmaps["vacant"]["localised_name"] = "Vacant";
 	level.iw4xmaps["vacant"]["preview_name"] = "preview_mp_vacant";
 	level.iw4xmaps["vacant"]["zone_name"] = "mp_vacant";
+	level.iw4xmaps["vacant"]["map_credits"] = "";
 	
 	level.iw4xmaps["village"] = [];
 	level.iw4xmaps["village"]["localised_name"] = "Village";
 	level.iw4xmaps["village"]["preview_name"] = "preview_favela_escape";
 	level.iw4xmaps["village"]["zone_name"] = "favela_escape";
-
+	level.iw4xmaps["village"]["map_credits"] = "";
+	
 	level.iw4xmaps["wasteland"] = [];
 	level.iw4xmaps["wasteland"]["localised_name"] = "Wasteland";
 	level.iw4xmaps["wasteland"]["preview_name"] = "preview_mp_brecourt";
 	level.iw4xmaps["wasteland"]["zone_name"] = "mp_brecourt";
+	level.iw4xmaps["wasteland"]["map_credits"] = "";
 	
 	level.iw4xmaps["wetwork"] = [];
 	level.iw4xmaps["wetwork"]["localised_name"] = "Wet Work";
 	level.iw4xmaps["wetwork"]["preview_name"] = "preview_mp_cargoship";
 	level.iw4xmaps["wetwork"]["zone_name"] = "mp_cargoship";
+	level.iw4xmaps["wetwork"]["map_credits"] = "";
 }
 
 monitorIntermission()//Standalone
 {
-	level waittill ( "spawning_intermission" );
+	level waittill ( "mapvote_start" );
 	BeginVoteForMatch();
+	level notify ( "mapvote_end" );	
 }
 
 VoteTimerAndText(text, countDown)
@@ -438,10 +483,14 @@ BeginVoteForMatch()
 	
 	/*******Timer 2- Show winner for new map*************************************/
 	foreach (player in level.players)
+	{
+		player setClientDvar( "hud_custommapcredits", getCustomMapCredits( level.mapTok[getHighestVotedMap()] ));
 		player setClientDvar( "hud_ShowWinner", "1" );
+	}
 	level.VotePosition = "winner";
 	VoteTimerAndText("^3Next Map", level.VoteWinnerTime);
 	level.VotePosition = undefined;
+	
 	foreach (player in level.players)
 	{
 		player closeMenu( game["menu_vote"] );
@@ -497,6 +546,16 @@ getPreviewName( InputMap )
 		return level.iw4xmaps[map]["preview_name"];
 	else//Custom map e.g mp_waw_castle
 		return "preview_custom_map";
+}
+
+getCustomMapCredits( InputMap )
+{
+	map = tolower(InputMap);//Make lower case
+	
+	if(isDefined(level.iw4xmaps[map]))//In game map e.g "Terminal"
+		return level.iw4xmaps[map]["map_credits"];
+	else//Custom map e.g mp_waw_castle
+		return "";
 }
 
 getLocalisedName( InputMap )

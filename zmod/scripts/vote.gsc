@@ -13,7 +13,7 @@ init(){maps = undefined;gametypes = undefined;votetime = undefined;winnertime = 
 	********************************************************/
 	
 	/********************************IW4X VOTE MODE***********************************************************************/
-	standalone = false;
+	standalone = true;
 	/*
 	IF STANDALONE IS TRUE MAP VOTE WILL RELY ON AN INTERMISSION TIMER (Usually fine on a stock iw4x dedicated server)
 	
@@ -26,8 +26,8 @@ init(){maps = undefined;gametypes = undefined;votetime = undefined;winnertime = 
 	/*********************************************************************************************************************/
 	
 	/******************************MAP SETTINGS (9 OR MORE)***************************************************************/
-	maps = "Afghan,Bailout,Bloc,Bog,Carnival,ChemicalPlant,Crash,CrashTropical,Crossfire,Derail,Estate,EstateTropical,Favela,FavelaTropical,FiringRange,ForgottenCity,Freighter,Fuel,Highrise,Invasion,Karachi,Killhouse,Nuketown,Overgrown,Quarry,Rundown,Rust,RustLong,Salvage,Scrapyard,Shipment,ShipmentLong,Skidrow,Storm,Strike,SubBase,Terminal,TrailerPark,Underpass,Vacant,Wasteland,WetWork";
-	
+	maps = "CrashTropical,Highrise,Invasion,Karachi,Rust,SubBase,Terminal,TrailerPark,Underpass";
+	//Other possible maps: overgrown
 	/*
 	-Must use 9 or more maps separated by a comma
 	-Add custom maps by adding e.g 'mp_waw_castle'
@@ -67,14 +67,14 @@ init(){maps = undefined;gametypes = undefined;votetime = undefined;winnertime = 
 	if(!getDvarInt( "party_host" ))
 	{
 		/**DEDICATED SERVER - MAX 30 SECONDS (votetime + winnertime)**/
-		votetime = 20.0; //Time available to vote
-		winnertime = 5.0; //Time the winning map is displayed for
+		votetime = 10; //Time available to vote
+		winnertime = 5; //Time the winning map is displayed for
 	}
 	else if(getDvarInt( "party_host" ))
 	{
 		/**PRIVATE MATCH - MAX 10 SECONDS (votetime + winnertime)**/
-		votetime = 7.0; //Time available to vote
-		winnertime = 3.0; //Time the winning map is displayed for
+		votetime = 7; //Time available to vote
+		winnertime = 3; //Time the winning map is displayed for
 	}
 	/***************************************************************************************************************/
 	
