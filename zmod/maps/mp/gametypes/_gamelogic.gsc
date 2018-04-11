@@ -2041,7 +2041,6 @@ endGame( winner, endReasonText, nukeDetonated )
 {
 	//destroy zmod player hud elements
 	level.infotext destroy();
-	level.TimerText destroy();
 	foreach(player in level.players)	 
 	{
 		player.HintText destroy();
@@ -2226,8 +2225,6 @@ endGame( winner, endReasonText, nukeDetonated )
 	
 	level notify ( "mapvote_start" );			//start mapvote			
 	level waittill ( "mapvote_end" );			//wait until mapvote is finished		
-					
-	wait ( 2 );
 
 	/*
 	if ( matchMakingGame() )

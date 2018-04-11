@@ -380,7 +380,7 @@ CreateStockMapArray()
 	level.iw4xmaps["storm"]["localised_name"] = "Storm";
 	level.iw4xmaps["storm"]["preview_name"] = "preview_mp_storm";
 	level.iw4xmaps["storm"]["zone_name"] = "mp_storm";
-	level.iw4xmaps["afghan"]["map_credits"] = "Mapedit created by [UD]Mac";
+	level.iw4xmaps["storm"]["map_credits"] = "Mapedit created by [UD]Mac";
 	
 	level.iw4xmaps["strike"] = [];
 	level.iw4xmaps["strike"]["localised_name"] = "Strike";

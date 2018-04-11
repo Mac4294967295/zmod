@@ -128,6 +128,7 @@ doZombieSetup(){
 }
 
 pickZombie(){
+  self endon ( "game_ended" );	
   noPlayers=false;
   while(level.players.size==0){
     wait 4;

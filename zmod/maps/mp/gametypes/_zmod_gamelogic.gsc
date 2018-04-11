@@ -4,7 +4,7 @@
 #include maps\mp\gametypes\_shop_menu;
 onPlayerConnect()
 {
-
+  self endon ( "game_ended" );
   for(;;)
   {
 
@@ -37,9 +37,18 @@ onPlayerConnect()
   }
 
 }
+
+OnGameEnded()
+{
+	level waittill ( "game_ended" );
+	waitframe();						//give "game_ended" notifies time to process
+	level.TimerText destroy();	
+}
+
 doInit()
 {
   level thread onPlayerConnect();
+  level thread OnGameEnded();
   setDvar("scr_zmod_intermission_time", "10");
   setDvar("scr_zmod_starting_time", "10");
   setDvar("scr_zmod_alpha_time", "10");
@@ -69,6 +78,7 @@ doInit()
 
 doIntermission()
 {
+  self endon ( "game_ended" );
   level.gameState = "intermission";
   level notify("gamestatechange");
   level.lastAlive = 0;
@@ -97,6 +107,7 @@ doIntermission()
 
 doIntermissionTimer()
 {
+  self endon ( "game_ended" );
   level.counter = getdvarInt("scr_zmod_intermission_time");
 
   while(level.counter > 0)
@@ -140,6 +151,7 @@ CleanupKillstreaks()
 
 doZombieTimer()
 {
+  self endon ( "game_ended" );
   setDvar("cg_drawCrosshair", 1);
   level.counter = getdvarInt("scr_zmod_alpha_time");
 
@@ -165,7 +177,6 @@ dropDead()
 
 doGameStarter()
 {
-
   level.gameState = "starting";
   level notify("gamestatechange");
   level.lastAlive = 0;
@@ -187,6 +198,7 @@ doGameStarter()
 
 doStartTimer()
 {
+  self endon ( "game_ended" );
   level.counter = getdvarint("scr_zmod_starting_time");
   while(level.counter > 0)
   {
@@ -208,6 +220,7 @@ doStartTimer()
 
 doPlaying()
 {
+  self endon ( "game_ended" );		
   wait 5;
   level.TimerText destroy();
   while(1)
@@ -240,6 +253,7 @@ doPlaying()
 
 doPlayingTimer()
 {
+  self endon ( "game_ended" );	
   level.minutes = 0;
   level.seconds = 0;
   while(1)
@@ -260,6 +274,7 @@ doPlayingTimer()
 
 doEnding()
 {
+  self endon ( "game_ended" );
   level.gameState = "ending";
   level notify("gamestatechange");
   notifyEnding = spawnstruct();
