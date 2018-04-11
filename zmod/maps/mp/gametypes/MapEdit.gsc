@@ -531,13 +531,12 @@ Escalator(depart, arivee, time) {
     }
 }
 
-
+//map edit credits can be set at your map in /vote/vote_menu @ CreateStockMapArray() with the map_credits variable; i.e. level.iw4xmaps["afghan"]["map_credits"] = "Mapedit created by John Doe";
 LoadMapEdit()
 {
 	switch(getDvar("mapname"))
 	{
 		case "mp_rust": /** Rust **/
-			//Original Map Created by Unknown, Map modded and fixed by [UD]Dan
 			 CreateBlocks((773, 1080, 258), (0, 90, 0));
 			 CreateRamps((745, 1570, 383), (745, 1690, 273));
 			 CreateDoors((565, 1540, 295), (653, 1540, 295), (90, 90, 0), 3, 2, 20, 60);
@@ -1024,7 +1023,10 @@ LoadMapEdit()
 			break;
 
 		case "mp_crash":	/** Crash **/
-			//Thanks to [UD]Dan for his help
+
+			break;
+
+		case "mp_crash_tropical":	/** Crash Tropical **/
 			CreateRamps((804, -270, 415), (798, -576, 355));
 			CreateRamps((917, -289, 415), (498, -289, 415));
 			CreateRamps((755, -345, 558), (542, -345, 415));
