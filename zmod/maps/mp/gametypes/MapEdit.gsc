@@ -22,33 +22,21 @@ init()
 	level LoadMapEdit();
 	level toggleCreateMapWait();
 
-	level.gameState = "starting";
+	//level.gameState = "starting";
 }
 
 toggleCreateMapWait()
 {
 	if(level.CreateMapWait == 1)
 	{
-		level.TimerText destroy();
-		level notify("CREATED");
-		foreach(player in level.players)
-		{
-			player freezeControls(false);
-			player VisionSetNakedForPlayer(getDvar("mapname"), 0);
-		}
+		level.mapedit_created = 1;
+		waitframe();
+		level notify("mapedit_created");
 	}
 	else
 	{
-		iprintln("Do");
+		level.mapedit_created = 0;
 		level.CreateMapWait = 1;
-		level.TimerText = level createServerFontString( "objective", 1.5 );
-		level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
-		level.TimerText setText("^3Wait for the map to be created");
-		foreach(player in level.players)
-		{
-			player freezeControls(true);
-			player VisionSetNakedForPlayer("mpIntro", 0);
-		}
 	}
 }
 

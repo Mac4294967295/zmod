@@ -2,13 +2,48 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_shop_menu;
+
+doInit()
+{
+	setDvar("scr_zmod_pregame_time", "15");
+	setDvar("scr_zmod_intermission_time", "10");
+	setDvar("scr_zmod_starting_time", "10");
+	setDvar("scr_zmod_alpha_time", "10");
+	setDvar("scr_zmod_sentry_timeout", "200");
+	
+	level thread initHUD();	
+	level thread OnGameEnded();
+	level thread doPregame();
+	level thread onPlayerConnect();	
+  
+	level.ShowCreditShop = false;
+	level weaponInit();
+	level maps\mp\gametypes\_zmod_hud::CreateServerHUD();
+	level.infotext setText("Cycle Menu: [{+actionslot 3}]/[{+actionslot 1}]");
+	level thread OverRider();
+	maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
+	level.mapwait = 0;
+
+	level initializeItemFuncArray();
+	level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();
+	level thread maps\mp\gametypes\MapEdit::init();
+
+	setDvar("g_gametype", "war");
+	setDvar("ui_gametype", "war");
+	setDvar("scr_war_scorelimit", 0);
+	setDvar("scr_war_waverespawndelay", 0);
+	setDvar("scr_war_playerrespawndelay", 0);
+
+	level thread doGameStarter();
+}
+
 onPlayerConnect()
 {
   self endon ( "game_ended" );
   for(;;)
   {
-
     level waittill( "connected", player );
+	
     player.isZombie=0;
     player.credits=0;
     player initializeZMenu();
@@ -32,48 +67,77 @@ onPlayerConnect()
     player allowSpectateTeam( "none", true );
 
     //player thread TestSpawnpoints();
-	  //player thread CollectSpawnCords();
-
+	//player thread CollectSpawnCords();
   }
+}
 
+initHUD()
+{
+    level.TimerText = level createServerFontString( "objective", 1.5 );
+    level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
+	
+	level.infotext = NewHudElem();
+	level.infotext.alignX = "center";
+	level.infotext.alignY = "bottom";
+	level.infotext.horzAlign = "center";
+	level.infotext.vertAlign = "bottom";
+	level.infotext.foreground = true;
+	level.infotext.fontScale = 1;
+	level.infotext.font = "objective";
+	level.infotext.alpha = 1;
+	level.infotext.glowAlpha = 1;
+	level.infotext.color = ( 1.0, 1.0, 1.0 );
 }
 
 OnGameEnded()
 {
 	level waittill ( "game_ended" );
-	waitframe();						//give "game_ended" notifies time to process
-	level.TimerText destroy();	
+	waitframe();						//give other "game_ended" notifies time to process
+	
+	//destroy zmod player hud elements
+	level.TimerText destroy();
+	level.infotext destroy();
+	
+	foreach(player in level.players)	 
+	{
+		player.HintText destroy();
+		player.healthtext destroy();
+		player.healthlabel destroy();
+		player.lifetext destroy();
+		player.lifelabel destroy();
+		player.menutext destroy();
+		player.cash destroy();
+		player.cashlabel destroy();
+		player.option1 destroy();
+		player.option2 destroy();
+		player.option3 destroy();
+		player.scrollleft destroy();
+		player.scrollright destroy();
+		player.perkztext1 destroy();
+		player.perkztext2 destroy();
+		player.perkztext3 destroy();
+		player.perkztext4 destroy();
+		player.perkztext5 destroy();
+		player.DebugHUD destroy();
+	}	
 }
 
-doInit()
+doPregame()
 {
-  level thread onPlayerConnect();
-  level thread OnGameEnded();
-  setDvar("scr_zmod_intermission_time", "10");
-  setDvar("scr_zmod_starting_time", "10");
-  setDvar("scr_zmod_alpha_time", "10");
-  setDvar("scr_zmod_sentry_timeout", "200");
-  level.gameState = "";
-  level.ShowCreditShop = false;
-  level weaponInit();
-  level maps\mp\gametypes\_zmod_hud::CreateServerHUD();
-  level.infotext setText("Cycle Menu: [{+actionslot 3}]/[{+actionslot 1}]");
-  level thread OverRider();
-  maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
-  level.mapwait = 0;
+	self endon ( "game_ended" );
+	level.gameState = "pregame";
+	
+	counter = getdvarInt("scr_zmod_pregame_time");
+	while(counter > 0)
+	{
+		level.TimerText setText("Waiting for other players: " + counter);
+		setDvar("fx_draw", 1);
+		wait 1;
 
-  level initializeItemFuncArray();
-  level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();
-  level thread maps\mp\gametypes\MapEdit::init();
-
-  setDvar("g_gametype", "war");
-  setDvar("ui_gametype", "war");
-  setDvar("scr_war_scorelimit", 0);
-  setDvar("scr_war_waverespawndelay", 0);
-  setDvar("scr_war_playerrespawndelay", 0);
-  wait 2;
-
-  level thread maps\mp\gametypes\_zmod_gamelogic::doGameStarter();
+		counter--;
+	}
+	level.TimerText setText("");
+	level notify("gamestatechange");	
 }
 
 doIntermission()
@@ -112,9 +176,6 @@ doIntermissionTimer()
 
   while(level.counter > 0)
   {
-    level.TimerText destroy();
-    level.TimerText = level createServerFontString( "objective", 1.5 );
-    level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
     level.TimerText setText("^2Intermission: " + level.counter);
     setDvar("fx_draw", 1);
     wait 1;
@@ -156,9 +217,6 @@ doZombieTimer()
   level.counter = getdvarInt("scr_zmod_alpha_time");
 
   while(level.counter > 0){
-    level.TimerText destroy();
-    level.TimerText = level createServerFontString( "objective", 1.5 );
-    level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
     level.TimerText setText("^1Alpha Zombie in: " + level.counter);
     wait 1;
 
@@ -177,19 +235,26 @@ dropDead()
 
 doGameStarter()
 {
+  level waittill ( "gamestatechange" );	//wait for pregame to finish
   level.gameState = "starting";
   level notify("gamestatechange");
+    
+  if(level.mapedit_created == 0)	//continue only if mapedit created
+  {
+	  level waittill("mapedit_created");
+  } 
+  
   level.lastAlive = 0;
-  level waittill("CREATED");
   level thread doStartTimer();
   foreach(player in level.players)
   {
     //	player thread doSetup();
+	player freezeControls(false);
+	player VisionSetNakedForPlayer(getDvar("mapname"), 0);
     player thread initializeZMenu();
     player thread initializeHMenu();
     player thread initializeCMenu();
     //player thread maps\mp\gametypes\_spawn::doSpawn();
-
   }
   wait getdvarint("scr_zmod_starting_time");
   level thread doZombieTimer();
@@ -202,9 +267,6 @@ doStartTimer()
   level.counter = getdvarint("scr_zmod_starting_time");
   while(level.counter > 0)
   {
-    level.TimerText destroy();
-    level.TimerText = level createServerFontString( "objective", 1.5 );
-    level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
     level.TimerText setText("^2Game Starting in: " + level.counter);
     setDvar("fx_draw", 1);
     wait 1;
@@ -221,8 +283,8 @@ doStartTimer()
 doPlaying()
 {
   self endon ( "game_ended" );		
-  wait 5;
-  level.TimerText destroy();
+  //wait 5;
+  level.TimerText SetText( "" );
   while(1)
   {
     level.playersLeft = maps\mp\gametypes\_teams::CountPlayers();

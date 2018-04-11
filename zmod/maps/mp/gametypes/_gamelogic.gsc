@@ -2038,35 +2038,11 @@ endGameHalfTime()
 
 
 endGame( winner, endReasonText, nukeDetonated )
-{
-	//destroy zmod player hud elements
-	level.infotext destroy();
-	foreach(player in level.players)	 
-	{
-		player.HintText destroy();
-		player.healthtext destroy();
-		player.healthlabel destroy();
-		player.lifetext destroy();
-		player.lifelabel destroy();
-		player.menutext destroy();
-		player.cash destroy();
-		player.cashlabel destroy();
-		player.option1 destroy();
-		player.option2 destroy();
-		player.option3 destroy();
-		player.scrollleft destroy();
-		player.scrollright destroy();
-		player.perkztext1 destroy();
-		player.perkztext2 destroy();
-		player.perkztext3 destroy();
-		player.perkztext4 destroy();
-		player.perkztext5 destroy();
-		player.DebugHUD destroy();
-	}
-	
+{	
+	/*
 	if ( !isDefined(nukeDetonated) )
 		nukeDetonated = false;
-	
+	*/
 	// return if already ending via host quit or victory, or nuke incoming
 	if ( game["state"] == "postgame" || level.gameEnded || (isDefined(level.nukeIncoming) && !nukeDetonated) && ( !isDefined( level.gtnw ) || !level.gtnw ) )
 		return;
