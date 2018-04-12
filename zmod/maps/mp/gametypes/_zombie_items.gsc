@@ -8,7 +8,7 @@ health(){
 			self statMaxHealthAdd(50); 														//adds 50 health (max & current)
 			self statCashSub(self getZItemVal("health", "cost"));							//subtracts the cost form current cash
 			self iPrintlnBold("^2Health Increased!"); 										//prints text
-			if(self getZItemVal("health", "in_use")==18) self setZItemVal("health", "print_text", "text2");			//at Max rank update what to print in the menu
+			if(self.maxhealth>=1000) self setZItemVal("health", "print_text", "text2");			//at Max rank update what to print in the menu
 		}else self iPrintlnBold("^1Not Enough ^3Cash");
 	}
 	self notify("MENUCHANGE_2");
@@ -79,7 +79,7 @@ movespeed(){
 				self.moveSpeedScaler += 0.05;
 				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 				self iPrintlnBold("^2Speed Bought!");
-				if(self getZItemVal("movespeed", "in_use")==5){
+				if(self getZItemVal("movespeed", "in_use")==3){
 					self setZItemVal("movespeed", "print_text", "text2");
 				}
 			}else self iPrintlnBold("^1Not Enough ^3Cash");

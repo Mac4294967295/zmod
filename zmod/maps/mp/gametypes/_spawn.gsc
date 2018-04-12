@@ -78,6 +78,7 @@ doHumanSetup(){
   self maps\mp\perks\_perks::givePerk("specialty_fastsprintrecovery");
   self.moveSpeedScaler = 1.07;
 	self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
+  self resetHMenu();
 	//self maps\mp\perks\_perks::givePerk("specialty_automantle");
 	//self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	//self maps\mp\perks\_perks::givePerk("specialty_heartbreaker");
@@ -128,7 +129,7 @@ doZombieSetup(){
 }
 
 pickZombie(){
-  self endon ( "game_ended" );	
+  self endon ( "game_ended" );
   noPlayers=false;
   while(level.players.size==0){
     wait 4;
@@ -172,12 +173,12 @@ onPlayerSpawned()
     if(!(self getCItemVal("life", "in_use")>0 && self.isZombie==0)) //if is respawing due to lives dont respawn at default spawn but at random or tac insertion
       self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
     self thread maps\mp\gametypes\_spawn::doSpawn();
-	
+
 		if( level.gameState == "pregame" )
 		{
 			self freezeControls(true);
 			self VisionSetNakedForPlayer("mpIntro", 0);
-		}	
+		}
 	}
 }
 
