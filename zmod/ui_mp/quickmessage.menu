@@ -40,6 +40,7 @@
 		popup
 		onOpen
 		{
+			close self;
 			/*
 			close "quickcommands";
 			close "quickstatements";
@@ -49,7 +50,7 @@
 		}
 		onClose
 		{
-			
+			close self;
 			//setDvar cl_bypassMouseInput 0;
 		}
 		onEsc
