@@ -24,6 +24,32 @@ doSpawn(){
     }else{
       //self.team="axis";
       self.isZombie=1;
+	  
+	  if(self.team!="axis")
+	  {
+		if(self.sessionstate == "playing")
+		{	
+			self.switching_teams = true;
+			self.joining_team = "axis";
+			self.leaving_team = self.pers["team"];
+			self suicide();
+		}
+		
+		self maps\mp\gametypes\_menus::addToTeam( "axis" );
+		
+		class = self maps\mp\gametypes\_class::getClassChoice( "class3" );
+		primary = self maps\mp\gametypes\_class::getWeaponChoice( "class3" );		
+		self.pers["class"] = class;
+		self.class = class;
+		self.pers["primary"] = primary;	
+		
+		self notify("end_respawn");
+		
+		self.bounty=0;
+		return;
+	  }
+	  
+	  /*
       if(self.team!="axis"){
         self notify("menuresponse", game["menu_team"], "axis");
   		  wait .1;
@@ -31,16 +57,43 @@ doSpawn(){
         self.bounty=0;
         return;
       }
+	  */	  
       self doZombieSetup();
     }
   }else{
     self.isZombie=0;
+	
+	if (self.team == "axis" || self.team == "spectator")
+	{
+		if(self.sessionstate == "playing")
+		{	
+			self.switching_teams = true;
+			self.joining_team = "allies";
+			self.leaving_team = self.pers["team"];
+			self suicide();
+		}
+		
+		self maps\mp\gametypes\_menus::addToTeam( "allies" );
+		
+		class = self maps\mp\gametypes\_class::getClassChoice( "class0" );
+		primary = self maps\mp\gametypes\_class::getWeaponChoice( "class0" );		
+		self.pers["class"] = class;
+		self.class = class;
+		self.pers["primary"] = primary;	
+		
+		self notify("end_respawn");
+		return;
+	}
+	
+	/*
     if (self.team == "axis" || self.team == "spectator"){
       self notify("menuresponse", game["menu_team"], "allies");
       wait .1;
       self notify("menuresponse", "changeclass", "class0");
       return;
     }
+	*/
+	
     //self.team="allies";
   //  self notify("menuresponse", game["menu_team"], "allies");
   //  wait .1;
@@ -149,9 +202,31 @@ pickZombie(){
         randPlayer iPrintlnBold("^2Anti-Alpha used!");
       }
     }
+	
+	if(self.sessionstate == "playing")
+	{	
+		self.switching_teams = true;
+		self.joining_team = "axis";
+		self.leaving_team = self.pers["team"];
+		self suicide();
+	}
+		
+	self maps\mp\gametypes\_menus::addToTeam( "axis" );
+	
+	class = self maps\mp\gametypes\_class::getClassChoice( "class3" );
+	primary = self maps\mp\gametypes\_class::getWeaponChoice( "class3" );		
+	self.pers["class"] = class;
+	self.class = class;
+	self.pers["primary"] = primary;	
+	
+	self notify("end_respawn");		
+	
+	/*
     randPlayer notify("menuresponse", game["menu_team"], "axis");
     wait .1;
     randPlayer notify("menuresponse", "changeclass", "class3");
+	*/
+	
     randPlayer.isZombie=1;
     level.gameState = "playing";
     level notify("gamestatechange");
