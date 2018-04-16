@@ -46,6 +46,7 @@ onPlayerConnect()
 	
 	player.isZombie=0;
     player.credits=0;
+	player.spawning = 0;
     player initializeZMenu();
     player initializeHMenu();
     player initializeCMenu();
@@ -65,16 +66,12 @@ onPlayerConnect()
     player allowSpectateTeam( "axis", true );
     player allowSpectateTeam( "freelook", true );
     player allowSpectateTeam( "none", true );
-
-	if( level.gameState == "playing" )
-	{
-		player maps\mp\gametypes\_spawn::SpawnPlayer( "axis" );  
-	}
-	else
-	{
-		player maps\mp\gametypes\_spawn::SpawnPlayer( "allies" );  
-	}	
 	
+	if(level.gameState == "")
+		level waittill( "gamestatechange" );
+	
+	player maps\mp\gametypes\_spawn::doSpawn();
+		
     //player thread TestSpawnpoints();
 	//player thread CollectSpawnCords();
   }
@@ -134,6 +131,7 @@ OnGameEnded()
 doPregame()
 {
 	self endon ( "game_ended" );
+	
 	level.gameState = "pregame";
 	
 	counter = getdvarInt("scr_zmod_pregame_time");
@@ -152,6 +150,7 @@ doPregame()
 doIntermission()
 {
   self endon ( "game_ended" );
+  
   level.gameState = "intermission";
   level notify("gamestatechange");
   level.lastAlive = 0;
@@ -162,12 +161,23 @@ doIntermission()
   setDvar("cg_drawCrosshair", 1);
   setDvar("cg_drawCrosshairNames", 1);
   setDvar("cg_drawFriendlyNames", 1);
-  dropDead();
+  
+	foreach( player in level.players )
+	{
+		player maps\mp\gametypes\_spawn::doSpawn();
+		player.bounty = 0;
+		
+		if( player getCItemVal("cash", "in_use") == 1 )
+			player.bounty=200;
+	}
+  
+  //dropDead();
+  /*
   foreach(player in level.players){
     player.bounty = 0;
     if(player getCItemVal("cash", "in_use")==1)   player.bounty=200;
   }
-
+  */
   level.ShowCreditShop = true;
 
 
@@ -345,39 +355,40 @@ doPlayingTimer()
 
 doEnding()
 {
-  self endon ( "game_ended" );
-  level.gameState = "ending";
-  level notify("gamestatechange");
-  notifyEnding = spawnstruct();
-  notifyEnding.titleText = "Round Over!";
-  notifyEnding.notifyText2 = "Next Round Will Start Soon!";
-  notifyEnding.glowColor = (0.0, 0.6, 0.3);
+	self endon ( "game_ended" );
+	
+	level.gameState = "ending";
+	level notify("gamestatechange");
+	notifyEnding = spawnstruct();
+	notifyEnding.titleText = "Round Over!";
+	notifyEnding.notifyText2 = "Next Round Will Start Soon!";
+	notifyEnding.glowColor = (0.0, 0.6, 0.3);
 
-  wait 1;
-  VisionSetNaked("blacktest", 1);
+	wait 1;
+	VisionSetNaked("blacktest", 1);
 
-  calculateCredits();
+	calculateCredits();
 
-  foreach(player in level.players)
-  {
-    player.isZombie = 0;
-    player _clearPerks();
-    player resetZMenu();
-    player resetHMenu();
-    player.moveSpeedScaler = 1;
-    player freezeControls(true);
-    player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
-    player.newcomer = 0;
-  }
-  maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
-  wait 4.5;
-  VisionSetNaked(getDvar( "mapname" ), 2);
+	foreach(player in level.players)
+	{
+		player.isZombie = 0;
+		player _clearPerks();
+		player resetZMenu();
+		player resetHMenu();
+		player.moveSpeedScaler = 1;
+		player freezeControls(true);
+		player thread maps\mp\gametypes\_hud_message::notifyMessage( notifyEnding );
+		player.newcomer = 0;
+	}
+	maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
+	wait 4.5;
+	VisionSetNaked(getDvar( "mapname" ), 2);
 
-  foreach(player in level.players)
-  {
-    player freezeControls(false);
-  }
-  level thread maps\mp\gametypes\_zmod_gamelogic::doIntermission();
+	foreach(player in level.players)
+	{
+		player freezeControls(false);
+	}
+	level thread maps\mp\gametypes\_zmod_gamelogic::doIntermission();
 }
 
 doLastAlive()

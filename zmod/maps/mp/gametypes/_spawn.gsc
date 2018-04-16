@@ -4,14 +4,30 @@
 
 doSpawn()
 {
-	if( level.gameState != "postgame" )
-	{	
-		self.menu = 0;
-		self.grenades = 3;
-		self.isRepairing = false;
-
-		if(level.gameState=="playing"/* || level.gameState=="ending"*/)
-		{
+	self endon ( "game_ended" );
+	
+	if(level.gameState == "")
+		level waittill( "gamestatechange" );
+	
+	self.spawning = 1;
+	
+	switch(level.gameState)
+	{
+		case "pregame":
+			iprintln( "Spawn " + level.gameState);
+			self SpawnPlayer( "allies" );	
+			self freezeControls(true);
+			self VisionSetNakedForPlayer("mpIntro", 0);			
+		break;
+			
+		case "intermission":
+		case "ending":		
+			iprintln( "Spawn " + level.gameState);
+			self SpawnPlayer( "allies" );				
+		break;	
+		
+		case "playing":
+			iprintln( "Spawn " + level.gameState);
 			if(self getCItemVal("life", "in_use") > 0 && self.isZombie == 0 )
 			{
 				self setCItemVal("life", "in_use", self getCItemVal("life", "in_use") - 1);
@@ -19,61 +35,75 @@ doSpawn()
 				self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
 			}
 			else
-			{
-				if(self.team != "axis" )
-				{				
-					self SpawnPlayer( "axis" );
-					self.bounty=0;
-					return;
-				}
-				else
-				{
-					self.isZombie = 1;					
-					self doZombieSetup();
-				}			
-			}
-		}
-		else
-		{
-			if(self.team == "axis" || self.team == "spectator")
-			{
-				self SpawnPlayer( "allies" );
-				return;
-			}
-			
-			self.isZombie = 0;
-			self doHumanSetup();
-			self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
-		}
+			{						
+				self SpawnPlayer( "axis" );
+			}		
+		break;
 		
-		self thread maps\mp\gametypes\_shop_menu::CreatePlayerHUD();
-		maps\mp\gametypes\_shop_menu::doShop();
-		self thread maps\mp\gametypes\_shop_menu::monitorShop();
-		self thread maps\mp\gametypes\_zmod_hud::doCash();
-		self thread maps\mp\gametypes\_zmod_hud::doHealth();
-		
-		self.combo = 0;
-		self statCashAdd(5000);
-		
-		if(level.gamestate == "starting")
-		{
-			self thread OMAExploitFix();
-		}
+		case "postgame":
+		default:
+		return;
+	}
+	
+	self.spawning = 0;
+	
+	if( self.team == "axis" )
+	{	
+		self.bounty = 0;	//Rework/Remove Bounty		
+		self doZombieSetup();			
+	}
+	else if( self.team == "allies" )
+	{
+		self doHumanSetup();
+		self maps\mp\gametypes\_credit_items::giveCreditUpgrades();			
+	}
+
+	if( level.gameState == "pregame" )
+	{
+		self freezeControls(true);
+		self VisionSetNakedForPlayer("mpIntro", 0);
 	}	
+	
+	self thread maps\mp\gametypes\_shop_menu::CreatePlayerHUD();
+	maps\mp\gametypes\_shop_menu::doShop();
+	self thread maps\mp\gametypes\_shop_menu::monitorShop();
+	self thread maps\mp\gametypes\_zmod_hud::doCash();
+	self thread maps\mp\gametypes\_zmod_hud::doHealth();
+	
+	self.combo = 0;
+	self statCashAdd(5000);
 }
 
 SpawnPlayer( team )
 {
-	if(isDefined( team ))
+	self endon ( "game_ended" );
+	
+	if(!isDefined(team))
+		return;
+	
+	self.menu = 0;
+	self.grenades = 3;
+	self.isRepairing = false;	
+		
+	if(isDefined( team ) && self.team != team )
 	{
-		self SetPlayerTeam( team );
-	}
-	else
+		self thread SetPlayerTeam( team );
+		self waittill( "spawned_player" );	
+		
+		if( self.team == "axis" )
+			self.isZombie = 1;
+		
+		if( self.team == "allies" )
+			self.isZombie = 0;			
+	}	
+	
+	if( level.gameState == "pregame" )
 	{
-		self SetPlayerTeam();
+		self freezeControls(true);
+		self VisionSetNakedForPlayer("mpIntro", 0);
 	}
 	
-	self SetPlayerClass();	
+	self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
 }
 
 SetPlayerTeam( team )
@@ -92,7 +122,7 @@ SetPlayerTeam( team )
 		self.leaving_team = self.pers["team"];
 		self maps\mp\gametypes\_menus::addToTeam( "axis" );
 	}
-	
+	self SetPlayerClass();
 	self suicide();
 }
 
@@ -116,7 +146,9 @@ SetPlayerClass()
 	}
 }
 
-doHumanSetup(){
+doHumanSetup()
+{
+	iprintln( "Human Setup" );		
 	self thread maps\mp\gametypes\_zmod_hud::doLives();
 	self _clearPerks();
 	
@@ -154,7 +186,9 @@ doHumanSetup(){
 	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
 }
 
-doZombieSetup(){
+doZombieSetup()
+{
+	iprintln( "Zombie Setup" );
 	self _clearPerks();
 	
 	SetDvar("player_sprintUnlimited", 1);
@@ -234,39 +268,15 @@ pickZombie()
 
 onPlayerSpawned()
 {
-	self endon("disconnect");
+	self endon( "disconnect" );
 	
-	for(;;)
+	while(1)
 	{
-		self waittill("spawned_player");
-
-		if(!(self getCItemVal("life", "in_use") > 0 && self.isZombie == 0 )) //if is respawing due to lives dont respawn at default spawn but at random or tac insertion
-			self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
-
-		self thread doSpawn();
-
-		if( level.gameState == "pregame" )
-		{
-			self freezeControls(true);
-			self VisionSetNakedForPlayer("mpIntro", 0);
-		}
+		self waittill( "spawned_player" );
+		
+		if( self.spawning == 0 )
+			self doSpawn();		
 	}
-}
-
-OMAExploitFix()
-{
-  self endon("disconnect");
-  self endon("death");
-  
-  while(1)
-  {
-    if(self _hasPerk("specialty_onemanarmy") || self _hasPerk("specialty_omaquickchange"))
-    {
-      self _clearPerks();
-      self takeAllWeapons();
-    }
-    wait .5;
-  }
 }
 
 monitorGrenades()
