@@ -2048,6 +2048,7 @@ endGame( winner, endReasonText, nukeDetonated )
 		return;
 
 	game["state"] = "postgame";
+	level.gameState = "postgame";
 
 	level.gameEndTime = getTime();
 	level.gameEnded = true;

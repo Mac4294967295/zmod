@@ -44,7 +44,7 @@ onPlayerConnect()
   {
     level waittill( "connected", player );
 	
-    player.isZombie=0;
+	player.isZombie=0;
     player.credits=0;
     player initializeZMenu();
     player initializeHMenu();
@@ -56,16 +56,25 @@ onPlayerConnect()
     //player.credits = player getCreditsPersistent();
     //player.credits = 50000;
     player iniButtons();
+	
     player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
     player thread maps\mp\gametypes\_shop_menu::CashFix();
-    //player thread maps\mp\gametypes\_spawn::forceSpawn();
     //player thread onDisconnect();
     player allowSpectateTeam( "allies", true );
     player allowSpectateTeam( "axis", true );
     player allowSpectateTeam( "freelook", true );
     player allowSpectateTeam( "none", true );
 
+	if( level.gameState == "playing" )
+	{
+		player maps\mp\gametypes\_spawn::SpawnPlayer( "axis" );  
+	}
+	else
+	{
+		player maps\mp\gametypes\_spawn::SpawnPlayer( "allies" );  
+	}	
+	
     //player thread TestSpawnpoints();
 	//player thread CollectSpawnCords();
   }

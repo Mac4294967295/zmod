@@ -9,7 +9,8 @@
 		blurWorld 7
 		onOpen
 		{
-			scriptmenuresponse "autoassign";
+			self close;
+			//scriptmenuresponse "autoassign";
 			//self close;
 			//setfocus "team_choose_auto";
 		}
