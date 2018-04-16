@@ -27,6 +27,15 @@ doSpawn(){
 	  
 	  if(self.team!="axis")
 	  {
+		  self maps\mp\gametypes\_menus::menuAxis();
+		  self maps\mp\gametypes\_menus::menuClass( "class3" );
+		  self.bounty=0;
+		  return;
+	  }
+	  
+	  /*
+	  if(self.team!="axis")
+	  {
 		if(self.sessionstate == "playing")
 		{	
 			self.switching_teams = true;
@@ -48,7 +57,7 @@ doSpawn(){
 		self.bounty=0;
 		return;
 	  }
-	  
+	  */
 	  /*
       if(self.team!="axis"){
         self notify("menuresponse", game["menu_team"], "axis");
@@ -62,7 +71,15 @@ doSpawn(){
     }
   }else{
     self.isZombie=0;
+	  
+	  if(self.team == "axis" || self.team == "spectator")
+	  {
+		  self maps\mp\gametypes\_menus::menuAllies();
+		  self maps\mp\gametypes\_menus::menuClass( "class0" );
+		  return;
+	  }
 	
+	/*
 	if (self.team == "axis" || self.team == "spectator")
 	{
 		if(self.sessionstate == "playing")
@@ -84,7 +101,7 @@ doSpawn(){
 		self notify("end_respawn");
 		return;
 	}
-	
+	*/
 	/*
     if (self.team == "axis" || self.team == "spectator"){
       self notify("menuresponse", game["menu_team"], "allies");
@@ -203,6 +220,11 @@ pickZombie(){
       }
     }
 	
+	self maps\mp\gametypes\_menus::menuAxis();
+	self maps\mp\gametypes\_menus::menuClass( "class3" );
+
+	
+	/*
 	if(self.sessionstate == "playing")
 	{	
 		self.switching_teams = true;
@@ -219,7 +241,8 @@ pickZombie(){
 	self.class = class;
 	self.pers["primary"] = primary;	
 	
-	self notify("end_respawn");		
+	self notify("end_respawn");	
+	*/
 	
 	/*
     randPlayer notify("menuresponse", game["menu_team"], "axis");
