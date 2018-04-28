@@ -242,6 +242,7 @@ monitorThrowingKnife()
 monitorColdblood(){
 	for(i=90; i>=0;i--){
 		self setZItemVal("coldblood", "text2", "^1Coldblood activated ("+i+")");
+		self notify( "zmod_shop_draw" );
 		wait 1;
 	}
 	self setZItemVal("coldblood", "print_text", "text1");

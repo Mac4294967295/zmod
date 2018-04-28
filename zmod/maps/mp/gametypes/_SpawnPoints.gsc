@@ -57,7 +57,7 @@ SetSpawnPoint(team, x_cord, y_cord, z_cord, angle)
 //spawns player on random team spawnpoint
 SpawnPlayer()
 {	
-	if(self.isZombie == 0)
+	if( self.team == "allies" )
 	{
 		team = 0;
 	}
@@ -65,9 +65,11 @@ SpawnPlayer()
 	{
 		team = 1;
 	}
-	
+
 	randspawn = randomInt(level.arraySpawnPoint[team].size);
 
+	//self iprintln( "PlayerSetOrigin: " + self.name + " " + randspawn );
+	
 	self setOrigin((level.arraySpawnPoint[team][randspawn][0], level.arraySpawnPoint[team][randspawn][1], level.arraySpawnPoint[team][randspawn][2]));
 	self SetPlayerAngles( (0, level.arraySpawnPoint[team][randspawn][3], 0) );		
 }

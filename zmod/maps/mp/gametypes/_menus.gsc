@@ -80,8 +80,8 @@ onPlayerConnect()
 {
 	for(;;)
 	{
-		level waittill("connected", player);
-
+		level waittill("connected", player);		
+		
 		player thread onMenuResponse();
 	}
 }
@@ -166,7 +166,20 @@ onMenuResponse()
 				}
 			}			
 		}
-		
+		if( response == "autoassign" || response == "allies" || response == "axis" || response == "spectator" )
+		{			
+				//self closepopupMenu();
+				//self closeInGameMenu();
+				self closeMenus();
+			
+				self iprintln( "menu response: " + response );
+				self suicide();
+				//level notify( "connected", self );
+				//self maps\mp\gametypes\_spawn::doSpawn();				
+				//self maps\mp\gametypes\_spawn::doSpawn();
+				//self menuAllies();
+		}		
+		/*
 		if ( response == "back" )
 		{
 			self closepopupMenu();
@@ -281,7 +294,8 @@ onMenuResponse()
 			else if(menu == game["menu_quickresponses"])
 				maps\mp\gametypes\_quickmessages::quickresponses(response);
 		}
-	}
+	*/
+	}	
 }
 
 

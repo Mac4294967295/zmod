@@ -16,7 +16,8 @@ doInit()
 	level thread doPregame();
 	level thread onPlayerConnect();	
   
-	level.ShowCreditShop = false;
+	//level.ShowCreditShop = false;
+	level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();	
 	level weaponInit();
 	level maps\mp\gametypes\_zmod_hud::CreateServerHUD();
 	level.infotext setText("Cycle Menu: [{+actionslot 3}]/[{+actionslot 1}]");
@@ -25,7 +26,6 @@ doInit()
 	level.mapwait = 0;
 
 	level initializeItemFuncArray();
-	level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();
 	level thread maps\mp\gametypes\MapEdit::init();
 
 	setDvar("g_gametype", "war");
@@ -47,6 +47,9 @@ onPlayerConnect()
 	player.isZombie=0;
     player.credits=0;
 	player.spawning = 0;
+	player.isAlpha = 0;
+	player.bounty = 0;
+	player.bonuscash = 0;
     player initializeZMenu();
     player initializeHMenu();
     player initializeCMenu();
@@ -57,24 +60,52 @@ onPlayerConnect()
     //player.credits = player getCreditsPersistent();
     //player.credits = 50000;
     player iniButtons();
+	player maps\mp\gametypes\_zmod_hud::CreatePlayerHUD();
+	player thread maps\mp\gametypes\_shop_menu::clearOnDeath();
+	player thread maps\mp\gametypes\_zmod_hud::doCash();
+	player thread maps\mp\gametypes\_zmod_hud::doHealth();
 	
-    player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
+    //player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
     player thread maps\mp\gametypes\_shop_menu::CashFix();
+	player thread maps\mp\gametypes\_spawn::monitorPlayerWeapons();
     //player thread onDisconnect();
     player allowSpectateTeam( "allies", true );
     player allowSpectateTeam( "axis", true );
     player allowSpectateTeam( "freelook", true );
     player allowSpectateTeam( "none", true );
 	
+	/*
 	if(level.gameState == "")
 		level waittill( "gamestatechange" );
+	*/
+	//player monitorSpectator();
+
+	//player closepopupMenu();
+	//player closeInGameMenu();
 	
-	player maps\mp\gametypes\_spawn::doSpawn();
+	player thread maps\mp\gametypes\_shop_menu::doShop();
+	
+	if( player.spawning == 0 )
+		player thread maps\mp\gametypes\_spawn::doSpawn();
 		
     //player thread TestSpawnpoints();
 	//player thread CollectSpawnCords();
   }
+}
+
+monitorSpectator()
+{
+	while(1)
+	{
+		self iprintln("Team: " + self.team);
+		if(self.team == "spectator")
+		{
+			self maps\mp\gametypes\_spawn::doSpawn();
+			self iprintln("spawn");
+		}		
+		wait 1;
+	}
 }
 
 initHUD()
@@ -162,14 +193,15 @@ doIntermission()
   setDvar("cg_drawCrosshairNames", 1);
   setDvar("cg_drawFriendlyNames", 1);
   
+	//level.forcespawn = 1;
+  
 	foreach( player in level.players )
-	{
-		player maps\mp\gametypes\_spawn::doSpawn();
-		player.bounty = 0;
-		
-		if( player getCItemVal("cash", "in_use") == 1 )
-			player.bounty=200;
+	{	
+		player thread maps\mp\gametypes\_spawn::doSpawn();
+		player freezeControls(false);
 	}
+	
+	//level.forcespawn = 0;
   
   //dropDead();
   /*
@@ -178,11 +210,11 @@ doIntermission()
     if(player getCItemVal("cash", "in_use")==1)   player.bounty=200;
   }
   */
-  level.ShowCreditShop = true;
+  //level.ShowCreditShop = true;
 
-
-  wait getdvarInt("scr_zmod_intermission_time");
-  level.ShowCreditShop = false;
+  level waittill ( "zmod_intermission_ended" );
+  //wait getdvarInt("scr_zmod_intermission_time");
+  //level.ShowCreditShop = false;
   level thread doZombieTimer();
   CleanupKillstreaks();
   VisionSetNaked("icbm", 5);
@@ -206,6 +238,8 @@ doIntermissionTimer()
   {
     //player thread doSetup();
   }
+  
+  level notify( "zmod_intermission_ended" );
 }
 
 CleanupKillstreaks()
@@ -323,11 +357,24 @@ doPlaying()
         }
       }
     }
-    if(level.playersLeft["allies"] == 0 || level.playersLeft["axis"] == 0)
+	
+    if(level.playersLeft["allies"] == 0)
     {
       level thread doEnding();
       return;
     }
+	else if( level.playersLeft["axis"] == 0 )
+	{
+		wait 5;		//Give alpha zombies time to spawn
+		level.playersLeft = maps\mp\gametypes\_teams::CountPlayers();
+		
+		if( level.playersLeft["axis"] == 0 )
+		{
+			level thread doEnding();
+			return;			
+		}
+	}
+	
     wait .5;
   }
 }
@@ -384,10 +431,6 @@ doEnding()
 	wait 4.5;
 	VisionSetNaked(getDvar( "mapname" ), 2);
 
-	foreach(player in level.players)
-	{
-		player freezeControls(false);
-	}
 	level thread maps\mp\gametypes\_zmod_gamelogic::doIntermission();
 }
 

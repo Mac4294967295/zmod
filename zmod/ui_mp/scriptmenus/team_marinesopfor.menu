@@ -2,22 +2,25 @@
 	menuDef
 	{
 		name "team_marinesopfor"
+		/*
 		rect 0 0 640 480 0 0
 		legacySplitScreenScale
 		forecolor 1 1 1 1
 		focuscolor 1 1 1 1
 		blurWorld 7
+		*/
 		onOpen
 		{
+			scriptmenuresponse "autoassign";
 			self close;
-			//scriptmenuresponse "autoassign";
-			//self close;
 			//setfocus "team_choose_auto";
 		}
+		/*
 		onEsc
 		{
 			//scriptmenuresponse "back";
 		}
+		*/
 		/*
 		execKey "f"
 		{

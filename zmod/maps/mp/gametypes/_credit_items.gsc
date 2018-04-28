@@ -46,14 +46,39 @@ cash(){
 	self notify("MENUCHANGE_2");
 }
 
+execTacticalInsertion()
+{
+	self endon( "death" );
+	self endon( "disconnect" );
+	self endon( "zmod_tacins_set" );
+	
+	/*
+	self iprintln( "TacInsert" );
+	self _giveWeapon( "flare_mp", 0 );
+	self giveStartAmmo( "flare_mp" );	
+	wait 0.2;
+	self switchToWeapon("flare_mp");
+	self thread maps\mp\perks\_perkfunctions::monitorTIUse();
+	wait 0.5;
+	self notify( "grenade_fire", "lightstick", "flame_mp" );
+	//self maps\mp\perks\_perkfunctions::setTacticalInsertion();
+	*/
+}
+
+
+
+
 /*
 gives the player the items on respawn
 */
-giveCreditUpgrades(){
-	if(self getCItemVal("tacticalinsertion", "in_use")==1){
-		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
+giveCreditUpgrades()
+{
+	if(self getCItemVal("tacticalinsertion", "in_use") == 1 )
+	{
+		//self thread execTacticalInsertion();
+		//self maps\mp\perks\_perkfunctions::setTacticalInsertion();
 	}
-	if(self getCItemVal("finalstand", "in_use")==1){
+	if( self getCItemVal("finalstand", "in_use") == 1 ){
 		self maps\mp\perks\_perks::givePerk("specialty_finalstand");
 	}
 }

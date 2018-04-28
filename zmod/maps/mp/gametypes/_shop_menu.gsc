@@ -244,47 +244,88 @@ setCItemVal(item_name, var, value){
 	self.Cmenu[item_name][var] = value;
 }
 
-doShop(){
-	if(level.showcreditshop){
-		self thread doCreditShop();
-	}else if(self.isZombie==0){
-		self thread doHumanShop();
-	}else self thread doZombieShop();
+doShop()
+{	
+	self endon( "disconnect" );
+	self endon( "game_ended" );
+	
+	self thread onGamestatechange();
+	
+	while( 1 )
+	{
+		self waittill ( "zmod_shop_change" );
+		
+		self notify ( "zmod_shop_close" );
+				
+		self iprintln( "Shop Change" );
+		
+		if( level.gameState == "intermission" )
+		{
+			self thread doCreditShop();
+		}
+		else
+		{
+			if( self.team == "axis" )
+				self thread doZombieShop();
+			else
+				self thread doHumanShop();
+		}
+		self thread monitorShop();
+	}
+}
+
+onGamestatechange()
+{
+	self endon( "disconnect" );
+	self endon ( "game_ended" );
+	
+	while(1)
+	{
+		level waittill( "gamestatechange" );
+		self notify( "zmod_shop_change" );
+	}	
 }
 
 doCreditShop()
 {
 	self endon("disconnect");
 	self endon("death");
+	self endon( "zmod_shop_close" );	
 	self notify("CASH"); //updates what currency to display
-	numberOfPages = self.CArray.size-1;
-	while(level.showcreditshop)
-	{
-		doMenuScroll(numberOfPages);
-		//new way of printing the menu; uses ZArray
-		self.menutext setText("Credit Shop " + (self.menu+1) + "/" + numberOfPages);
-		item0 = self.CArray[self.menu][0]; //returns "name" of the item
-		item1 = self.CArray[self.menu][1];
-		item2 = self.CArray[self.menu][2];
-		self.option1 setText("Press [{+smoke}] - " + self getCItemVal(item0, self getCItemVal(item0,"print_text")));
-		self.option2 setText("Press [{+actionslot 2}] - " + self getCItemVal(item1, self getCItemVal(item1,"print_text")));
-		self.option3 setText("Press [{+actionslot 4}] - " + self getCItemVal(item2, self getCItemVal(item2,"print_text")));
-		if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-			self [[level.CFuncArray[self.menu][0]]]();
-		}
-		if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-			self [[level.CFuncArray[self.menu][1]]]();
-		}
-		if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-			self [[level.CFuncArray[self.menu][2]]]();
-		}
 
-		wait 0.1;
+	self.shopname = "credit";
+	self.menu = 0;
+	self iprintln(self.shopname);
+	
+	self.numberOfPages = self.CArray.size-1;
+	self startMenuListenEvents();	
+	
+	while(1)
+	{
+		if( isAlive( self ) )
+		{
+			//new way of printing the menu; uses ZArray
+			self.menutext setText("Credit Shop " + (self.menu+1) + "/" + self.numberOfPages);
+			item0 = self.CArray[self.menu][0]; //returns "name" of the item
+			item1 = self.CArray[self.menu][1];
+			item2 = self.CArray[self.menu][2];
+			self.option1 setText("Press [{+smoke}] - " + self getCItemVal(item0, self getCItemVal(item0,"print_text")));
+			self.option2 setText("Press [{+actionslot 2}] - " + self getCItemVal(item1, self getCItemVal(item1,"print_text")));
+			self.option3 setText("Press [{+actionslot 4}] - " + self getCItemVal(item2, self getCItemVal(item2,"print_text")));
+			self.scrollright setText(">");
+			self.scrollleft setText("<");
+		}
+		else
+		{
+			self.menutext setText( "" );
+			self.option1 setText( "" );
+			self.option2 setText( "" );
+			self.option2 setText( "" );
+			self.scrollright setText("");
+			self.scrollleft setText("");
+		}
+			self waittill ( "zmod_shop_draw" );		
 	}
-	doHumanShop(); //at end of creditshop call humanshop
 }
 
 
@@ -292,11 +333,18 @@ doZombieShop()
 {
 	self endon("disconnect");
 	self endon("death");
-	numberOfPages = self.ZArray.size-1;
-	while(self.isZombie!=0)
-	{
-		doMenuScroll(numberOfPages);
-		self.menutext setText("Zombie Shop " + (self.menu+1) + "/" + numberOfPages);
+	self endon( "zmod_shop_close" );
+	
+	self.shopname = "zombie";
+	self.menu = 0;
+	self iprintln(self.shopname);
+	
+	self.numberOfPages = self.ZArray.size-1;
+	self startMenuListenEvents();	
+	
+	while(1)
+	{	
+		self.menutext setText("Zombie Shop " + (self.menu+1) + "/" + self.numberOfPages);
 		//new way of printing the menu; uses ZArray
 		item0 = self.ZArray[self.menu][0]; //returns "name" of the item
 		item1 = self.ZArray[self.menu][1];
@@ -305,23 +353,7 @@ doZombieShop()
 		self.option2 setText("Press [{+actionslot 2}] - " + self getZItemVal(item1, self getZItemVal(item1,"print_text")));
 		self.option3 setText("Press [{+actionslot 4}] - " + self getZItemVal(item2, self getZItemVal(item2,"print_text")));
 
-
-
-
-		if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-			self [[level.ZFuncArray[self.menu][0]]]();
-		}
-		if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-			self [[level.ZFuncArray[self.menu][1]]]();
-		}
-		if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-			self [[level.ZFuncArray[self.menu][2]]]();
-		}
-
-		wait 0.1;
+		self waittill ( "zmod_shop_draw" );
 	}
 }
 
@@ -329,12 +361,19 @@ doHumanShop()
 {
 	self endon("disconnect");
 	self endon("death");
+	self endon( "zmod_shop_close" );	
 	self notify("CASH"); //updates what currency to display
-	numberOfPages = self.HArray.size-1;
-	while(self.isZombie==0)
+	
+	self.shopname = "human";
+	self.menu = 0;
+	self iprintln(self.shopname);
+	
+	self.numberOfPages = self.HArray.size-1;
+	self startMenuListenEvents();
+	
+	while(1)
 	{
-		doMenuScroll(numberOfPages);
-		self.menutext setText("Human Shop " + (self.menu+1) + "/" + numberOfPages);
+		self.menutext setText("Human Shop " + (self.menu+1) + "/" + self.numberOfPages);
 		item0 = self.HArray[self.menu][0]; //returns "name" of the item
 		item1 = self.HArray[self.menu][1];
 		item2 = self.HArray[self.menu][2];
@@ -342,240 +381,170 @@ doHumanShop()
 		self.option2 setText("Press [{+actionslot 2}] - " + self getHItemVal(item1, self getHItemVal(item1,"print_text")));
 		self.option3 setText("Press [{+actionslot 4}] - " + self getHItemVal(item2, self getHItemVal(item2,"print_text")));
 
-
-
-		if(self.buttonPressed[ "+smoke" ] == 1){
-		self.buttonPressed[ "+smoke" ] = 0;
-			self [[level.HFuncArray[self.menu][0]]]();
-		}
-		if(self.buttonPressed[ "+actionslot 2" ] == 1){
-		self.buttonPressed[ "+actionslot 2" ] = 0;
-			self [[level.HFuncArray[self.menu][1]]]();
-		}
-		if(self.buttonPressed[ "+actionslot 4" ] == 1){
-		self.buttonPressed[ "+actionslot 4" ] = 0;
-			self [[level.HFuncArray[self.menu][2]]]();
-		}
-
-		wait 0.1;
+		self waittill ( "zmod_shop_draw" );
 	}
 }
+
+selectShopOption( option )
+{
+	self endon ( "death" );
+	self endon ( "zmod_shop_close" );	
+	
+	if(!isDefined( option ))
+		return;
+	
+	self iprintln ( "Menu Select: " + option);
+	
+	switch( self.shopname )
+	{
+		case "human":
+			self [[level.HFuncArray[self.menu][option]]]();
+		break;
+		
+		case "zombie":
+			self [[level.ZFuncArray[self.menu][option]]]();
+		break;
+		
+		case "credit":
+			self [[level.CFuncArray[self.menu][option]]]();
+		break;
+	}
+	
+	self monitorShop();
+}
+
 /*
 Monitors everything shop related; updates what text to print depending on currentweapon etc.
 */
-monitorShop(){
-	self endon("disconnect");
-	self endon("death");
-	while(1){
-		if(self getCItemVal("tacticalinsertion", "in_use")==1){
-			self setCItemVal("tacticalinsertion", "print_text", "text2");
-		}
-		if(self getCItemVal("finalstand", "in_use")==1){
-			self setCItemVal("finalstand", "print_text", "text2");
-		}
-		if(self getCItemVal("finalstand", "in_use")==1){
-			self setCItemVal("finalstand", "print_text", "text2");
-		}
-		if(self getCItemVal("antialpha", "in_use")==1){
-			self setCItemVal("antialpha", "print_text", "text2");
-		}
-		if(self getCItemVal("cash", "in_use")==1){
-			self setCItemVal("cash", "print_text", "text2");
-		}
-		wait 0.5;
-		/*Takes all weapons from zombie which Zombies cant have (i.e.: Picking up weapons from ground)*/
-		if(self getCurrentWeapon()!="usp_tactical_mp" && self getCurrentWeapon()!="riotshield_mp" && self.isZombie!=0){
-			self takeAllWeapons();
-			self giveWeapon("usp_tactical_mp", 0, false);
-		  self setWeaponAmmoClip("usp_tactical_mp", 0);
-		  self setWeaponAmmoStock("usp_tactical_mp", 0);
-		  wait .2;
-		  self switchToWeapon("usp_tactical_mp");
-			if(self getZItemVal("riotshield", "in_use")==1){
-				self giveWeapon("riotshield_mp", 0, false);
-			}
-		}
-		/*Updates text to print for when akimbo is available/unavailable*/
-		if(isAttachable("akimbo")) self setHItemVal("akimbo", "print_text", "text1");
-		else self setHItemVal("akimbo", "print_text", "text2");
+monitorShop()
+{
+	if( self getCItemVal("tacticalinsertion", "in_use") == 1 )
+	{
+		self setCItemVal("tacticalinsertion", "print_text", "text2");
+	}
+	
+	if(self getCItemVal("finalstand", "in_use")==1)
+	{
+		self setCItemVal("finalstand", "print_text", "text2");
+	}
+	
+	if(self getCItemVal("finalstand", "in_use")==1)
+	{
+		self setCItemVal("finalstand", "print_text", "text2");
+	}
+	
+	if(self getCItemVal("antialpha", "in_use")==1)
+	{
+		self setCItemVal("antialpha", "print_text", "text2");
+	}
+	else
+	{
+		self setCItemVal("antialpha", "print_text", "text1");
+	}
+	
+	if(self getCItemVal("cash", "in_use")==1)
+	{
+		self setCItemVal("cash", "print_text", "text2");
+	}
+	
+	/*Updates text to print for when akimbo is available/unavailable*/
+	if(isAttachable("akimbo")) 
+		self setHItemVal("akimbo", "print_text", "text1");
+	else 
+		self setHItemVal("akimbo", "print_text", "text2");
 
-		if(self getHItemVal("sight", "in_use")==1){
-			self setHItemVal("sight", "print_text", "text2");
-		}else self setHItemVal("sight", "print_text", "text1");
-		/*Updates what text to print for all the weapon swapping "items", either "swap smg/ar/lmg/etc." or "exchange curr weapon for smg/ar/lmg"*/
-		if(!(self getCurrentWeapon()=="none")){ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
-			foreach(weaponclass in level.weaponclasses){
+	if(self getHItemVal("sight", "in_use")==1)
+	{
+		self setHItemVal("sight", "print_text", "text2");
+	}
+	else 
+		self setHItemVal("sight", "print_text", "text1");
+	
+	/*Updates what text to print for all the weapon swapping "items", either "swap smg/ar/lmg/etc." or "exchange curr weapon for smg/ar/lmg"*/
+	if(!(self getCurrentWeapon()=="none"))
+	{ //makes sure to not change anything if current weapon is "none" (for example while climbing), so just keeps state from before player started climbing
+		foreach(weaponclass in level.weaponclasses)
+		{
 			basename = strtok(weaponclass, "_");
 			modweaponclass = getWeaponClass(self getCurrentWeapon());
-			if(modweaponclass=="weapon_machine_pistol") modweaponclass="weapon_pistol";
-				if(modweaponclass==weaponclass) self setHItemVal(basename[1], "print_text", "text2");
-				else  self setHItemVal(basename[1], "print_text", "text1");
-					self notify("MENUCHANGE_2");
-			}
+			
+			if(modweaponclass=="weapon_machine_pistol") 
+				modweaponclass="weapon_pistol";
+			
+			if(modweaponclass==weaponclass) 
+				self setHItemVal(basename[1], "print_text", "text2");
+			
+			else  self setHItemVal(basename[1], "print_text", "text1");
+				self notify("MENUCHANGE_2");
 		}
 	}
+	
+	self notify( "zmod_shop_draw" );	
 }
 
-doMenuScroll(numberOfPages){
-	if(self.menu==-1) self.menu=numberOfPages-1;
-	if(self.menu==numberOfPages) self.menu=0;
-	if(self.buttonPressed[ "+actionslot 3" ] == 1){
-		self.buttonPressed[ "+actionslot 3" ] = 0;
-		self.menu--;
+scrollShopMenu( option )
+{	
+	self iprintln ( "Menu Scroll: " + option);
+			
+	if( option == "+" )			//Forward
+	{
+		if( self.menu == self.numberOfPages - 1)
+		{
+			self.menu = 0;
+		}
+		else
+		{
+			self.menu++;
+		}		
 	}
-	if(self.menu==-1) self.menu=numberOfPages-1;
-	if(self.menu==numberOfPages) self.menu=0;
-	if(self.buttonPressed[ "+actionslot 1" ] == 1){
-		self.buttonPressed[ "+actionslot 1" ] = 0;
-		self.menu++;
+	else if( option == "-" )	//Back
+	{
+		if( self.menu == 0 )
+		{
+			self.menu = self.numberOfPages - 1;
+		}
+		else
+		{
+			self.menu--;
+		}	
 	}
-	if(self.menu==-1) self.menu=numberOfPages-1;
-	if(self.menu==numberOfPages) self.menu=0;
+
+	self notify ( "zmod_shop_draw" );
 }
 
-CreatePlayerHUD()
+clearOnDeath()
 {
-  self.HintText = self createFontString( "objective", 1.25 );
-  self.HintText setPoint( "CENTER", "CENTER", 0, 50 );
-
-
-  b = -65;
-  s = 15;
-  i = 0;
-  a = 0.85;
-
-
-
-  self.scrollleft = NewClientHudElem( self );
-  self.scrollleft.alignX = "center";
-  self.scrollleft.alignY = "bottom";
-  self.scrollleft.horzAlign = "center";
-  self.scrollleft.vertAlign = "bottom";
-  self.scrollleft.x = -230;
-  self.scrollleft.y = -30;
-  self.scrollleft.fontScale = 1;
-  self.scrollleft.font = "hudbig";
-  self.scrollleft.alpha = a;
-  self.scrollleft.glow = 1;
-  self.scrollleft.glowColor = ( 0, 0, 1 );
-  self.scrollleft.glowAlpha = 1;
-  self.scrollleft.color = ( 1.0, 1.0, 1.0 );
-
-  self.scrollright = NewClientHudElem( self );
-  self.scrollright.alignX = "center";
-  self.scrollright.alignY = "bottom";
-  self.scrollright.horzAlign = "center";
-  self.scrollright.vertAlign = "bottom";
-  self.scrollright.fontScale = 1.15;
-  self.scrollright.x = 230;
-  self.scrollright.y = -30;
-  self.scrollright.fontScale = 1;
-  self.scrollright.font = "hudbig";
-  self.scrollright.alpha = a;
-  self.scrollright.glow = 1;
-  self.scrollright.glowColor = ( 0, 0, 1 );
-  self.scrollright.glowAlpha = 1;
-  self.scrollright.color = ( 1.0, 1.0, 1.0 );
-
-  self.scrollright setText(">");
-  self.scrollleft setText("<");
-
-  self.menutext = NewClientHudElem( self );
-  self.menutext.alignX = "center";
-  self.menutext.alignY = "bottom";
-  self.menutext.horzAlign = "center";
-  self.menutext.vertAlign = "bottom";
-  self.menutext.y = b + (s * i);
-  self.menutext.foreground = true;
-  self.menutext.fontScale = 1.15;
-  self.menutext.font = "objective";
-  self.menutext.alpha = a;
-  self.menutext.glow = 1;
-  self.menutext.glowColor = ( 0.2, 0.2, 1 );
-  self.menutext.glowAlpha = 1;
-  self.menutext.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  self.option1 = NewClientHudElem( self );
-  self.option1.alignX = "center";
-  self.option1.alignY = "bottom";
-  self.option1.horzAlign = "center";
-  self.option1.vertAlign = "bottom";
-  self.option1.y = b + (s * i);
-  self.option1.foreground = true;
-  self.option1.fontScale = 1.15;
-  self.option1.font = "objective";
-  self.option1.alpha = a;
-  self.option1.glow = 1;
-  self.option1.glowColor = ( 0, 0, 1 );
-  self.option1.glowAlpha = 1;
-  self.option1.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  self.option2 = NewClientHudElem( self );
-  self.option2.alignX = "center";
-  self.option2.alignY = "bottom";
-  self.option2.horzAlign = "center";
-  self.option2.vertAlign = "bottom";
-  self.option2.y = b + (s * i);
-  self.option2.foreground = true;
-  self.option2.fontScale = 1.15;
-  self.option2.font = "objective";
-  self.option2.alpha = a;
-  self.option2.glow = 1;
-  self.option2.glowColor = ( 0, 0, 1 );
-  self.option2.glowAlpha = 1;
-  self.option2.color = ( 1.0, 1.0, 1.0 );
-  i++;
-
-  self.option3 = NewClientHudElem( self );
-  self.option3.alignX = "center";
-  self.option3.alignY = "bottom";
-  self.option3.horzAlign = "center";
-  self.option3.vertAlign = "bottom";
-  self.option3.y = b + (s * i);
-  self.option3.foreground = true;
-  self.option3.fontScale = 1.15;
-  self.option3.font = "objective";
-  self.option3.alpha = a;
-  self.option3.glow = 1;
-  self.option3.glowColor = ( 0, 0, 1 );
-  self.option3.glowAlpha = 1;
-  self.option3.color = ( 1.0, 1.0, 1.0 );
-}
-
-destroyOnDeath()
-{
-	self endon("disconnect");
-	while(1){
-	  self waittill ( "death" );
-	  self.HintText destroy();
-	  self.healthtext destroy();
-	  self.healthlabel destroy();
-	  self.lifetext destroy();
-	  self.lifelabel destroy();
-	  self.menutext destroy();
-	  self.cash destroy();
-	  self.cashlabel destroy();
-	  self.option1 destroy();
-	  self.option2 destroy();
-	  self.option3 destroy();
-	  self.scrollleft destroy();
-	  self.scrollright destroy();
-	  self.DebugHUD destroy();
+	while( 1 )
+	{
+		self waittill ( "death" );
+		
+		self.healthlabel setText( "" );
+		self.healthtext setText( "" );
+		self.lifelabel setText( "" );
+		self.lifetext setText( "" );
+		self.cashlabel SetText( "" );
+		self.cash setText( "" );
+		self.menutext SetText( "" );	
+		self.option1 SetText( "" );
+		self.option2 SetText( "" );
+		self.option3 SetText( "" );
+		self.scrollleft SetText( "" );
+		self.scrollright SetText( "" );
 	}
 }
 
 iniButtons()
 {
-  self.buttonAction = [];
-  self.buttonAction[0]="+actionslot 2";
-  self.buttonAction[1]="+actionslot 1";
-  self.buttonAction[2]="+actionslot 4";
-  self.buttonAction[3]="+smoke";
-  self.buttonAction[4]="+activate";
-  self.buttonAction[5]="+frag";
-  self.buttonAction[6]="+actionslot 3";
+	self.buttonAction = [];
+	self.buttonAction[0]="+actionslot 2";
+	self.buttonAction[1]="+actionslot 1";
+	self.buttonAction[2]="+actionslot 4";
+	self.buttonAction[3]="+smoke";
+	self.buttonAction[4]="+activate";
+	self.buttonAction[5]="+frag";
+	self.buttonAction[6]="+actionslot 3";
+	self.buttonAction[7]="weapnext";
+	self.buttonAction[8]="+activate";			//F 
   self.buttonPressed = [];
   for(i=0;i<self.buttonAction.size;i++)
   {
@@ -588,6 +557,7 @@ monitorButtons( buttonIndex )
 {
   self endon ( "disconnect" );
   self notifyOnPlayerCommand( buttonIndex, buttonIndex );
+  
   for (;;)
   {
     self waittill( buttonIndex );
@@ -595,6 +565,44 @@ monitorButtons( buttonIndex )
     wait .1;
     self.buttonPressed[ buttonIndex ] = 0;
   }
+}
+
+listenEvent(function, parameter, event, endon_event1, endon_event2)
+{
+	if(endon_event1 != 0)
+		self endon (endon_event1);
+	
+	if(endon_event2 != 0)
+		self endon (endon_event2);
+	
+	while(1)
+	{
+		self waittill(event);		
+		
+		if(parameter != "")
+		{
+			self [[function]](parameter);
+		}
+		else
+		{
+			self [[function]]();			
+		}
+	}
+}
+
+startMenuListenEvents()
+{
+	//self thread listenEvent(::ForgeSpawnCrate, 0, "+attack", "stopforge", "menuopen");
+	self thread listenEvent(::scrollShopMenu, "+", "+actionslot 1", "death", "zmod_shop_close");
+	self thread listenEvent(::scrollShopMenu, "-", "+actionslot 3", "death", "zmod_shop_close");
+
+	self thread listenEvent(::selectShopOption, 0, "+smoke", "death", "zmod_shop_close");
+	self thread listenEvent(::selectShopOption, 1, "+actionslot 2", "death", "zmod_shop_close");
+	self thread listenEvent(::selectShopOption, 2, "+actionslot 4", "death", "zmod_shop_close");
+	
+	self thread listenEvent(::monitorShop, "", "weapnext", "death", "disconnect");
+	
+	self thread listenEvent(maps\mp\gametypes\_credit_items::execTacticalInsertion, "", "+activate", "disconnect", "death");
 }
 
 statCashAdd(amount)

@@ -1,6 +1,7 @@
 
 init()
 {
+	/*
 	game["menu_quickcommands"] = "quickcommands";
 	game["menu_quickstatements"] = "quickstatements";
 	game["menu_quickresponses"] = "quickresponses";
@@ -35,6 +36,7 @@ init()
 	precacheString( &"QUICKMESSAGE_ARE_YOU_CRAZY" );	
 	precacheString( &"QUICKMESSAGE_WATCH_SIX" );	
 	precacheString( &"QUICKMESSAGE_COME_ON" );	
+	*/
 }
 
 quickcommands(response)
