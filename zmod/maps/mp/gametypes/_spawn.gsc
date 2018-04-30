@@ -6,65 +6,65 @@
 doSpawn()
 {
 	//Exits
-	self endon ( "game_ended" );	
-	
+	self endon ( "game_ended" );
+
 	if (self.spawning == 1)
 		return;
 
 	if ( level.gameState == "postgame" )
 		return;
-	
+
 	//Spawn Player
 	self.spawning = 1;
 
 	if( level.gameState == "playing" )
-	{		
+	{
 		if(self getCItemVal("life", "in_use") > 0 && self.isZombie == 0 && self.isAlpha == 0)
-		{			
+		{
 			self.bounty = 0;
 			self.bonuscash = 1;
 			self setCItemVal("life", "in_use", self getCItemVal("life", "in_use") - 1);
-			self SpawnPlayer( "allies" );				
+			self SpawnPlayer( "allies" );
 		}
 		else
-		{				
+		{
 			self SpawnPlayer( "axis" );
-		}		
+		}
 	}
 	else
-	{		
+	{
 		self.bounty = 0;
 		self.bonuscash = 1;
 		self.isAlpha = 0;
-		self SpawnPlayer( "allies" );			
+		self SpawnPlayer( "allies" );
 	}
-	
+
 	self.spawning = 0;
-	
-	//Post Spawn Setups		
+
+	//Post Spawn Setups
 	if( self.isZombie == 0 )
-	{	
+	{
 		self doHumanSetup();
-		self maps\mp\gametypes\_credit_items::giveCreditUpgrades();		
+		self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
 	}
 	else
 	{
-		self doZombieSetup();		
+		self doZombieSetup();
 	}
-	
-	self.combo = 0;	
+
+	self.combo = 0;
 	self.menu = 0;
-	self.isRepairing = false;		
-	
+	self.isRepairing = false;
+
 	if( self getCItemVal("cash", "in_use") == 1 && self.bonuscash)
 	{
 		self.bounty = 200;
-		self.bonuscash = 0;	
+		self.bonuscash = 0;
 	}
-	
+
 	self statCashAdd(5000);
-	
-	self notify( "zmod_shop_change" );		
+
+	self notify( "zmod_shop_change" );
 	self notify( "HEALTH" );
 	self notify( "LIVES" );
 	self notify( "CASH" );
@@ -74,15 +74,15 @@ SpawnPlayer( team )
 {
 	self thread SetPlayerTeam( team );
 	self waittill_any( "spawned_player", "zmod_setplayerteam_none" );
-	
+
 	self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
-	
+
 	if( self.team == "axis" )
 		self.isZombie = 1;
-		
+
 	if( self.team == "allies" )
-		self.isZombie = 0;	
-				
+		self.isZombie = 0;
+
 	if( level.gameState == "pregame" )
 	{
 		self freezeControls(true);
@@ -91,12 +91,12 @@ SpawnPlayer( team )
 }
 
 SetPlayerTeam( team )
-{	
+{
 	if( self.team != team )
-	{		
+	{
 		self iprintln( "SetPlayerTeam" );
 		logprint( self.name + "SetPlayerTeam" + "\n" );
-				
+
 		if( team == "allies" )
 		{
 			self.switching_teams = true;
@@ -111,9 +111,9 @@ SetPlayerTeam( team )
 			self.leaving_team = self.pers["team"];
 			self maps\mp\gametypes\_menus::addToTeam( "axis" );
 		}
-		
+
 		self SetPlayerClass();
-		self suicide();		
+		self suicide();
 	}
 	else
 	{
@@ -127,10 +127,10 @@ validClass( team )
 {
 	if( team == "allies" && self.class == "class0" )
 		return 1;
-	
+
 	if( team == "axis" && self.class == "class3" )
 		return 1;
-	
+
 	return 0;
 }
 */
@@ -138,8 +138,8 @@ validClass( team )
 SetPlayerClass()
 {
 	self iprintln( "SetPlayerClass" );
-	logprint( self.name + "SetPlayerClass" + "\n" );	
-	
+	logprint( self.name + "SetPlayerClass" + "\n" );
+
 	if ( self.team == "axis")
 	{
 		class = "class3";
@@ -156,25 +156,25 @@ SetPlayerClass()
 
 doHumanSetup()
 {
-	//iprintln( "Human Setup" );	
+	//iprintln( "Human Setup" );
 	//logprint( self.name + "Human Setup" + "\n" );
-	
+
 	self thread maps\mp\gametypes\_zmod_hud::doLives();
 	self _clearPerks();
-	
+
 	self.grenades = 3;
-	
+
 	self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (0/3) - ");
-	
+
 	self _unsetperk("specialty_bulletaccuracy");
 	self SetClientDvar("perk_weapSpreadMultiplier", "1");
 	self _unsetperk("specialty_holdbreath");
 	self _unsetperk("specialty_fastreload");
 	self _unsetperk("specialty_quickdraw");
-	
+
 	self maps\mp\perks\_perks::givePerk("specialty_marathon");
 	self maps\mp\perks\_perks::givePerk("specialty_fastsprintrecovery");
-	
+
 	self.moveSpeedScaler = 1.07;
 	self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 	self resetHMenu();
@@ -202,31 +202,31 @@ doZombieSetup()
 {
 	//iprintln( "Zombie Setup" );
 	//logprint( self.name + "Zombie Setup" + "\n" );
-	
+
 	self _clearPerks();
-	
+
 	self.grenades = 0;
-	
+
 	SetDvar("player_sprintUnlimited", 1);
 	self maps\mp\perks\_perks::givePerk("specialty_fastsprintrecovery");
 	self maps\mp\perks\_perks::givePerk("specialty_fastmantle");
 	self maps\mp\perks\_perks::givePerk("specialty_falldamage");
 	self maps\mp\perks\_perks::givePerk("specialty_thermal");
-	
+
 	self.moveSpeedScaler = 1.07;
 	self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
-	
+
 	self SetOffhandPrimaryClass("");
-	
+
 	self setWeaponAmmoClip("frag_grenade_mp", 0);
 	self setWeaponAmmoStock("frag_grenade_mp", 0);
-	
+
 	self takeAllWeapons();
-	
+
 	self giveWeapon("usp_tactical_mp", 0, false);
 	self setWeaponAmmoClip("usp_tactical_mp", 0);
 	self setWeaponAmmoStock("usp_tactical_mp", 0);
-	
+
 	wait .2;
 	self switchToWeapon("usp_tactical_mp");
 	self maps\mp\gametypes\_zombie_items::giveZUpgrades();
@@ -235,12 +235,12 @@ doZombieSetup()
 monitorPlayerWeapons()
 {
 	self endon( "disconnect" );
-	
+
 	while(1)
 	{
 		wait 0.5;
 		/*Takes all weapons from zombie which Zombies cant have (i.e.: Picking up weapons from ground)*/
-		if( self getCurrentWeapon() != "usp_tactical_mp" && self getCurrentWeapon() != "riotshield_mp" && self.isZombie != 0 && isAlive( self ) )
+		if( self getCurrentWeapon() != "usp_tactical_mp" && self getCurrentWeapon() != "riotshield_mp" && self.isZombie != 0 && isAlive( self ) && self getCurrentWeapon() != "stinger_mp" )
 		{
 			self takeAllWeapons();
 			self giveWeapon("usp_tactical_mp", 0, false);
@@ -248,7 +248,7 @@ monitorPlayerWeapons()
 			self setWeaponAmmoStock("usp_tactical_mp", 0);
 			wait .2;
 			self switchToWeapon("usp_tactical_mp");
-			
+
 			if(self getZItemVal("riotshield", "in_use")==1)
 			{
 				self giveWeapon("riotshield_mp", 0, false);
@@ -263,26 +263,26 @@ pickZombie()
 
 	if( level.players.size == 0)
 	{
-		level waittill( "connected", player );	
+		level waittill( "connected", player );
 		wait 10;
 	}
-	
+
 	//iprintln( "pickZombie" );
 	//logprint( self.name + "pickZombie" + "\n" );
-	
+
 	numberOfZombies=int(level.players.size / 6 + 1);
-	
+
 	for(i=0;i<numberOfZombies;i++)
 	{
 		while(1)
 		{
 			rnd = randomInt(level.players.size);
-			
-			if(!isDefined(level.players[rnd])) 
+
+			if(!isDefined(level.players[rnd]))
 				return;
-			
+
 			randPlayer = level.players[rnd];
-			
+
 			if( randPlayer getCItemVal("antialpha", "in_use") == 0 )
 			{
 				break;
@@ -296,15 +296,15 @@ pickZombie()
 		}
 		level.gameState = "playing";
 		level notify("gamestatechange");
-		
+
 		//iprintln( "picked Zombie: " + randplayer.name + "\n" );
 		//logprint( self.name + "picked Zombie: " + randplayer.name );
-		
+
 		randPlayer.isAlpha = 1;
 		randPlayer.bonuscash = 1;
 		randPlayer doSpawn();
 	}
-	
+
 	level thread maps\mp\gametypes\_zmod_gamelogic::doPlaying();
 	level thread maps\mp\gametypes\_zmod_gamelogic::doPlayingTimer();
 	level thread maps\mp\gametypes\_zmod_gamelogic::inGameConstants();
@@ -313,13 +313,13 @@ pickZombie()
 onPlayerSpawned()
 {
 	self endon( "disconnect" );
-	
+
 	while(1)
 	{
 		self waittill( "spawned_player" );
 		//self iprintln( "spawned_player: " + self.spawning );
 		//logprint( self.name + "spawned_player: " + self.spawning + "\n" );
-		
+
 		if( self.spawning == 0 )
 			self thread doSpawn();
 	}

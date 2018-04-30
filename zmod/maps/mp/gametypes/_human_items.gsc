@@ -618,7 +618,6 @@ exchangeWeapon(weaponclass){
 				}
 				self setHItemVal(weaponclass, "in_use", 1);
 				self setHItemVal(weaponclass, "print_text", "text2");
-				self iPrintlnBold(self getNumberOfWeapons());
 				if(self getNumberOfWeapons()>2) self takeWeapon(self getCurrentWeapon());
 				self giveWeapon(randWeapon + "_mp", 0, true); 					//gives player the weapon
 				self GiveMaxAmmo(randWeapon + "_mp"); 							//gives full ammo for new weapon
@@ -628,6 +627,7 @@ exchangeWeapon(weaponclass){
 				}else self switchToWeapon(randWeapon + "_mp");
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
 			self notify("MENUCHANGE_2");
+			self notify("weapnext");
 		}else{
 			i = 0;
 			while(1){															//returns index in weaponClassArray of current weapon
@@ -661,6 +661,7 @@ exchangeWeapon(weaponclass){
 			}
 			self giveWeapon(weap, 0, true);
 			self switchToWeapon(weap);
+			self notify("weapnext");
 			self SetWeaponAmmoClip( weap, int(clip_ammo_ratio*weaponclipsize(weap)));
 			self SetWeaponAmmoStock( weap, int(stock_ammo_ratio*weaponmaxammo(weap)));
 		}
