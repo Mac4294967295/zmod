@@ -606,11 +606,10 @@ startMenuListenEvents()
 
 monitorWeaponSwap(){
 	currWeap = self getCurrentWeapon();
-	while(true){
+	while(currWeap==self getCurrentWeapon() || self getCurrentWeapon()=="none"){
 		wait .2;
-		if(currWeap!=self getCurrentWeapon() && self getCurrentWeapon()!="none") break;
 	}
-	self monitorShop();
+	self thread monitorShop();
 }
 statCashAdd(amount)
 {
