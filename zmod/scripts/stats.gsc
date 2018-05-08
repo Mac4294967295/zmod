@@ -3,7 +3,8 @@
 #include maps\mp\gametypes\_hud_util;
 
 init(){
-	//precacheMenu("stats");
+	game["menu_stats"] = "stats";
+	precacheMenu(game["menu_stats"]);
 	level thread onPlayerConnect();
 	level.stats = [];
 	stats\_statsinit::initializeStats();
@@ -20,6 +21,9 @@ onPlayerConnect()
     for(;;){
         level waittill("connected", player);
 				player thread playerInitStats();
+				player thread testprint("openMenu");
+				player openMenu(game["menu_stats"]);
+
     }
 }
 /*reads data from _statsinit.gsc, the py script writes to said file*/
@@ -52,22 +56,13 @@ logstats(){
 }
 
 test(){
-	sortedXuids = getSortedXuids();
-	printString = "";
-	foreach(xuid in sortedXuids){
-		printString+=" "+xuid;
-	}
 	while(true){
 		foreach(player in level.players){
-			//player iPrintLnBold(player.isZombie+" "+level.gamestate+" HKills: "+player.HKills);
+			//player iPrintLnBold(player.ZAssists+" "+player.HAssits);
+			player iPrintLnBold("eser");
 			//player iPrintLnBold(player.isZombie+" "+level.gamestate+" HKills: "+player.HKills+" ZKills: "+player.ZKills+" HDeaths: "+player.HDeaths+" ZDeaths: "+player.ZDeaths);
-			//player incPersStat("kills", 1);
 		}
-		level.stats["42"]["HKills"] = level.stats["42"]["HKills"]+1;
 		updateDvars();
-		foreach ( player in level.players ){
-			player setClientDvar( "ui_opensummary", 1 );
-		}
 		wait 1;
 	}
 }
@@ -95,7 +90,7 @@ playerInitStats(){
 	self.ZAssists=0;
 	self.HTime=0;
 	self.ZTime=0;
-	self.score=0;
+	self.zscore=0;
 	level.stats[self.guid]["name"] = self.name;
 	level.stats[self.guid]["HKills"] = self.HKills;
 	level.stats[self.guid]["ZKills"] = self.ZKills;
@@ -105,7 +100,7 @@ playerInitStats(){
 	level.stats[self.guid]["ZDeaths"] = self.ZDeaths;
 	level.stats[self.guid]["HTime"] = self.HTime;
 	level.stats[self.guid]["ZTime"] = self.ZTime;
-	level.stats[self.guid]["score"] = self.score;
+	level.stats[self.guid]["score"] = self.zscore;
 }
 /*Return the xuids sorted by their score; xuid at index 0=best player*/
 getSortedXuids(){
@@ -140,8 +135,8 @@ updateStatsArray(){
 		player.HTime=0;
 	  level.stats[player.guid]["ZTime"] += player.ZTime;
 		player.ZTime=0;
-	  level.stats[player.guid]["score"] += player.score;
-		player.score=0;
+	  level.stats[player.guid]["score"] += player.zscore;
+		player.zscore=0;
 	}
 }
 
@@ -173,4 +168,17 @@ updateDvars(){
 		}
 		wait 1;
 	}
+}
+
+testprint(text){
+	while(true){
+		self iPrintLnBold(text);
+		//self closeMenus();
+		//self closepopupMenu();
+		//self closeInGameMenu();
+		wait .5;
+		//self openMenu(game["menu_stats"]);
+		wait 1;
+	}
+
 }

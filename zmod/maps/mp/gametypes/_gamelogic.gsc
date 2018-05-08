@@ -5,7 +5,7 @@
 FACTION_REF_COL 					= 0;
 FACTION_NAME_COL 					= 1;
 FACTION_SHORT_NAME_COL 				= 1;
-FACTION_WIN_GAME_COL 				= 3; 
+FACTION_WIN_GAME_COL 				= 3;
 FACTION_WIN_ROUND_COL 				= 4;
 FACTION_MISSION_ACCOMPLISHED_COL 	= 5;
 FACTION_ELIMINATED_COL 				= 6;
@@ -28,21 +28,21 @@ onForfeit( team )
 	level endon( "abort_forfeit" );			//end if the team is no longer in forfeit status
 
 	level.forfeitInProgress = true;
-	
+
 	// in 1v1 DM, give players time to change teams
 	if ( !level.teambased && level.players.size > 1 )
 		wait 10;
-	
+
 	forfeit_delay = 20.0;						//forfeit wait, for switching teams and such
-	
+
 	foreach ( player in level.players )
 	{
 		player setLowerMessage( "forfeit_warning", game["strings"]["opponent_forfeiting_in"], forfeit_delay, 100 );
 		player thread forfeitWaitforAbort();
 	}
-		
+
 	wait ( forfeit_delay );
-	
+
 	endReason = &"";
 	if ( !isDefined( team ) )
 	{
@@ -68,7 +68,7 @@ onForfeit( team )
 	}
 	//exit game, last round, no matter if round limit reached or not
 	level.forcedEnd = true;
-	
+
 	if ( isPlayer( winner ) )
 		logString( "forfeit, win: " + winner getXuid() + "(" + winner.name + ")" );
 	else
@@ -81,9 +81,9 @@ forfeitWaitforAbort()
 {
 	self endon ( "disconnect" );
 	level endon ( "game_ended" );
-	
+
 	level waittill ( "abort_forfeit" );
-	
+
 	self clearLowerMessage( "forfeit_warning" );
 }
 
@@ -95,7 +95,7 @@ default_onDeadEvent( team )
 		iPrintLn( game["strings"]["allies_eliminated"] );
 
 		logString( "team eliminated, win: opfor, allies: " + game["teamScores"]["allies"] + ", opfor: " + game["teamScores"]["axis"] );
-		
+
 		thread endGame( "axis", game["strings"]["allies_eliminated"] );
 	}
 	else if ( team == "axis" )
@@ -121,16 +121,16 @@ default_onDeadEvent( team )
 default_onOneLeftEvent( team )
 {
 	if ( level.teamBased )
-	{		
+	{
 		assert( team == "allies" || team == "axis" );
-		
+
 		lastPlayer = getLastLivingPlayer( team );
 		lastPlayer thread giveLastOnTeamWarning();
 	}
 	else
 	{
 		lastPlayer = getLastLivingPlayer();
-		
+
 		logString( "last one alive, win: " + lastPlayer.name );
 		thread endGame( lastPlayer, &"MP_ENEMIES_ELIMINATED" );
 	}
@@ -142,7 +142,7 @@ default_onOneLeftEvent( team )
 default_onTimeLimit()
 {
 	winner = undefined;
-	
+
 	if ( level.teamBased )
 	{
 		if ( game["teamScores"]["allies"] == game["teamScores"]["axis"] )
@@ -163,7 +163,7 @@ default_onTimeLimit()
 		else
 			logString( "time limit, tie" );
 	}
-	
+
 	thread endGame( winner, game["strings"]["time_limit_reached"] );
 }
 
@@ -171,7 +171,7 @@ default_onTimeLimit()
 default_onHalfTime()
 {
 	winner = undefined;
-	
+
 	thread endGame( "halftime", game["strings"]["time_limit_reached"] );
 }
 
@@ -182,7 +182,7 @@ forceEnd()
 		return;
 
 	winner = undefined;
-	
+
 	if ( level.teamBased )
 	{
 		if ( game["teamScores"]["allies"] == game["teamScores"]["axis"] )
@@ -201,24 +201,24 @@ forceEnd()
 		else
 			logString( "host ended game, tie" );
 	}
-	
+
 	level.forcedEnd = true;
 	level.hostForcedEnd = true;
-	
+
 	if ( level.splitscreen )
 		endString = &"MP_ENDED_GAME";
 	else
 		endString = &"MP_HOST_ENDED_GAME";
-	
+
 	thread endGame( winner, endString );
 }
 
 
 onScoreLimit()
 {
-	scoreText = game["strings"]["score_limit_reached"];	
+	scoreText = game["strings"]["score_limit_reached"];
 	winner = undefined;
-	
+
 	if ( level.teamBased )
 	{
 		if ( game["teamScores"]["allies"] == game["teamScores"]["axis"] )
@@ -237,7 +237,7 @@ onScoreLimit()
 		else
 			logString( "scorelimit, tie" );
 	}
-	
+
 	thread endGame( winner, scoreText );
 	return true;
 }
@@ -256,7 +256,7 @@ updateGameEvents()
 				thread onForfeit( "allies" );
 				return;
 			}
-			
+
 			// if axis disconnected, and allies still connected, allies wins round and game ends to lobby
 			if ( level.teamCount["axis"] < 1 && level.teamCount["allies"] > 0 && game["state"] == "playing" )
 			{
@@ -264,7 +264,7 @@ updateGameEvents()
 				thread onForfeit( "axis" );
 				return;
 			}
-	
+
 			if ( level.teamCount["axis"] > 0 && level.teamCount["allies"] > 0 )
 			{
 				level.forfeitInProgress = undefined;
@@ -289,10 +289,10 @@ updateGameEvents()
 
 	if ( !getGametypeNumLives() && (!isDefined( level.disableSpawning ) || !level.disableSpawning) )
 		return;
-		
-	if ( !gameHasStarted() ) 
+
+	if ( !gameHasStarted() )
 		return;
-	
+
 	if ( level.inGracePeriod )
 		return;
 
@@ -306,7 +306,7 @@ updateGameEvents()
 			livesCount["allies"] = 0;
 			livesCount["axis"] = 0;
 		}
-		
+
 		// if both allies and axis were alive and now they are both dead in the same instance
 		if ( !level.aliveCount["allies"] && !level.aliveCount["axis"] && !livesCount["allies"] && !livesCount["axis"] )
 		{
@@ -354,7 +354,7 @@ updateGameEvents()
 		}
 
 		livePlayers = getPotentialLivingPlayers();
-		
+
 		if ( livePlayers.size == 1 )
 		{
 			return [[level.onOneLeftEvent]]( "all" );
@@ -367,10 +367,10 @@ waittillFinalKillcamDone()
 {
 	if ( !level.showingFinalKillcam )
 		return false;
-	
+
 	while ( level.showingFinalKillcam )
 		wait ( 0.05 );
-	
+
 	return true;
 }
 
@@ -380,22 +380,22 @@ timeLimitClock_Intermission( waitTime )
 	setGameEndTime( getTime() + int(waitTime*1000) );
 	clockObject = spawn( "script_origin", (0,0,0) );
 	clockObject hide();
-	
+
 	if ( waitTime >= 10.0 )
 		wait ( waitTime - 10.0 );
-		
+
 	for ( ;; )
 	{
 		clockObject playSound( "ui_mp_timer_countdown" );
 		wait ( 1.0 );
-	}	
+	}
 }
 
 
 waitForPlayers( maxTime )
 {
 	endTime = gettime() + maxTime * 1000 - 200;
-	
+
 	if ( level.teamBased )
 		while( (!level.hasSpawned[ "axis" ] || !level.hasSpawned[ "allies" ]) && gettime() < endTime )
 			wait ( 0.05 );
@@ -425,7 +425,7 @@ prematchPeriod()
 	{
 		matchStartTimerSkip();
 	}
-	
+
 	for ( index = 0; index < level.players.size; index++ )
 	{
 		level.players[index] freezeControlsWrapper( false );
@@ -447,7 +447,7 @@ prematchPeriod()
 gracePeriod()
 {
 	level endon("game_ended");
-	
+
 	while ( level.inGracePeriod )
 	{
 		wait ( 1.0 );
@@ -455,30 +455,30 @@ gracePeriod()
 	}
 
 	//wait ( level.gracePeriod );
-	
+
 	level notify ( "grace_period_ending" );
 	wait ( 0.05 );
-	
+
 	gameFlagSet( "graceperiod_done" );
 	level.inGracePeriod = false;
-	
+
 	if ( game["state"] != "playing" )
 		return;
-	
+
 	if ( getGametypeNumLives() )
 	{
 		// Players on a team but without a weapon show as dead since they can not get in this round
 		players = level.players;
-		
+
 		for ( i = 0; i < players.size; i++ )
 		{
 			player = players[i];
-			
+
 			if ( !player.hasSpawned && player.sessionteam != "spectator" && !isAlive( player ) )
 				player.statusicon = "hud_status_dead";
 		}
 	}
-	
+
 	level thread updateGameEvents();
 }
 
@@ -487,18 +487,18 @@ updateWinStats( winner )
 {
 	if ( !winner rankingEnabled() )
 		return;
-	
+
 	winner maps\mp\gametypes\_persistence::statAdd( "losses", -1 );
-	
+
 	println( "setting winner: " + winner maps\mp\gametypes\_persistence::statGet( "wins" ) );
 	winner maps\mp\gametypes\_persistence::statAdd( "wins", 1 );
 	winner updatePersRatio( "winLossRatio", "wins", "losses" );
 	winner maps\mp\gametypes\_persistence::statAdd( "currentWinStreak", 1 );
-	
+
 	cur_win_streak = winner maps\mp\gametypes\_persistence::statGet( "currentWinStreak" );
 	if ( cur_win_streak > winner maps\mp\gametypes\_persistence::statGet( "winStreak" ) )
 		winner maps\mp\gametypes\_persistence::statSet( "winStreak", cur_win_streak );
-	
+
 	winner maps\mp\gametypes\_persistence::statSetChild( "round", "win", true );
 	winner maps\mp\gametypes\_persistence::statSetChild( "round", "loss", false );
 }
@@ -508,7 +508,7 @@ updateLossStats( loser )
 {
 	if ( !loser rankingEnabled() )
 		return;
-	
+
 	loser maps\mp\gametypes\_persistence::statAdd( "losses", 1 );
 	loser updatePersRatio( "winLossRatio", "wins", "losses" );
 	loser maps\mp\gametypes\_persistence::statSetChild( "round", "loss", true );
@@ -516,15 +516,15 @@ updateLossStats( loser )
 
 
 updateTieStats( loser )
-{	
+{
 	if ( !loser rankingEnabled() )
 		return;
-	
+
 	loser maps\mp\gametypes\_persistence::statAdd( "losses", -1 );
-	
+
 	loser maps\mp\gametypes\_persistence::statAdd( "ties", 1 );
 	loser updatePersRatio( "winLossRatio", "wins", "losses" );
-	loser maps\mp\gametypes\_persistence::statSet( "currentWinStreak", 0 );	
+	loser maps\mp\gametypes\_persistence::statSet( "currentWinStreak", 0 );
 }
 
 
@@ -532,10 +532,10 @@ updateWinLossStats( winner )
 {
 	if ( privateMatch() )
 		return;
-		
+
 	if ( !wasLastRound() )
 		return;
-		
+
 	players = level.players;
 
 	if ( !isDefined( winner ) || ( isDefined( winner ) && isString( winner ) && winner == "tie" ) )
@@ -550,10 +550,10 @@ updateWinLossStats( winner )
 				player maps\mp\gametypes\_persistence::statSet( "currentWinStreak", 0 );
 				continue;
 			}
-				
+
 			updateTieStats( player );
-		}		
-	} 
+		}
+	}
 	else if ( isPlayer( winner ) )
 	{
 		if ( level.hostForcedEnd && winner isHost() )
@@ -561,7 +561,7 @@ updateWinLossStats( winner )
 			winner maps\mp\gametypes\_persistence::statSet( "currentWinStreak", 0 );
 			return;
 		}
-				
+
 		updateWinStats( winner );
 	}
 	else if ( isString( winner ) )
@@ -592,13 +592,13 @@ freezePlayerForRoundEnd( delay )
 {
 	self endon ( "disconnect" );
 	self clearLowerMessages();
-	
+
 	if ( !isDefined( delay ) )
 		delay = 0.05;
-	
+
 	self closepopupMenu();
 	self closeInGameMenu();
-	
+
 	wait ( delay );
 	self freezeControlsWrapper( true );
 //	self disableWeapons();
@@ -615,7 +615,7 @@ updateMatchBonusScores( winner )
 
 	if ( !getTimeLimit() || level.forcedEnd )
 	{
-		gameLength = getTimePassed() / 1000;		
+		gameLength = getTimePassed() / 1000;
 		// cap it at 20 minutes to avoid exploiting
 		gameLength = min( gameLength, 1200 );
 	}
@@ -623,7 +623,7 @@ updateMatchBonusScores( winner )
 	{
 		gameLength = getTimeLimit() * 60;
 	}
-		
+
 	if ( level.teamBased )
 	{
 		if ( winner == "allies" )
@@ -653,26 +653,26 @@ updateMatchBonusScores( winner )
 			winnerScale = maps\mp\gametypes\_rank::getScoreInfoValue( "tie" );
 			loserScale = maps\mp\gametypes\_rank::getScoreInfoValue( "tie" );
 		}
-		
+
 		foreach ( player in level.players )
 		{
 			if ( isDefined( player.connectedPostGame ) )
 				continue;
-			
+
 			if ( !player rankingEnabled() )
 				continue;
-			
+
 			if ( player.timePlayed["total"] < 1 || player.pers["participation"] < 1 )
 			{
 				player thread maps\mp\gametypes\_rank::endGameUpdate();
 				continue;
 			}
-	
+
 			// no bonus for hosts who force ends
 			if ( level.hostForcedEnd && player isHost() )
 				continue;
 
-			spm = player maps\mp\gametypes\_rank::getSPM();				
+			spm = player maps\mp\gametypes\_rank::getSPM();
 			if ( winningTeam == "tie" )
 			{
 				playerScore = int( (winnerScale * ((gameLength/60) * spm)) * (player.timePlayed["total"] / gameLength) );
@@ -705,18 +705,18 @@ updateMatchBonusScores( winner )
 			winnerScale = maps\mp\gametypes\_rank::getScoreInfoValue( "tie" );
 			loserScale = maps\mp\gametypes\_rank::getScoreInfoValue( "tie" );
 		}
-		
+
 		foreach ( player in level.players )
 		{
 			if ( isDefined( player.connectedPostGame ) )
 				continue;
-			
+
 			if ( player.timePlayed["total"] < 1 || player.pers["participation"] < 1 )
 			{
 				player thread maps\mp\gametypes\_rank::endGameUpdate();
 				continue;
 			}
-			
+
 			spm = player maps\mp\gametypes\_rank::getSPM();
 
 			isWinner = false;
@@ -724,9 +724,9 @@ updateMatchBonusScores( winner )
 			{
 				if ( level.placement["all"][pIdx] != player )
 					continue;
-				isWinner = true;				
+				isWinner = true;
 			}
-			
+
 			if ( isWinner )
 			{
 				playerScore = int( (winnerScale * ((gameLength/60) * spm)) * (player.timePlayed["total"] / gameLength) );
@@ -749,10 +749,10 @@ giveMatchBonus( scoreType, score )
 	self endon ( "disconnect" );
 
 	level waittill ( "give_match_bonus" );
-	
+
 	self maps\mp\gametypes\_rank::giveRankXP( scoreType, score );
 	//logXPGains();
-	
+
 	self maps\mp\gametypes\_rank::endGameUpdate();
 }
 
@@ -775,8 +775,8 @@ setXenonRanks( winner )
 		player = players[i];
 
 		if( !isdefined(player.score) || !isdefined(player.pers["team"]) )
-			continue;		
-		
+			continue;
+
 		setPlayerTeamRank( player, player.clientid, player.score - 5 * player.deaths );
 	}
 	sendranks();
@@ -787,13 +787,13 @@ checkTimeLimit( prevTimePassed )
 {
 	if ( isDefined( level.timeLimitOverride ) && level.timeLimitOverride )
 		return;
-	
+
 	if ( game["state"] != "playing" )
 	{
 		setGameEndTime( 0 );
 		return;
 	}
-		
+
 	if ( getTimeLimit() <= 0 )
 	{
 		if ( isDefined( level.startTime ) )
@@ -802,18 +802,18 @@ checkTimeLimit( prevTimePassed )
 			setGameEndTime( 0 );
 		return;
 	}
-		
+
 	if ( !gameFlag( "prematch_done" ) )
 	{
 		setGameEndTime( 0 );
 		return;
 	}
-	
+
 	if ( !isdefined( level.startTime ) )
 		return;
-	
+
 	timeLeft = getTimeRemaining();
-	
+
 	// want this accurate to the millisecond
 //	if ( getHalfTime() && game["status"] != "halftime" )
 //		setGameEndTime( getTime() + (int(timeLeft) - int(getTimeLimit()*60*1000*0.5)) );
@@ -827,7 +827,7 @@ checkTimeLimit( prevTimePassed )
 
 		return;
 	}
-	
+
 	[[level.onTimeLimit]]();
 }
 
@@ -836,18 +836,18 @@ checkHalfTime( prevTimePassed )
 {
 	if ( !level.teamBased )
 		return false;
-		
+
 	if ( getTimeLimit() )
 	{
 		halfTime = (getTimeLimit() * 60 * 1000) * 0.5;
-		
+
 		if ( getTimePassed() >= halfTime && prevTimePassed < halfTime && prevTimePassed > 0 )
 		{
 			game["roundMillisecondsAlreadyPassed"] = getTimePassed();
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -865,17 +865,17 @@ checkTeamScoreLimitSoon( team )
 
 	if ( getWatchedDvar( "scorelimit" ) <= 0 || isObjectiveBased() )
 		return;
-		
+
 	if ( isDefined( level.scoreLimitOverride ) && level.scoreLimitOverride )
 		return;
-		
+
 	if ( !level.teamBased )
 		return;
 
 	// No checks until a minute has passed to let wild data settle
 	if ( getTimePassed() < (60 * 1000) ) // 1 min
 		return;
-	
+
 	timeLeft = estimatedTimeTillScoreLimit( team );
 
 	if ( timeLeft < 2 )
@@ -887,7 +887,7 @@ checkPlayerScoreLimitSoon()
 {
 	if ( getWatchedDvar( "scorelimit" ) <= 0 || isObjectiveBased() )
 		return;
-		
+
 	if ( level.teamBased )
 		return;
 
@@ -909,7 +909,7 @@ checkScoreLimit()
 
 	if ( isDefined( level.scoreLimitOverride ) && level.scoreLimitOverride )
 		return false;
-	
+
 	if ( game["state"] != "playing" )
 		return false;
 
@@ -937,7 +937,7 @@ checkScoreLimit()
 updateGameTypeDvars()
 {
 	level endon ( "game_ended" );
-	
+
 	while ( game["state"] == "playing" )
 	{
 		// make sure we check time limit right when game ends
@@ -957,9 +957,9 @@ updateGameTypeDvars()
 matchStartTimerPC()
 {
 	thread matchStartTimer( "waiting_for_teams", level.prematchPeriod + level.prematchPeriodEnd );
-	
+
 	waitForPlayers( level.prematchPeriod );
-	
+
 	if ( level.prematchPeriodEnd > 0 )
 		matchStartTimer( "match_starting_in", level.prematchPeriodEnd );
 }
@@ -968,7 +968,7 @@ matchStartTimer_Internal( countTime, matchStartTimer )
 {
 	waittillframeend; // wait till cleanup of previous start timer if multiple happen at once
 	visionSetNaked( "mpIntro", 0 );
-	
+
 	level endon( "match_start_timer_beginning" );
 	while ( countTime > 0 && !level.gameEnded )
 	{
@@ -985,27 +985,27 @@ matchStartTimer_Internal( countTime, matchStartTimer )
 matchStartTimer( type, duration )
 {
 	level notify( "match_start_timer_beginning" );
-	
+
 	matchStartText = createServerFontString( "objective", 1.5 );
 	matchStartText setPoint( "CENTER", "CENTER", 0, -40 );
 	matchStartText.sort = 1001;
 	matchStartText setText( game["strings"]["waiting_for_teams"] );
 	matchStartText.foreground = false;
 	matchStartText.hidewheninmenu = true;
-	
+
 	matchStartText setText( game["strings"][type] ); // "match begins in:"
-	
+
 	matchStartTimer = createServerFontString( "hudbig", 1 );
 	matchStartTimer setPoint( "CENTER", "CENTER", 0, 0 );
 	matchStartTimer.sort = 1001;
 	matchStartTimer.color = (1,1,0);
 	matchStartTimer.foreground = false;
 	matchStartTimer.hidewheninmenu = true;
-	
+
 	matchStartTimer maps\mp\gametypes\_hud::fontPulseInit();
 
 	countTime = int( duration );
-	
+
 	if ( countTime >= 2 )
 	{
 		matchStartTimer_Internal( countTime, matchStartTimer );
@@ -1016,7 +1016,7 @@ matchStartTimer( type, duration )
 		visionSetNaked( "mpIntro", 0 );
 		visionSetNaked( getDvar( "mapname" ), 1.0 );
 	}
-	
+
 	matchStartTimer destroyElem();
 	matchStartText destroyElem();
 }
@@ -1031,7 +1031,7 @@ onRoundSwitch()
 {
 	if ( !isDefined( game["switchedsides"] ) )
 		game["switchedsides"] = false;
-	
+
 	// overtime
 	if ( game["roundsWon"]["allies"] == getWatchedDvar( "winlimit" ) - 1 && game["roundsWon"]["axis"] == getWatchedDvar( "winlimit" ) - 1 )
 	{
@@ -1058,17 +1058,17 @@ checkRoundSwitch()
 {
 	if ( !level.teamBased )
 		return false;
-		
+
 	if ( !isDefined( level.roundSwitch ) || !level.roundSwitch )
 		return false;
-		
-	assert( game["roundsPlayed"] > 0 );	
+
+	assert( game["roundsPlayed"] > 0 );
 	if ( game["roundsPlayed"] % level.roundSwitch == 0 )
 	{
 		onRoundSwitch();
 		return true;
 	}
-		
+
 	return false;
 }
 
@@ -1081,27 +1081,27 @@ timeUntilRoundEnd()
 	{
 		timePassed = (getTime() - level.gameEndTime) / 1000;
 		timeRemaining = level.postRoundTime - timePassed;
-		
+
 		if ( timeRemaining < 0 )
 			return 0;
-		
+
 		return timeRemaining;
 	}
-	
+
 	if ( getTimeLimit() <= 0 )
 		return undefined;
-	
+
 	if ( !isDefined( level.startTime ) )
 		return undefined;
-	
+
 	tl = getTimeLimit();
-	
+
 	timePassed = (getTime() - level.startTime)/1000;
 	timeRemaining = (getTimeLimit() * 60) - timePassed;
-	
+
 	if ( isDefined( level.timePaused ) )
-		timeRemaining += level.timePaused; 
-	
+		timeRemaining += level.timePaused;
+
 	return timeRemaining + level.postRoundTime;
 }
 
@@ -1110,7 +1110,7 @@ timeUntilRoundEnd()
 freeGameplayHudElems()
 {
 	// free up some hud elems so we have enough for other things.
-	
+
 	// perk icons
 	if ( isdefined( self.perkicon ) )
 	{
@@ -1131,11 +1131,11 @@ freeGameplayHudElems()
 		}
 	}
 	self notify("perks_hidden"); // stop any threads that are waiting to hide the perk icons
-	
+
 	// lower message
 	self.lowerMessage destroyElem();
 	self.lowerTimer destroyElem();
-	
+
 	// progress bar
 	if ( isDefined( self.proxBar ) )
 		self.proxBar destroyElem();
@@ -1147,7 +1147,7 @@ freeGameplayHudElems()
 getHostPlayer()
 {
 	players = getEntArray( "player", "classname" );
-	
+
 	for ( index = 0; index < players.size; index++ )
 	{
 		if ( players[index] isHost() )
@@ -1159,7 +1159,7 @@ getHostPlayer()
 hostIdledOut()
 {
 	hostPlayer = getHostPlayer();
-	
+
 	// host never spawned
 	if ( isDefined( hostPlayer ) && !hostPlayer.hasSpawned && !isDefined( hostPlayer.selectedClass ) )
 		return true;
@@ -1178,7 +1178,7 @@ roundEndWait( defaultDelay, matchBonus )
 	{
 		players = level.players;
 		notifiesDone = true;
-		
+
 		foreach ( player in players )
 		{
 			if ( !isDefined( player.doingSplash ) )
@@ -1222,7 +1222,7 @@ roundEndWait( defaultDelay, matchBonus )
 		wait ( 0.5 );
 	}
 	//setSlowMotion( 1.0, 1.0, 0.05);
-	
+
 	level notify ( "round_end_finished" );
 }
 
@@ -1236,17 +1236,17 @@ roundEndDOF( time )
 Callback_StartGameType()
 {
 	maps\mp\_load::main();
-	
+
 	levelFlagInit( "round_over", false );
 	levelFlagInit( "game_over", false );
-	levelFlagInit( "block_notifies", false ); 
+	levelFlagInit( "block_notifies", false );
 
 	level.prematchPeriod = 0;
 	level.prematchPeriodEnd = 0;
 	level.postGameNotifies = 0;
-	
+
 	level.intermission = false;
-	
+
 	makeDvarServerInfo( "cg_thirdPersonAngle", 356 );
 
 	makeDvarServerInfo( "scr_gameended", 0 );
@@ -1254,7 +1254,7 @@ Callback_StartGameType()
 	if ( !isDefined( game["gamestarted"] ) )
 	{
 		game["clientid"] = 0;
-		
+
 		alliesCharSet = getMapCustom( "allieschar" );
 		if ( (!isDefined( alliesCharSet ) || alliesCharSet == "") )
 		{
@@ -1274,7 +1274,7 @@ Callback_StartGameType()
 		}
 
 		game["allies"] = alliesCharSet;
-		game["axis"] = axisCharSet;	
+		game["axis"] = axisCharSet;
 
 		if ( !isDefined( game["attackers"] ) || !isDefined( game["defenders"]  ) )
 			thread error( "No attackers or defenders team defined in level .gsc." );
@@ -1286,17 +1286,17 @@ Callback_StartGameType()
 
 		if ( !isDefined( game["state"] ) )
 			game["state"] = "playing";
-	
+
 		precacheStatusIcon( "hud_status_dead" );
 		precacheStatusIcon( "hud_status_connecting" );
 		precacheString( &"MPUI_REVIVING" );
 		precacheString( &"MPUI_BEING_REVIVED" );
-		
+
 		precacheRumble( "damage_heavy" );
 
 		precacheShader( "white" );
 		precacheShader( "black" );
-			
+
 		game["strings"]["press_to_spawn"] = &"PLATFORM_PRESS_TO_SPAWN";
 		if ( level.teamBased )
 		{
@@ -1319,9 +1319,9 @@ Callback_StartGameType()
 		game["strings"]["last_stand"] = &"MPUI_LAST_STAND";
 		game["strings"]["final_stand"] = &"MPUI_FINAL_STAND";
 		game["strings"]["c4_death"] = &"MPUI_C4_DEATH";
-		
+
 		game["strings"]["cowards_way"] = &"PLATFORM_COWARDS_WAY_OUT";
-		
+
 		game["strings"]["tie"] = &"MP_MATCH_TIE";
 		game["strings"]["round_draw"] = &"MP_ROUND_DRAW";
 
@@ -1345,18 +1345,18 @@ Callback_StartGameType()
 		game["strings"]["allies_eliminated"] = maps\mp\gametypes\_teams::getTeamEliminatedString( "allies" );
 		game["strings"]["allies_forfeited"] = maps\mp\gametypes\_teams::getTeamForfeitedString( "allies" );
 		game["strings"]["allies_name"] = maps\mp\gametypes\_teams::getTeamName( "allies" );
-		game["icons"]["allies"] = maps\mp\gametypes\_teams::getTeamIcon( "allies" );	
-		game["colors"]["allies"] = maps\mp\gametypes\_teams::getTeamColor( "allies" );	
+		game["icons"]["allies"] = maps\mp\gametypes\_teams::getTeamIcon( "allies" );
+		game["colors"]["allies"] = maps\mp\gametypes\_teams::getTeamColor( "allies" );
 
 		game["strings"]["axis_eliminated"] = maps\mp\gametypes\_teams::getTeamEliminatedString( "axis" );
 		game["strings"]["axis_forfeited"] = maps\mp\gametypes\_teams::getTeamForfeitedString( "axis" );
-		game["strings"]["axis_name"] = maps\mp\gametypes\_teams::getTeamName( "axis" );	
-		game["icons"]["axis"] = maps\mp\gametypes\_teams::getTeamIcon( "axis" );	
-		game["colors"]["axis"] = maps\mp\gametypes\_teams::getTeamColor( "axis" );	
-			
+		game["strings"]["axis_name"] = maps\mp\gametypes\_teams::getTeamName( "axis" );
+		game["icons"]["axis"] = maps\mp\gametypes\_teams::getTeamIcon( "axis" );
+		game["colors"]["axis"] = maps\mp\gametypes\_teams::getTeamColor( "axis" );
+
 		game["icons"]["human"] = maps\mp\gametypes\_teams::getTeamIcon( "human" );
 		game["icons"]["zombie"] = maps\mp\gametypes\_teams::getTeamIcon( "zombie" );
-		
+
 		if ( game["colors"]["allies"] == (0,0,0) )
 			game["colors"]["allies"] = (0.5,0.5,0.5);
 
@@ -1388,7 +1388,7 @@ Callback_StartGameType()
 		game["teamScores"]["allies"] = 0;
 		game["teamScores"]["axis"] = 0;
 	}
-	
+
 	if( !isDefined( game["timePassed"] ) )
 		game["timePassed"] = 0;
 
@@ -1402,10 +1402,10 @@ Callback_StartGameType()
 	{
 		if ( !isDefined( game["roundsWon"]["axis"] ) )
 			game["roundsWon"]["axis"] = 0;
-		if ( !isDefined( game["roundsWon"]["allies"] ) )		
+		if ( !isDefined( game["roundsWon"]["allies"] ) )
 			game["roundsWon"]["allies"] = 0;
 	}
-	
+
 	level.gameEnded = false;
 	level.forcedEnd = false;
 	level.hostForcedEnd = false;
@@ -1415,7 +1415,7 @@ Callback_StartGameType()
 		logString( "game mode: hardcore" );
 
 	level.dieHardMode = getDvarInt( "scr_diehard" );
-	
+
 	if ( !level.teamBased )
 		level.dieHardMode = 0;
 
@@ -1449,11 +1449,11 @@ Callback_StartGameType()
 	// multiplier for score from objectives
 	level.objectivePointsMod = 1;
 
-	if ( matchMakingGame() )	
+	if ( matchMakingGame() )
 		level.maxAllowedTeamKills = 2;
 	else
 		level.maxAllowedTeamKills = -1;
-		
+
 	thread maps\mp\gametypes\_persistence::init();
 	thread maps\mp\gametypes\_menus::init();
 	thread maps\mp\gametypes\_hud::init();
@@ -1480,10 +1480,10 @@ Callback_StartGameType()
 	thread maps\mp\perks\_perks::init();
 	thread maps\mp\_events::init();
 	thread maps\mp\_defcon::init();
-	
+
 	if ( level.teamBased )
 		thread maps\mp\gametypes\_friendicons::init();
-		
+
 	thread maps\mp\gametypes\_hud_message::init();
 
 	if ( !level.console )
@@ -1512,12 +1512,12 @@ Callback_StartGameType()
 	makeDvarServerInfo( "ui_allow_classchange", getDvar( "ui_allow_classchange" ) );
 	makeDvarServerInfo( "ui_allow_teamchange", 1 );
 	setDvar( "ui_allow_teamchange", 1 );
-	
+
 	if ( getGametypeNumLives() )
 		setdvar( "g_deadChat", 0 );
 	else
 		setdvar( "g_deadChat", 1 );
-	
+
 	waveDelay = getDvarInt( "scr_" + level.gameType + "_waverespawndelay" );
 	if ( waveDelay )
 	{
@@ -1525,21 +1525,21 @@ Callback_StartGameType()
 		level.waveDelay["axis"] = waveDelay;
 		level.lastWave["allies"] = 0;
 		level.lastWave["axis"] = 0;
-		
+
 		level thread maps\mp\gametypes\_gamelogic::waveSpawnTimer();
 	}
-	
+
 	gameFlagInit( "prematch_done", false );
-	
+
 	level.gracePeriod = 15;
-	
+
 	level.inGracePeriod = level.gracePeriod;
 	gameFlagInit( "graceperiod_done", false );
-	
+
 	level.roundEndDelay = 4;
 	level.halftimeRoundEndDelay = 4;
 
-	
+
 	if ( level.teamBased )
 	{
 		maps\mp\gametypes\_gamescore::updateTeamScore( "axis" );
@@ -1553,14 +1553,14 @@ Callback_StartGameType()
 	thread updateUIScoreLimit();
 	level notify ( "update_scorelimit" );
 
-	
+
 	[[level.onStartGameType]]();
-	
+
 	// this must be after onstartgametype for scr_showspawns to work when set at start of game
 	/#
 	thread maps\mp\gametypes\_dev::init();
 	#/
-	
+
 	thread startGame();
 
 	level thread updateWatchedDvars();
@@ -1580,14 +1580,14 @@ Callback_CodeEndGame()
 timeLimitThread()
 {
 	level endon ( "game_ended" );
-	
+
 	prevTimePassed = getTimePassed();
-	
+
 	while ( game["state"] == "playing" )
 	{
 		thread checkTimeLimit( prevTimePassed );
 		prevTimePassed = getTimePassed();
-		
+
 		// make sure we check time limit right when game ends
 		if ( isdefined( level.startTime ) )
 		{
@@ -1598,7 +1598,7 @@ timeLimitThread()
 			}
 		}
 		wait 1;
-	}	
+	}
 }
 
 
@@ -1607,7 +1607,7 @@ updateUIScoreLimit()
 	for ( ;; )
 	{
 		level waittill_either ( "update_scorelimit", "update_winlimit" );
-		
+
 		if ( !isRoundBased() || !isObjectiveBased() )
 		{
 			setDvar( "ui_scorelimit", getWatchedDvar( "scorelimit" ) );
@@ -1626,13 +1626,13 @@ playTickingSound()
 	self endon("death");
 	self endon("stop_ticking");
 	level endon("game_ended");
-	
+
 	time = level.bombTimer;
-	
+
 	while(1)
 	{
 		self playSound( "ui_mp_suitcasebomb_timer" );
-		
+
 		if ( time > 10 )
 		{
 			time -= 1;
@@ -1665,22 +1665,22 @@ stopTickingSound()
 timeLimitClock()
 {
 	level endon ( "game_ended" );
-	
+
 	wait .05;
-	
+
 	clockObject = spawn( "script_origin", (0,0,0) );
 	clockObject hide();
-	
+
 	while ( game["state"] == "playing" )
 	{
 		if ( !level.timerStopped && getTimeLimit() )
 		{
 			timeLeft = getTimeRemaining() / 1000;
 			timeLeftInt = int(timeLeft + 0.5); // adding .5 and flooring rounds it.
-			
+
 			if ( getHalfTime() && timeLeftInt > (getTimeLimit()*60) * 0.5 )
 				timeLeftInt -= int((getTimeLimit()*60) * 0.5);
-			
+
 			if ( (timeLeftInt >= 30 && timeLeftInt <= 60) )
 				level notify ( "match_ending_soon", "time" );
 
@@ -1690,10 +1690,10 @@ timeLimitClock()
 				// don't play a tick at exactly 0 seconds, that's when something should be happening!
 				if ( timeLeftInt == 0 )
 					break;
-				
+
 				clockObject playSound( "ui_mp_timer_countdown" );
 			}
-			
+
 			// synchronize to be exactly on the second
 			if ( timeLeft - floor(timeLeft) >= .05 )
 				wait timeLeft - floor(timeLeft);
@@ -1707,20 +1707,20 @@ timeLimitClock()
 gameTimer()
 {
 	level endon ( "game_ended" );
-	
+
 	level waittill("prematch_over");
-	
+
 	level.startTime = getTime();
 	level.discardTime = 0;
-	
+
 	if ( isDefined( game["roundMillisecondsAlreadyPassed"] ) )
 	{
 		level.startTime -= game["roundMillisecondsAlreadyPassed"];
 		game["roundMillisecondsAlreadyPassed"] = undefined;
 	}
-	
+
 	prevtime = gettime();
-	
+
 	while ( game["state"] == "playing" )
 	{
 		if ( !level.timerStopped )
@@ -1738,7 +1738,7 @@ UpdateTimerPausedness()
 	shouldBeStopped = level.timerStoppedForGameMode || isDefined( level.hostMigrationTimer );
 	if ( !gameFlag( "prematch_done" ) )
 		shouldBeStopped = false;
-	
+
 	if ( !level.timerStopped && shouldBeStopped )
 	{
 		level.timerStopped = true;
@@ -1772,15 +1772,15 @@ startGame()
 	thread maps\mp\gametypes\_spawnlogic::spawnPerFrameUpdate();
 
 	prematchPeriod();
-	gameFlagSet( "prematch_done" );	
+	gameFlagSet( "prematch_done" );
 	level notify("prematch_over");
-	
+
 	UpdateTimerPausedness();
-	
+
 	thread timeLimitClock();
 	thread gracePeriod();
 
-	thread maps\mp\gametypes\_missions::roundBegin();	
+	thread maps\mp\gametypes\_missions::roundBegin();
 }
 
 
@@ -1791,7 +1791,7 @@ waveSpawnTimer()
 	while ( game["state"] == "playing" )
 	{
 		time = getTime();
-		
+
 		if ( time - level.lastWave["allies"] > (level.waveDelay["allies"] * 1000) )
 		{
 			level notify ( "wave_respawn_allies" );
@@ -1805,7 +1805,7 @@ waveSpawnTimer()
 			level.lastWave["axis"] = time;
 			level.wavePlayerSpawnIndex["axis"] = 0;
 		}
-		
+
 		wait ( 0.05 );
 	}
 }
@@ -1817,7 +1817,7 @@ getBetterTeam()
 	kills["axis"] = 0;
 	deaths["allies"] = 0;
 	deaths["axis"] = 0;
-	
+
 	foreach ( player in level.players )
 	{
 		team = player.pers["team"];
@@ -1827,21 +1827,21 @@ getBetterTeam()
 			deaths[ team ] += player.deaths;
 		}
 	}
-	
+
 	if ( kills["allies"] > kills["axis"] )
 		return "allies";
 	else if ( kills["axis"] > kills["allies"] )
 		return "axis";
-	
+
 	// same number of kills
 
 	if ( deaths["allies"] < deaths["axis"] )
 		return "allies";
 	else if ( deaths["axis"] < deaths["allies"] )
 		return "axis";
-	
+
 	// same number of deaths
-	
+
 	if ( randomint(2) == 0 )
 		return "allies";
 	return "axis";
@@ -1853,7 +1853,7 @@ rankedMatchUpdates( winner )
 	if ( matchMakingGame() )
 	{
 		setXenonRanks();
-		
+
 		if ( hostIdledOut() )
 		{
 			level.hostForcedEnd = true;
@@ -1874,7 +1874,7 @@ displayRoundEnd( winner, endReasonText )
 	{
 		if ( isDefined( player.connectedPostGame ) || player.pers["team"] == "spectator" )
 			continue;
-		
+
 		if ( level.teamBased )
 			player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, true, endReasonText );
 		else
@@ -1883,30 +1883,30 @@ displayRoundEnd( winner, endReasonText )
 
 	if ( !wasLastRound() )
 		level notify ( "round_win", winner );
-	
+
 	if ( wasLastRound() )
 		roundEndWait( level.roundEndDelay, false );
 	else
-		roundEndWait( level.roundEndDelay, true );	
+		roundEndWait( level.roundEndDelay, true );
 }
 
 
 displayGameEnd( winner, endReasonText )
-{	
+{
 	// catching gametype, since DM forceEnd sends winner as player entity, instead of string
 	foreach ( player in level.players )
 	{
 		if ( isDefined( player.connectedPostGame ) || player.pers["team"] == "spectator" )
 			continue;
-		
+
 		if ( level.teamBased )
 			player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, false, endReasonText );
 		else
 			player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
 	}
-	
+
 	level notify ( "game_win", winner );
-	
+
 	roundEndWait( level.postRoundTime, true );
 }
 
@@ -1942,10 +1942,10 @@ displayRoundSwitch()
 	{
 		if ( isDefined( player.connectedPostGame ) || player.pers["team"] == "spectator" )
 			continue;
-		
+
 		player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( switchType, true, level.halftimeSubCaption );
 	}
-	
+
 	roundEndWait( level.halftimeRoundEndDelay, false );
 }
 
@@ -1957,13 +1957,13 @@ endGameOvertime( winner, endReasonText )
 	{
 		player thread freezePlayerForRoundEnd( 0 );
 		player thread roundEndDoF( 4.0 );
-		
+
 		player freeGameplayHudElems();
 
 		player setClientDvars( "cg_everyoneHearsEveryone", 1 );
 		player setClientDvars( "cg_drawSpectatorMessages", 0,
 							   "g_compassShowEnemies", 0 );
-							   
+
 		if ( player.pers["team"] == "spectator" )
 			player thread maps\mp\gametypes\_playerlogic::spawnIntermission();
 	}
@@ -1975,13 +1975,13 @@ endGameOvertime( winner, endReasonText )
 	{
 		if ( isDefined( player.connectedPostGame ) || player.pers["team"] == "spectator" )
 			continue;
-		
+
 		if ( level.teamBased )
 			player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( winner, false, endReasonText );
 		else
 			player thread maps\mp\gametypes\_hud_message::outcomeNotify( winner, endReasonText );
 	}
-	
+
 	roundEndWait( level.roundEndDelay, false );
 
 	game["status"] = "overtime";
@@ -1994,7 +1994,7 @@ endGameOvertime( winner, endReasonText )
 
 endGameHalfTime()
 {
-	visionSetNaked( "mpOutro", 0.5 );		
+	visionSetNaked( "mpOutro", 0.5 );
 	setDvar( "scr_gameended", 2 );
 
 	game["switchedsides"] = !game["switchedsides"];
@@ -2004,13 +2004,13 @@ endGameHalfTime()
 	{
 		player thread freezePlayerForRoundEnd( 0 );
 		player thread roundEndDoF( 4.0 );
-		
+
 		player freeGameplayHudElems();
 
 		player setClientDvars( "cg_everyoneHearsEveryone", 1 );
 		player setClientDvars( "cg_drawSpectatorMessages", 0,
 							   "g_compassShowEnemies", 0 );
-							   
+
 		if ( player.pers["team"] == "spectator" )
 			player thread maps\mp\gametypes\_playerlogic::spawnIntermission();
 	}
@@ -2019,7 +2019,7 @@ endGameHalfTime()
 		player.pers["stats"] = player.stats;
 
 	level notify ( "round_switch", "halftime" );
-		
+
 	foreach ( player in level.players )
 	{
 		if ( isDefined( player.connectedPostGame ) || player.pers["team"] == "spectator" )
@@ -2027,7 +2027,7 @@ endGameHalfTime()
 
 		player thread maps\mp\gametypes\_hud_message::teamOutcomeNotify( "halftime", true, level.halftimeSubCaption );
 	}
-	
+
 	roundEndWait( level.roundEndDelay, false );
 
 	game["status"] = "halftime";
@@ -2038,7 +2038,7 @@ endGameHalfTime()
 
 
 endGame( winner, endReasonText, nukeDetonated )
-{	
+{
 	/*
 	if ( !isDefined(nukeDetonated) )
 		nukeDetonated = false;
@@ -2049,7 +2049,7 @@ endGame( winner, endReasonText, nukeDetonated )
 
 	game["state"] = "postgame";
 	level.gameState = "postgame";
-	level notify("gamestatechange");	
+	level notify("gamestatechange");
 
 	level.gameEndTime = getTime();
 	level.gameEnded = true;
@@ -2058,18 +2058,18 @@ endGame( winner, endReasonText, nukeDetonated )
 	levelFlagSet( "game_over" );
 	levelFlagSet( "block_notifies" );
 	waitframe(); // give "game_ended" notifies time to process
-	
+
 	setGameEndTime( 0 ); // stop/hide the timers
-	
+
 	maps\mp\gametypes\_playerlogic::printPredictedSpawnpointCorrectness();
-	
+
 	/*
 	if ( isDefined( winner ) && isString( winner ) && winner == "overtime" )
 	{
 		endGameOvertime( winner, endReasonText );
 		return;
 	}
-	
+
 	if ( isDefined( winner ) && isString( winner ) && winner == "halftime" )
 	{
 		endGameHalftime();
@@ -2077,7 +2077,7 @@ endGame( winner, endReasonText, nukeDetonated )
 	}
 
 	game["roundsPlayed"]++;
-	
+
 	if ( level.teamBased )
 	{
 		if ( winner == "axis" || winner == "allies" )
@@ -2100,7 +2100,7 @@ endGame( winner, endReasonText, nukeDetonated )
 	{
 		player setClientDvar( "ui_opensummary", 1 );
 	}
-	
+
 	setDvar( "g_deadChat", 1 );
 	setDvar( "ui_allow_teamchange", 0 );
 
@@ -2109,26 +2109,26 @@ endGame( winner, endReasonText, nukeDetonated )
 	{
 		player thread freezePlayerForRoundEnd( 1.0 );
 		player thread roundEndDoF( 4.0 );
-		
+
 		player freeGameplayHudElems();
 
 		player setClientDvars( "cg_everyoneHearsEveryone", 0 );
 		player setClientDvars( "cg_drawSpectatorMessages", 0,
 							   "g_compassShowEnemies", 0,
 							   "cg_fovScale", 1 );
-							   
+
 		if ( player.pers["team"] == "spectator" )
 			player thread maps\mp\gametypes\_playerlogic::spawnIntermission();
 	}
 	/*
 	if( !nukeDetonated )
-		visionSetNaked( "mpOutro", 0.5 );		
-	
+		visionSetNaked( "mpOutro", 0.5 );
+
 	// End of Round
 	if ( !wasOnlyRound() && !nukeDetonated )
 	{
 		setDvar( "scr_gameended", 2 );
-	
+
 		displayRoundEnd( winner, endReasonText );
 
 		if ( level.showingFinalKillcam )
@@ -2140,7 +2140,7 @@ endGame( winner, endReasonText, nukeDetonated )
 
 			waittillFinalKillcamDone();
 		}
-				
+
 		if ( !wasLastRound() )
 		{
 			levelFlagClear( "block_notifies" );
@@ -2155,13 +2155,13 @@ endGame( winner, endReasonText, nukeDetonated )
             map_restart( true );
             return;
 		}
-		
+
 		if ( !level.forcedEnd )
 			endReasonText = updateEndReasonText( winner );
 	}
 
 	setDvar( "scr_gameended", 1 );
-	
+
 	if ( !isDefined( game["clientMatchDataDef"] ) )
 	{
 		game["clientMatchDataDef"] = "mp/clientmatchdata.def";
@@ -2180,15 +2180,15 @@ endGame( winner, endReasonText, nukeDetonated )
 		level notify ( "game_cleanup" );
 
 		waittillFinalKillcamDone();
-	}				
+	}
 	*/
-	
+
 	levelFlagClear( "block_notifies" );
 
 	level.intermission = true;
 
 	level notify ( "spawning_intermission" );
-	
+
 	foreach ( player in level.players )
 	{
 		player closepopupMenu();
@@ -2200,9 +2200,7 @@ endGame( winner, endReasonText, nukeDetonated )
 	processLobbyData();
 
 	wait ( 6 );
-	
-	level notify ( "mapvote_start" );			//start mapvote			
-	level waittill ( "mapvote_end" );			//wait until mapvote is finished		
+	vote\_vote_menu::BeginVoteForMatch();	
 
 	/*
 	if ( matchMakingGame() )
@@ -2235,10 +2233,10 @@ updateEndReasonText( winner )
 
 	if ( hitRoundLimit() )
 		return &"MP_ROUND_LIMIT_REACHED";
-	
+
 	if ( hitWinLimit() )
 		return &"MP_SCORE_LIMIT_REACHED";
-	
+
 	if ( winner == "axis" )
 		return &"SPETSNAZ_WIN";
 	else
@@ -2255,7 +2253,7 @@ estimatedTimeTillScoreLimit( team )
 	estimatedTimeLeft = 999999;
 	if ( scorePerMinute )
 		estimatedTimeLeft = scoreRemaining / scorePerMinute;
-	
+
 	//println( "estimatedTimeLeft: " + estimatedTimeLeft );
 	return estimatedTimeLeft;
 }
@@ -2272,7 +2270,7 @@ getScorePerMinute( team )
 		scorePerMinute = self.score / minutesPassed;
 	else
 		scorePerMinute = getTeamScore( team ) / minutesPassed;
-		
+
 	return scorePerMinute;
 }
 
@@ -2286,7 +2284,7 @@ getScoreRemaining( team )
 		scoreRemaining = scoreLimit - self.score;
 	else
 		scoreRemaining = scoreLimit - getTeamScore( team );
-		
+
 	return scoreRemaining;
 }
 
@@ -2328,12 +2326,12 @@ processLobbyData()
 		{
 			playerName = player.name;
 		}
-		
-		setClientMatchData( "players", player.clientMatchDataId, "xuid", playerName );		
+
+		setClientMatchData( "players", player.clientMatchDataId, "xuid", playerName );
 	}
-	
+
 	maps\mp\_awards::assignAwards();
 	maps\mp\_scoreboard::processLobbyScoreboards();
-	
+
 	sendClientMatchData();
 }

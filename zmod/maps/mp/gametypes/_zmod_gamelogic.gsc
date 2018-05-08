@@ -10,14 +10,14 @@ doInit()
 	setDvar("scr_zmod_starting_time", "10");
 	setDvar("scr_zmod_alpha_time", "10");
 	setDvar("scr_zmod_sentry_timeout", "200");
-	
-	level thread initHUD();	
+
+	level thread initHUD();
 	level thread OnGameEnded();
 	level thread doPregame();
-	level thread onPlayerConnect();	
-  
+	level thread onPlayerConnect();
+
 	//level.ShowCreditShop = false;
-	level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();	
+	level maps\mp\gametypes\_SpawnPoints::InitializeSpawnPoints();
 	level weaponInit();
 	level maps\mp\gametypes\_zmod_hud::CreateServerHUD();
 	level.infotext setText("Cycle Menu: [{+actionslot 3}]/[{+actionslot 1}]");
@@ -43,7 +43,7 @@ onPlayerConnect()
   for(;;)
   {
     level waittill( "connected", player );
-	
+
 	player.isZombie=0;
     player.credits=0;
 	player.spawning = 0;
@@ -64,7 +64,7 @@ onPlayerConnect()
 	player thread maps\mp\gametypes\_shop_menu::clearOnDeath();
 	player thread maps\mp\gametypes\_zmod_hud::doCash();
 	player thread maps\mp\gametypes\_zmod_hud::doHealth();
-	
+
     //player thread maps\mp\gametypes\_shop_menu::destroyOnDeath();
     player thread maps\mp\gametypes\_spawn::onPlayerSpawned();
     player thread maps\mp\gametypes\_shop_menu::CashFix();
@@ -74,7 +74,7 @@ onPlayerConnect()
     player allowSpectateTeam( "axis", true );
     player allowSpectateTeam( "freelook", true );
     player allowSpectateTeam( "none", true );
-	
+
 	/*
 	if(level.gameState == "")
 		level waittill( "gamestatechange" );
@@ -83,12 +83,12 @@ onPlayerConnect()
 
 	//player closepopupMenu();
 	//player closeInGameMenu();
-	
+
 	player thread maps\mp\gametypes\_shop_menu::doShop();
-	
+
 	if( player.spawning == 0 )
 		player thread maps\mp\gametypes\_spawn::doSpawn();
-		
+
     //player thread TestSpawnpoints();
 	//player thread CollectSpawnCords();
   }
@@ -103,7 +103,7 @@ monitorSpectator()
 		{
 			self maps\mp\gametypes\_spawn::doSpawn();
 			self iprintln("spawn");
-		}		
+		}
 		wait 1;
 	}
 }
@@ -112,7 +112,7 @@ initHUD()
 {
     level.TimerText = level createServerFontString( "objective", 1.5 );
     level.TimerText setPoint( "CENTER", "CENTER", 0, -100 );
-	
+
 	level.infotext = NewHudElem();
 	level.infotext.alignX = "center";
 	level.infotext.alignY = "bottom";
@@ -130,12 +130,12 @@ OnGameEnded()
 {
 	level waittill ( "game_ended" );
 	waitframe();						//give other "game_ended" notifies time to process
-	
+
 	//destroy zmod player hud elements
 	level.TimerText destroy();
 	level.infotext destroy();
-	
-	foreach(player in level.players)	 
+
+	foreach(player in level.players)
 	{
 		player.HintText destroy();
 		player.healthtext destroy();
@@ -156,15 +156,15 @@ OnGameEnded()
 		player.perkztext4 destroy();
 		player.perkztext5 destroy();
 		player.DebugHUD destroy();
-	}	
+	}
 }
 
 doPregame()
 {
 	self endon ( "game_ended" );
-	
+
 	level.gameState = "pregame";
-	
+
 	counter = getdvarInt("scr_zmod_pregame_time");
 	while(counter > 0)
 	{
@@ -175,13 +175,13 @@ doPregame()
 		counter--;
 	}
 	level.TimerText setText("");
-	level notify("gamestatechange");	
+	level notify("gamestatechange");
 }
 
 doIntermission()
 {
   self endon ( "game_ended" );
-  
+
   level.gameState = "intermission";
   level notify("gamestatechange");
   level.lastAlive = 0;
@@ -192,17 +192,17 @@ doIntermission()
   setDvar("cg_drawCrosshair", 1);
   setDvar("cg_drawCrosshairNames", 1);
   setDvar("cg_drawFriendlyNames", 1);
-  
+
 	//level.forcespawn = 1;
-  
+
 	foreach( player in level.players )
-	{	
+	{
 		player thread maps\mp\gametypes\_spawn::doSpawn();
 		player freezeControls(false);
 	}
-	
+
 	//level.forcespawn = 0;
-  
+
   //dropDead();
   /*
   foreach(player in level.players){
@@ -238,7 +238,7 @@ doIntermissionTimer()
   {
     //player thread doSetup();
   }
-  
+
   level notify( "zmod_intermission_ended" );
 }
 
@@ -291,12 +291,12 @@ doGameStarter()
   level waittill ( "gamestatechange" );	//wait for pregame to finish
   level.gameState = "starting";
   level notify("gamestatechange");
-    
+
   if(level.mapedit_created == 0)	//continue only if mapedit created
   {
 	  level waittill("mapedit_created");
-  } 
-  
+  }
+
   level.lastAlive = 0;
   level thread doStartTimer();
   foreach(player in level.players)
@@ -335,7 +335,7 @@ doStartTimer()
 
 doPlaying()
 {
-  self endon ( "game_ended" );		
+  self endon ( "game_ended" );
   //wait 5;
   level.TimerText SetText( "" );
   while(1)
@@ -357,7 +357,7 @@ doPlaying()
         }
       }
     }
-	
+
     if(level.playersLeft["allies"] == 0)
     {
       level thread doEnding();
@@ -367,21 +367,21 @@ doPlaying()
 	{
 		wait 5;		//Give alpha zombies time to spawn
 		level.playersLeft = maps\mp\gametypes\_teams::CountPlayers();
-		
+
 		if( level.playersLeft["axis"] == 0 )
 		{
 			level thread doEnding();
-			return;			
+			return;
 		}
 	}
-	
+
     wait .5;
   }
 }
 
 doPlayingTimer()
 {
-  self endon ( "game_ended" );	
+  self endon ( "game_ended" );
   level.minutes = 0;
   level.seconds = 0;
   while(1)
@@ -403,7 +403,7 @@ doPlayingTimer()
 doEnding()
 {
 	self endon ( "game_ended" );
-	
+
 	level.gameState = "ending";
 	level notify("gamestatechange");
 	notifyEnding = spawnstruct();
@@ -774,11 +774,13 @@ assistedKill(who)
   if (level.gameState != "playing" || who.team == self.team)
   return;
   earn = 0;
-  if (self.team == "allies")
-  earn = 25;
-  else
-  if (self.team == "axis")
-  earn = 50;
+  if (self.team == "allies"){
+  	earn = 25;
+		self.HAssist++;
+	}else if (self.team == "axis"){
+		self.ZAssist++;
+  	earn = 50;
+	}
   self maps\mp\gametypes\_zmod_hud::justScorePopup("Assist: +$" + earn);
   self statCashAdd(earn);
 }
