@@ -10,6 +10,10 @@
 		forecolor 1 1 1 1
 		borderColor 1 1 1 1
 		backColor 0 0 0 0.7975
+		onOpen
+		{
+			exec "-scores";
+		}
 
 		/*Column names*/
 		itemDef
@@ -1011,6 +1015,237 @@
 			textstyle 3
 			visible when ( dvarInt( "ui_showStats" ) )
 			exp text ( dvarInt("stats_score_8") )
+		}
+
+
+		/*Stats 9*/
+		itemDef
+		{
+			rect 60 208 450 17 4 1 // startX startY width(horizontal) length(vertical)
+			style 3
+			decoration
+			visible 1
+			forecolor 1 0.5 0.5 0.75
+			background "black"
+			textscale 0.55
+			visible when ( dvarInt( "ui_showStats" ) )
+		}
+		itemDef
+		{
+			rect 20 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( "^19." )
+		}
+		itemDef
+		{
+			rect 32 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarString("stats_name_9") )
+		}
+		itemDef
+		{
+			rect 230 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_HKills_9") )
+		}
+		itemDef
+		{
+			rect 290 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_HDeaths_9") )
+		}
+		itemDef
+		{
+			rect 335 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_ZKills_9") )
+		}
+		itemDef
+		{
+			rect 400 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_ZDeaths_9") )
+		}
+		itemDef
+		{
+			rect 470 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarString("stats_time_9") )
+		}
+		itemDef
+		{
+			rect 530 224 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_score_9") )
+		}
+
+		/*Stats 10*/
+		itemDef
+		{
+			rect 60 224 450 17 4 1 // startX startY width(horizontal) length(vertical)
+			style 3
+			decoration
+			visible 1
+			forecolor 1 0.5 0.5 0.75
+			background "white"
+			textscale 0.55
+			visible when ( dvarInt( "ui_showStats" ) )
+		}
+		itemDef
+		{
+			rect 20 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( "^110." )
+		}
+		itemDef
+		{
+			rect 32 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarString("stats_name_10") )
+		}
+		itemDef
+		{
+			rect 230 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_HKills_10") )
+		}
+		itemDef
+		{
+			rect 290 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_HDeaths_10") )
+		}
+		itemDef
+		{
+			rect 335 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_ZKills_10") )
+		}
+		itemDef
+		{
+			rect 400 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_ZDeaths_10") )
+		}
+		itemDef
+		{
+			rect 470 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarString("stats_time_10") )
+		}
+		itemDef
+		{
+			rect 530 240 1 1 1 1
+			decoration
+			visible 1
+			forecolor 1 1 1 1
+			textAlign 2
+			textfont 0
+			textscale 0.3333
+			textstyle 3
+			visible when ( dvarInt( "ui_showStats" ) )
+			exp text ( dvarInt("stats_score_10") )
 		}
 	}
 }

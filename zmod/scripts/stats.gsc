@@ -9,11 +9,9 @@ init(){
 	level.stats = [];
 	stats\_statsinit::initializeStats();
 	//logstats();
-	level thread test();
 	level thread periodicalLog();
-	wait 20;
-
 	logstats();
+	thread updateDvars();
 }
 
 onPlayerConnect()
@@ -21,9 +19,8 @@ onPlayerConnect()
     for(;;){
         level waittill("connected", player);
 				player thread playerInitStats();
-				player thread testprint("openMenu");
-				player openMenu(game["menu_stats"]);
-
+				//player openMenu(game["menu_stats"]);
+				player thread monitorTime();
     }
 }
 /*reads data from _statsinit.gsc, the py script writes to said file*/
@@ -39,7 +36,7 @@ initPlayerData(xuid, name, HKills, ZKills, HAssists, ZAssists, HDeaths, ZDeaths,
   level.stats[xuid]["ZTime"] = ZTime;
   level.stats[xuid]["score"] = score;
 }
-
+/*prints all player stats to games_mp.log*/
 logstats(){
 	xuids = getArrayKeys(level.stats); // get an array of the strings used to index
 	logPrint("*******************STATSSTART*******************\n");
@@ -54,60 +51,28 @@ logstats(){
 		logPrint(printString);
 	}
 }
-
-test(){
-	while(true){
-		foreach(player in level.players){
-			//player iPrintLnBold(player.ZAssists+" "+player.HAssits);
-			player iPrintLnBold("eser");
-			//player iPrintLnBold(player.isZombie+" "+level.gamestate+" HKills: "+player.HKills+" ZKills: "+player.ZKills+" HDeaths: "+player.HDeaths+" ZDeaths: "+player.ZDeaths);
-		}
-		updateDvars();
-		wait 1;
-	}
-}
-
+/*initializes and sets the stats to 0 for a new player*/
 playerInitStats(){
 	self setClientDvar("ui_showStats", 1);
 	sortedXuids = getSortedXuids();
-	i = 1;
-	foreach(xuid in sortedXuids){
-		if(i>10 || i>=sortedXuids.size) break;
-		self setClientDvar("stats_name_"+i, level.stats[xuid]["name"]);
-		self setClientDvar("stats_HKills_"+i, level.stats[xuid]["HKills"]);
-		self setClientDvar("stats_HDeaths_"+i, level.stats[xuid]["HDeaths"]);
-		self setClientDvar("stats_ZKills_"+i, level.stats[xuid]["ZKills"]);
-		self setClientDvar("stats_ZDeaths_"+i, level.stats[xuid]["ZDeaths"]);
-		self setClientDvar("stats_time_"+i, level.stats[xuid]["HTime"]);
-		self setClientDvar("stats_score_"+i, level.stats[xuid]["score"]);
-		i++;
-	}
-	self.HKills=0;
-	self.ZKills=0;
-	self.HDeaths=0;
-	self.ZDeaths=0;
-	self.HAssists=0;
-	self.ZAssists=0;
-	self.HTime=0;
-	self.ZTime=0;
-	self.zscore=0;
-	level.stats[self.guid]["name"] = self.name;
-	level.stats[self.guid]["HKills"] = self.HKills;
-	level.stats[self.guid]["ZKills"] = self.ZKills;
-	level.stats[self.guid]["HAssists"] = self.HAssists;
-	level.stats[self.guid]["ZAssists"] = self.ZAssists;
-	level.stats[self.guid]["HDeaths"] = self.HDeaths;
-	level.stats[self.guid]["ZDeaths"] = self.ZDeaths;
-	level.stats[self.guid]["HTime"] = self.HTime;
-	level.stats[self.guid]["ZTime"] = self.ZTime;
-	level.stats[self.guid]["score"] = self.zscore;
+	if(!isDefined(level.stats[self.guid]["name"])) level.stats[self.guid]["name"] = self.name;
+	if(!isDefined(level.stats[self.guid]["HKills"])) level.stats[self.guid]["HKills"] = 0;
+	if(!isDefined(level.stats[self.guid]["ZKills"])) level.stats[self.guid]["ZKills"] = 0;
+	if(!isDefined(level.stats[self.guid]["HAssists"])) level.stats[self.guid]["HAssists"] = 0;
+	if(!isDefined(level.stats[self.guid]["ZAssists"])) level.stats[self.guid]["ZAssists"] = 0;
+	if(!isDefined(level.stats[self.guid]["HDeaths"])) level.stats[self.guid]["HDeaths"] = 0;
+	if(!isDefined(level.stats[self.guid]["ZDeaths"])) level.stats[self.guid]["ZDeaths"] = 0;
+	if(!isDefined(level.stats[self.guid]["HTime"])) level.stats[self.guid]["HTime"] = 0;
+	if(!isDefined(level.stats[self.guid]["ZTime"])) level.stats[self.guid]["ZTime"] = 0;
+	if(!isDefined(level.stats[self.guid]["score"])) level.stats[self.guid]["score"] = 0;
+
 }
-/*Return the xuids sorted by their score; xuid at index 0=best player*/
+/*Return the xuids sorted by their score; xuid at index 0=highest score*/
 getSortedXuids(){
 	xuids = getArrayKeys(level.stats);
 	for(i=0;i<xuids.size; i++){
 		for(j=i+1;j<xuids.size; j++){
-			if(level.stats[xuids[i]]["score"]>level.stats[xuids[j]]["score"]){
+			if(level.stats[xuids[i]]["score"]<level.stats[xuids[j]]["score"]){
 				temp = xuids[i];
 				xuids[i] = xuids[j];
 				xuids[j] = temp;
@@ -116,69 +81,82 @@ getSortedXuids(){
 	}
 	return xuids;
 }
-updateStatsArray(){
-	foreach(player in level.players){
-		level.stats[player.guid]["name"] = player.name;
-	  level.stats[player.guid]["HKills"] += player.HKills;
-		player.HKills=0;
-	  level.stats[player.guid]["ZKills"] += player.ZKills;
-		player.ZKills=0;
-	  level.stats[player.guid]["HAssists"] += player.HAssists;
-		player.HAssists=0;
-	  level.stats[player.guid]["ZAssists"] += player.ZAssists;
-		player.ZAssists=0;
-		level.stats[player.guid]["HDeaths"] += player.HDeaths;
-		player.HDeaths=0;
-		level.stats[player.guid]["ZDeaths"] += player.ZDeaths;
-		player.ZDeaths=0;
-	  level.stats[player.guid]["HTime"] += player.HTime;
-		player.HTime=0;
-	  level.stats[player.guid]["ZTime"] += player.ZTime;
-		player.ZTime=0;
-	  level.stats[player.guid]["score"] += player.zscore;
-		player.zscore=0;
-	}
-}
 
 periodicalLog(){
 	while(true){
-		updateStatsArray();
 		logStats();
 		wait 10;
 	}
 }
+/*updates the Dvars which are used to display the leaderboard in the stats.menu*/
 updateDvars(){
 	while(true){
 		sortedXuids = getSortedXuids();
 		foreach(player in level.players){
 			player setClientDvar("ui_showStats", 1);
-
 			i = 1;
-			foreach(xuid in sortedXuids){
-				if(i>10 || i>=sortedXuids.size) break;
-				player setClientDvar("stats_name_"+i, level.stats[xuid]["name"]);
-				player setClientDvar("stats_HKills_"+i, level.stats[xuid]["HKills"]);
-				player setClientDvar("stats_HDeaths_"+i, level.stats[xuid]["HDeaths"]);
-				player setClientDvar("stats_ZKills_"+i, level.stats[xuid]["ZKills"]);
-				player setClientDvar("stats_ZDeaths_"+i, level.stats[xuid]["ZDeaths"]);
-				player setClientDvar("stats_time_"+i, level.stats[xuid]["HTime"]);
-				player setClientDvar("stats_score_"+i, level.stats[xuid]["score"]);
+			player iPrintLnBold("sort0: "+sortedXuids[0]+" sort1: "+sortedXuids[1]+" self: "+player.guid);
+			while(i<10){
+				if(player.guid==sortedXuids[i-1]) player setClientDvar("stats_name_"+i, "^1"+level.stats[sortedXuids[i-1]]["name"]);
+				else player setClientDvar("stats_name_"+i, level.stats[sortedXuids[i-1]]["name"]);
+				player setClientDvar("stats_HKills_"+i, level.stats[sortedXuids[i-1]]["HKills"]);
+				player setClientDvar("stats_HDeaths_"+i, level.stats[sortedXuids[i-1]]["HDeaths"]);
+				player setClientDvar("stats_ZKills_"+i, level.stats[sortedXuids[i-1]]["ZKills"]);
+				player setClientDvar("stats_ZDeaths_"+i, level.stats[sortedXuids[i-1]]["ZDeaths"]);
+				player setClientDvar("stats_time_"+i, formatTime(level.stats[sortedXuids[i-1]]["HTime"]));
+				player setClientDvar("stats_score_"+i, level.stats[sortedXuids[i-1]]["score"]);
 				i++;
 			}
 		}
 		wait 1;
 	}
 }
-
-testprint(text){
-	while(true){
-		self iPrintLnBold(text);
-		//self closeMenus();
-		//self closepopupMenu();
-		//self closeInGameMenu();
-		wait .5;
-		//self openMenu(game["menu_stats"]);
+/*opens the menu which shows the leaderboard for "time" seconds*/
+showStats(time){
+	for(i=0;i<time;i++){
+		foreach(player in level.players){
+			player closeMenus();
+			player closepopupMenu();
+			player closeInGameMenu();
+			player openPopupMenu(game["menu_stats"]);
+		}
 		wait 1;
 	}
+	foreach(player in level.players){
+		player closeMenus();
+		player closepopupMenu();
+		player closeInGameMenu();
+	}
+}
 
+/*monitors the time a player has been alive/zombie and periodically updates the score
+	which he gets for being alive [score=int(numberOfZombies/numberOfHumans*5)]*/
+monitorTime(){
+	while(true){
+		if(level.gamestate=="playing"){
+			numberOfZombies=0;
+			numberOfHumans=0;
+			foreach(player in level.players){
+				if(player.isZombie!=0) numberOfZombies++;
+				else numberOfHumans++;
+			}
+			if(self.isZombie==0){
+				level.stats[self.guid]["HTime"]+=10;
+				level.stats[self.guid]["score"]+=int(numberOfZombies/numberOfHumans*5);
+			}else{
+				level.stats[self.guid]["ZTime"]+=10;
+			}
+		}
+		wait 10;
+	}
+}
+/*formats the time into hh:mm:ss format*/
+formatTime(time){
+		hours = int(time/3600);
+		minutes = int(time%3600/60);
+		seconds = int(time%60);
+		if(hours<10) hours ="0"+hours;
+		if(minutes<10) minutes = "0"+minutes;
+		if(seconds<10) seconds = "0"+seconds;
+		return hours+":"+minutes+":"+seconds;
 }

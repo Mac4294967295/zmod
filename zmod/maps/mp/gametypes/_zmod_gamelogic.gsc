@@ -411,13 +411,14 @@ doEnding()
 	notifyEnding.notifyText2 = "Next Round Will Start Soon!";
 	notifyEnding.glowColor = (0.0, 0.6, 0.3);
 
-	wait 1;
+	wait 2;
 	VisionSetNaked("blacktest", 1);
 
 	calculateCredits();
 
 	foreach(player in level.players)
 	{
+		player notify("clearMenu");
 		player.isZombie = 0;
 		player _clearPerks();
 		player resetZMenu();
@@ -428,7 +429,8 @@ doEnding()
 		player.newcomer = 0;
 	}
 	maps\mp\gametypes\_zmod_gamelogic::CleanupKillstreaks();
-	wait 4.5;
+
+	wait 6;
 	VisionSetNaked(getDvar( "mapname" ), 2);
 
 	level thread maps\mp\gametypes\_zmod_gamelogic::doIntermission();

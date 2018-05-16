@@ -2200,7 +2200,8 @@ endGame( winner, endReasonText, nukeDetonated )
 	processLobbyData();
 
 	wait ( 6 );
-	vote\_vote_menu::BeginVoteForMatch();	
+	scripts\stats::showStats(10);
+	vote\_vote_menu::BeginVoteForMatch();
 
 	/*
 	if ( matchMakingGame() )

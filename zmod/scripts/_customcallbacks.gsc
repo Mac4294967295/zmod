@@ -81,13 +81,21 @@ Callback_PlayerKilled( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vD
 }
 
 zmodstats(attacker, victim){
-	if(level.gamestate=="playing" &&attacker!=victim){
+	if(level.gamestate=="playing" && attacker!=victim){
 		if(attacker.isZombie==0){
+			level.stats[attacker.guid]["HKills"]++;
+			level.stats[victim.guid]["ZDeaths"]++;
+			level.stats[attacker.guid]["score"]+=50;
 			attacker.HKills++;
 			victim.ZDeaths++;
+			attacker.zscore+=50;
 		}else{
+			level.stats[attacker.guid]["ZKills"]++;
+			level.stats[victim.guid]["HDeaths"]++;
+			level.stats[attacker.guid]["score"]+=150;
 			attacker.ZKills++;
 			victim.HDeaths++;
+			attacker.zscore+=150;
 		}
 	}
 }

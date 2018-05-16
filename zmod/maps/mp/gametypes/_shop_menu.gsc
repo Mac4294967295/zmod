@@ -516,7 +516,7 @@ clearOnDeath()
 {
 	while( 1 )
 	{
-		self waittill ( "death" );
+		self waittill_either ( "death", "clearMenu");
 
 		self.healthlabel setText( "" );
 		self.healthtext setText( "" );
