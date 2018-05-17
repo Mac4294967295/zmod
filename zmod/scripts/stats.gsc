@@ -54,7 +54,7 @@ logstats(){
 /*initializes and sets the stats to 0 for a new player*/
 playerInitStats(){
 	self setClientDvar("ui_showStats", 1);
-	sortedXuids = getSortedXuids();
+	self setClientDvar("ui_showSelfStat", 0);
 	if(!isDefined(level.stats[self.guid]["name"])) level.stats[self.guid]["name"] = self.name;
 	if(!isDefined(level.stats[self.guid]["HKills"])) level.stats[self.guid]["HKills"] = 0;
 	if(!isDefined(level.stats[self.guid]["ZKills"])) level.stats[self.guid]["ZKills"] = 0;
@@ -92,23 +92,48 @@ periodicalLog(){
 updateDvars(){
 	while(true){
 		sortedXuids = getSortedXuids();
+		rankArray = getRankforXuids(sortedXuids);
 		foreach(player in level.players){
 			player setClientDvar("ui_showStats", 1);
 			i = 1;
-			player iPrintLnBold("sort0: "+sortedXuids[0]+" sort1: "+sortedXuids[1]+" self: "+player.guid);
-			while(i<10){
-				if(player.guid==sortedXuids[i-1]) player setClientDvar("stats_name_"+i, "^1"+level.stats[sortedXuids[i-1]]["name"]);
-				else player setClientDvar("stats_name_"+i, level.stats[sortedXuids[i-1]]["name"]);
-				player setClientDvar("stats_HKills_"+i, level.stats[sortedXuids[i-1]]["HKills"]);
-				player setClientDvar("stats_HDeaths_"+i, level.stats[sortedXuids[i-1]]["HDeaths"]);
-				player setClientDvar("stats_ZKills_"+i, level.stats[sortedXuids[i-1]]["ZKills"]);
-				player setClientDvar("stats_ZDeaths_"+i, level.stats[sortedXuids[i-1]]["ZDeaths"]);
-				player setClientDvar("stats_time_"+i, formatTime(level.stats[sortedXuids[i-1]]["HTime"]));
-				player setClientDvar("stats_score_"+i, level.stats[sortedXuids[i-1]]["score"]);
+			while(i<=10){
+				if(player.guid==sortedXuids[i-1]){
+					player setClientDvar("stats_name_"+i, "^3"+level.stats[sortedXuids[i-1]]["name"]);
+					player setClientDvar("stats_name_"+i, "^3"+level.stats[sortedXuids[i-1]]["name"]);
+					player setClientDvar("stats_HKills_"+i, "^3"+level.stats[sortedXuids[i-1]]["HKills"]);
+					player setClientDvar("stats_HDeaths_"+i, "^3"+level.stats[sortedXuids[i-1]]["HDeaths"]);
+					player setClientDvar("stats_ZKills_"+i, "^3"+level.stats[sortedXuids[i-1]]["ZKills"]);
+					player setClientDvar("stats_ZDeaths_"+i, "^3"+level.stats[sortedXuids[i-1]]["ZDeaths"]);
+					player setClientDvar("stats_time_"+i, "^3"+formatTime(level.stats[sortedXuids[i-1]]["HTime"]));
+					player setClientDvar("stats_score_"+i, "^3"+level.stats[sortedXuids[i-1]]["score"]);
+				}else{
+					player setClientDvar("stats_name_"+i, level.stats[sortedXuids[i-1]]["name"]);
+					player setClientDvar("stats_HKills_"+i, level.stats[sortedXuids[i-1]]["HKills"]);
+					player setClientDvar("stats_HDeaths_"+i, level.stats[sortedXuids[i-1]]["HDeaths"]);
+					player setClientDvar("stats_ZKills_"+i, level.stats[sortedXuids[i-1]]["ZKills"]);
+					player setClientDvar("stats_ZDeaths_"+i, level.stats[sortedXuids[i-1]]["ZDeaths"]);
+					player setClientDvar("stats_time_"+i, formatTime(level.stats[sortedXuids[i-1]]["HTime"]));
+					player setClientDvar("stats_score_"+i, level.stats[sortedXuids[i-1]]["score"]);
+				}
 				i++;
 			}
+			player setClientDvar("stats_name_11", "^3"+level.stats[player.guid]["name"]);
+			player setClientDvar("stats_self_rank", "^3"+rankArray[player.guid]+".");
+			player setClientDvar("stats_HKills_11", "^3"+level.stats[player.guid]["HKills"]);
+			player setClientDvar("stats_HDeaths_11", "^3"+level.stats[player.guid]["HDeaths"]);
+			player setClientDvar("stats_ZKills_11", "^3"+level.stats[player.guid]["ZKills"]);
+			player setClientDvar("stats_ZDeaths_11", "^3"+level.stats[player.guid]["ZDeaths"]);
+			player setClientDvar("stats_time_11", "^3"+formatTime(level.stats[player.guid]["HTime"]));
+			player setClientDvar("stats_score_11", "^3"+level.stats[player.guid]["score"]);
+			if(rankArray[player.guid]>10) player setClientDvar("ui_showSelfStat", 1);
+			else player setClientDvar("ui_showSelfStat", 0);
+			player closeMenus();
+			player closepopupMenu();
+			player closeInGameMenu();
+			player openPopupMenu(game["menu_stats"]);
+			wait 1;
 		}
-		wait 1;
+		wait 10;
 	}
 }
 /*opens the menu which shows the leaderboard for "time" seconds*/
@@ -159,4 +184,13 @@ formatTime(time){
 		if(minutes<10) minutes = "0"+minutes;
 		if(seconds<10) seconds = "0"+seconds;
 		return hours+":"+minutes+":"+seconds;
+}
+/*returns an array of ranks (starting at 1) indexed by xuids, takes an array of sorted xuids as input */
+getRankforXuids(xuids){
+	rankArray = [];
+	i = 1;
+	for(i=0;i<xuids.size;i++){
+			rankArray[xuids[i]] = i+1;
+	}
+	return rankArray;
 }
