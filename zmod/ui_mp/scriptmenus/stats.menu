@@ -13,6 +13,7 @@
 		onOpen
 		{
 			exec "-scores";
+			//tokens[0] = "hello";
 		}
 
 		/*Column names*/
@@ -26,8 +27,8 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^4HKills" )
+			visible when ( 1 )
+			exp text ( "HKills" )
 		}
 		itemDef
 		{
@@ -39,7 +40,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( "^4HDeaths" )
 		}
 		itemDef
@@ -52,7 +53,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( "^4ZKills" )
 		}
 		itemDef
@@ -65,7 +66,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( "^4ZDeaths" )
 		}
 		itemDef
@@ -78,7 +79,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( "^4Time alive" )
 		}
 		itemDef
@@ -91,7 +92,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( "^4Score" )
 		}
 
@@ -106,7 +107,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "black"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -117,19 +118,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^11." )
-		}
-		itemDef
-		{
-			rect 39 96 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_1") )
 		}
 		itemDef
@@ -142,7 +131,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_1") )
 		}
 		itemDef
@@ -155,7 +144,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_1") )
 		}
 		itemDef
@@ -168,7 +157,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_1") )
 		}
 		itemDef
@@ -181,7 +170,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_1") )
 		}
 		itemDef
@@ -194,7 +183,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_1") )
 		}
 		itemDef
@@ -207,7 +196,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_1") )
 		}
 
@@ -221,7 +210,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "white"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -232,19 +221,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^12." )
-		}
-		itemDef
-		{
-			rect 39 112 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_2") )
 		}
 		itemDef
@@ -257,7 +234,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_2") )
 		}
 		itemDef
@@ -270,7 +247,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_2") )
 		}
 		itemDef
@@ -283,7 +260,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_2") )
 		}
 		itemDef
@@ -296,7 +273,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_2") )
 		}
 		itemDef
@@ -309,7 +286,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_2") )
 		}
 		itemDef
@@ -322,7 +299,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_2") )
 		}
 
@@ -336,7 +313,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "black"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -347,19 +324,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^13." )
-		}
-		itemDef
-		{
-			rect 39 128 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_3") )
 		}
 		itemDef
@@ -372,7 +337,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_3") )
 		}
 		itemDef
@@ -385,7 +350,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_3") )
 		}
 		itemDef
@@ -398,7 +363,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_3") )
 		}
 		itemDef
@@ -411,7 +376,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_3") )
 		}
 		itemDef
@@ -424,7 +389,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_3") )
 		}
 		itemDef
@@ -437,7 +402,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_3") )
 		}
 
@@ -452,7 +417,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "white"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -463,19 +428,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^14." )
-		}
-		itemDef
-		{
-			rect 39 144 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_4") )
 		}
 		itemDef
@@ -488,7 +441,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_4") )
 		}
 		itemDef
@@ -501,7 +454,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_4") )
 		}
 		itemDef
@@ -514,7 +467,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_4") )
 		}
 		itemDef
@@ -527,7 +480,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_4") )
 		}
 		itemDef
@@ -540,7 +493,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_4") )
 		}
 		itemDef
@@ -553,7 +506,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_4") )
 		}
 		/*Stats 5*/
@@ -566,7 +519,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "black"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -577,19 +530,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^15." )
-		}
-		itemDef
-		{
-			rect 39 160 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_5") )
 		}
 		itemDef
@@ -602,7 +543,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_5") )
 		}
 		itemDef
@@ -615,7 +556,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_5") )
 		}
 		itemDef
@@ -628,7 +569,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_5") )
 		}
 		itemDef
@@ -641,7 +582,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_5") )
 		}
 		itemDef
@@ -654,7 +595,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_5") )
 		}
 		itemDef
@@ -667,7 +608,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_5") )
 		}
 
@@ -681,7 +622,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "white"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -692,19 +633,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^16." )
-		}
-		itemDef
-		{
-			rect 39 176 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_6") )
 		}
 		itemDef
@@ -717,7 +646,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_6") )
 		}
 		itemDef
@@ -730,7 +659,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_6") )
 		}
 		itemDef
@@ -743,7 +672,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_6") )
 		}
 		itemDef
@@ -756,7 +685,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_6") )
 		}
 		itemDef
@@ -769,7 +698,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_6") )
 		}
 		itemDef
@@ -782,7 +711,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_6") )
 		}
 
@@ -796,7 +725,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "black"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -807,19 +736,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^17." )
-		}
-		itemDef
-		{
-			rect 39 192 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_7") )
 		}
 		itemDef
@@ -832,7 +749,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_7") )
 		}
 		itemDef
@@ -845,7 +762,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_7") )
 		}
 		itemDef
@@ -858,7 +775,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_7") )
 		}
 		itemDef
@@ -871,7 +788,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_7") )
 		}
 		itemDef
@@ -884,7 +801,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_7") )
 		}
 		itemDef
@@ -897,7 +814,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_7") )
 		}
 
@@ -912,7 +829,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "white"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -923,19 +840,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^18." )
-		}
-		itemDef
-		{
-			rect 39 208 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_8") )
 		}
 		itemDef
@@ -948,7 +853,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_8") )
 		}
 		itemDef
@@ -961,7 +866,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_8") )
 		}
 		itemDef
@@ -974,7 +879,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_8") )
 		}
 		itemDef
@@ -987,7 +892,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_8") )
 		}
 		itemDef
@@ -1000,7 +905,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_8") )
 		}
 		itemDef
@@ -1013,7 +918,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_8") )
 		}
 
@@ -1028,7 +933,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "black"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -1039,19 +944,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^19." )
-		}
-		itemDef
-		{
-			rect 39 224 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_9") )
 		}
 		itemDef
@@ -1064,7 +957,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_9") )
 		}
 		itemDef
@@ -1077,7 +970,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_9") )
 		}
 		itemDef
@@ -1090,7 +983,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_9") )
 		}
 		itemDef
@@ -1103,7 +996,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_9") )
 		}
 		itemDef
@@ -1116,7 +1009,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_9") )
 		}
 		itemDef
@@ -1129,7 +1022,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_9") )
 		}
 
@@ -1143,7 +1036,7 @@
 			forecolor 1 0.5 0.5 0.75
 			background "white"
 			textscale 0.55
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 		}
 		itemDef
 		{
@@ -1154,19 +1047,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
-			exp text ( "^110." )
-		}
-		itemDef
-		{
-			rect 39 240 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_name_10") )
 		}
 		itemDef
@@ -1179,7 +1060,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HKills_10") )
 		}
 		itemDef
@@ -1192,7 +1073,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_HDeaths_10") )
 		}
 		itemDef
@@ -1205,7 +1086,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZKills_10") )
 		}
 		itemDef
@@ -1218,7 +1099,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_ZDeaths_10") )
 		}
 		itemDef
@@ -1231,7 +1112,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_time_10") )
 		}
 		itemDef
@@ -1244,7 +1125,7 @@
 			textfont 0
 			textscale 0.3333
 			textstyle 3
-			visible when ( dvarInt( "ui_showStats" ) )
+			visible when ( 1 )
 			exp text ( dvarString("stats_score_10") )
 		}
 
@@ -1263,18 +1144,6 @@
 		itemDef
 		{
 			rect 20 256 1 1 1 1
-			decoration
-			visible 1
-			forecolor 1 1 1 1
-			textfont 0
-			textscale 0.3333
-			textstyle 3
-			visible when ( dvarInt( "ui_showSelfStat" ) )
-			exp text ( dvarString("stats_self_rank") )
-		}
-		itemDef
-		{
-			rect 39 256 1 1 1 1
 			decoration
 			visible 1
 			forecolor 1 1 1 1

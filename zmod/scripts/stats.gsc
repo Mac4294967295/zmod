@@ -12,6 +12,7 @@ init(){
 	level thread periodicalLog();
 	logstats();
 	thread updateDvars();
+	thread monitorTime();
 }
 
 onPlayerConnect()
@@ -19,8 +20,7 @@ onPlayerConnect()
     for(;;){
         level waittill("connected", player);
 				player thread playerInitStats();
-				//player openMenu(game["menu_stats"]);
-				player thread monitorTime();
+				player openMenu(game["menu_stats"]);
     }
 }
 /*reads data from _statsinit.gsc, the py script writes to said file*/
@@ -53,7 +53,6 @@ logstats(){
 }
 /*initializes and sets the stats to 0 for a new player*/
 playerInitStats(){
-	self setClientDvar("ui_showStats", 1);
 	self setClientDvar("ui_showSelfStat", 0);
 	if(!isDefined(level.stats[self.guid]["name"])) level.stats[self.guid]["name"] = self.name;
 	if(!isDefined(level.stats[self.guid]["HKills"])) level.stats[self.guid]["HKills"] = 0;
@@ -94,12 +93,12 @@ updateDvars(){
 		sortedXuids = getSortedXuids();
 		rankArray = getRankforXuids(sortedXuids);
 		foreach(player in level.players){
-			player setClientDvar("ui_showStats", 1);
 			i = 1;
 			while(i<=10){
+				rankSpacerString = "    ";
+				if(i==10) rankSpacerString = " ";
 				if(player.guid==sortedXuids[i-1]){
-					player setClientDvar("stats_name_"+i, "^3"+level.stats[sortedXuids[i-1]]["name"]);
-					player setClientDvar("stats_name_"+i, "^3"+level.stats[sortedXuids[i-1]]["name"]);
+					player setClientDvar("stats_name_"+i, "^1"+rankSpacerString+i+".  ^3"+level.stats[sortedXuids[i-1]]["name"]);
 					player setClientDvar("stats_HKills_"+i, "^3"+level.stats[sortedXuids[i-1]]["HKills"]);
 					player setClientDvar("stats_HDeaths_"+i, "^3"+level.stats[sortedXuids[i-1]]["HDeaths"]);
 					player setClientDvar("stats_ZKills_"+i, "^3"+level.stats[sortedXuids[i-1]]["ZKills"]);
@@ -107,7 +106,7 @@ updateDvars(){
 					player setClientDvar("stats_time_"+i, "^3"+formatTime(level.stats[sortedXuids[i-1]]["HTime"]));
 					player setClientDvar("stats_score_"+i, "^3"+level.stats[sortedXuids[i-1]]["score"]);
 				}else{
-					player setClientDvar("stats_name_"+i, level.stats[sortedXuids[i-1]]["name"]);
+					player setClientDvar("stats_name_"+i, "^1"+rankSpacerString+i+".  ^7"+level.stats[sortedXuids[i-1]]["name"]);
 					player setClientDvar("stats_HKills_"+i, level.stats[sortedXuids[i-1]]["HKills"]);
 					player setClientDvar("stats_HDeaths_"+i, level.stats[sortedXuids[i-1]]["HDeaths"]);
 					player setClientDvar("stats_ZKills_"+i, level.stats[sortedXuids[i-1]]["ZKills"]);
@@ -117,20 +116,23 @@ updateDvars(){
 				}
 				i++;
 			}
-			player setClientDvar("stats_name_11", "^3"+level.stats[player.guid]["name"]);
-			player setClientDvar("stats_self_rank", "^3"+rankArray[player.guid]+".");
-			player setClientDvar("stats_HKills_11", "^3"+level.stats[player.guid]["HKills"]);
-			player setClientDvar("stats_HDeaths_11", "^3"+level.stats[player.guid]["HDeaths"]);
-			player setClientDvar("stats_ZKills_11", "^3"+level.stats[player.guid]["ZKills"]);
-			player setClientDvar("stats_ZDeaths_11", "^3"+level.stats[player.guid]["ZDeaths"]);
-			player setClientDvar("stats_time_11", "^3"+formatTime(level.stats[player.guid]["HTime"]));
-			player setClientDvar("stats_score_11", "^3"+level.stats[player.guid]["score"]);
-			if(rankArray[player.guid]>10) player setClientDvar("ui_showSelfStat", 1);
-			else player setClientDvar("ui_showSelfStat", 0);
-			player closeMenus();
-			player closepopupMenu();
-			player closeInGameMenu();
-			player openPopupMenu(game["menu_stats"]);
+			if(rankArray[player.guid]>10){
+				i = rankArray[player.guid];
+				rankSpacerString = " ";
+				if(i>99) rankSpacerString = "";
+				player setClientDvar("ui_showSelfStat", 1);
+				player setClientDvar("stats_name_11", "^1"+ rankSpacerString+i+".  ^3"+level.stats[player.guid]["name"]);
+				player setClientDvar("stats_HKills_11", "^3"+level.stats[player.guid]["HKills"]);
+				player setClientDvar("stats_HDeaths_11", "^3"+level.stats[player.guid]["HDeaths"]);
+				player setClientDvar("stats_ZKills_11", "^3"+level.stats[player.guid]["ZKills"]);
+				player setClientDvar("stats_ZDeaths_11", "^3"+level.stats[player.guid]["ZDeaths"]);
+				player setClientDvar("stats_time_11", "^3"+formatTime(level.stats[player.guid]["HTime"]));
+				player setClientDvar("stats_score_11", "^3"+level.stats[player.guid]["score"]);
+			}else player setClientDvar("ui_showSelfStat", 0);
+			//player closeMenus();
+			//player closepopupMenu();
+			//player closeInGameMenu();
+			//player openPopupMenu(game["menu_stats"]);
 			wait 1;
 		}
 		wait 10;
@@ -165,11 +167,13 @@ monitorTime(){
 				if(player.isZombie!=0) numberOfZombies++;
 				else numberOfHumans++;
 			}
-			if(self.isZombie==0){
-				level.stats[self.guid]["HTime"]+=10;
-				level.stats[self.guid]["score"]+=int(numberOfZombies/numberOfHumans*5);
-			}else{
-				level.stats[self.guid]["ZTime"]+=10;
+			foreach(player in level.players){
+				if(player.isZombie==0){
+					level.stats[player.guid]["HTime"]+=10;
+					level.stats[player.guid]["score"]+=int(numberOfZombies/numberOfHumans*5);
+				}else{
+					level.stats[player.guid]["ZTime"]+=10;
+				}
 			}
 		}
 		wait 10;
