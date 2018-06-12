@@ -103,11 +103,14 @@ isOptionsMenu( menu )
 
 	return false;
 }
+
+/*
 ResetPlayerRespawn()
 {
 	wait 30;
 	self.respawned = 0;
 }
+*/
 
 onMenuResponse()
 {
@@ -117,69 +120,6 @@ onMenuResponse()
 	{
 		self waittill("menuresponse", menu, response);
 		
-		if ( response == "player_respawn" )
-		{
-			self closepopupMenu();
-			self closeInGameMenu();		
-			
-			if(self.respawned != 1)
-			{
-				self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
-				self.respawned = 1;
-				self thread ResetPlayerRespawn();
-			}
-			else
-			{
-				self iprintln ( "You can only respawn every 30s" );
-			}
-			
-		}
-		
-		if ( response == "switch_to_zombies" )
-		{
-			self closepopupMenu();
-			self closeInGameMenu();
-			
-			if( level.gameState != "playing" )
-			{
-				self iprintln( "Round hasn't started. You can't switch teams." );
-			}
-			else
-			{
-				if( self.pers["team"] == "axis" )
-				{
-					self iprintln("Already Zombie");
-				}
-				else
-				{			
-			
-					self.pers["team"] = "axis";	
-					
-					self notify("menuresponse", game["menu_team"], "axis");
-					wait .1;
-					self notify("menuresponse", "changeclass", "class3");
-					
-					self.isZombie=1;
-					self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();					
-					maps\mp\gametypes\_spawn::doSpawn();
-					iprintln( self.name + " has switched to Zombies" );					
-				}
-			}			
-		}
-		if( response == "autoassign" || response == "allies" || response == "axis" || response == "spectator" )
-		{			
-				//self closepopupMenu();
-				//self closeInGameMenu();
-				self closeMenus();
-			
-				self iprintln( "menu response: " + response );
-				self suicide();
-				//level notify( "connected", self );
-				//self maps\mp\gametypes\_spawn::doSpawn();				
-				//self maps\mp\gametypes\_spawn::doSpawn();
-				//self menuAllies();
-		}		
-		/*
 		if ( response == "back" )
 		{
 			self closepopupMenu();
@@ -293,7 +233,72 @@ onMenuResponse()
 				maps\mp\gametypes\_quickmessages::quickstatements(response);
 			else if(menu == game["menu_quickresponses"])
 				maps\mp\gametypes\_quickmessages::quickresponses(response);
+		}		
+		
+		/*
+		//Unstable custom menuresponse code, uncommented due to issues with menufiles consistently loading
+		if ( response == "player_respawn" )
+		{
+			self closepopupMenu();
+			self closeInGameMenu();		
+			
+			if(self.respawned != 1)
+			{
+				self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();
+				self.respawned = 1;
+				self thread ResetPlayerRespawn();
+			}
+			else
+			{
+				self iprintln ( "You can only respawn every 30s" );
+			}
+			
 		}
+		
+		if ( response == "switch_to_zombies" )
+		{
+			self closepopupMenu();
+			self closeInGameMenu();
+			
+			if( level.gameState != "playing" )
+			{
+				self iprintln( "Round hasn't started. You can't switch teams." );
+			}
+			else
+			{
+				if( self.pers["team"] == "axis" )
+				{
+					self iprintln("Already Zombie");
+				}
+				else
+				{			
+			
+					self.pers["team"] = "axis";	
+					
+					self notify("menuresponse", game["menu_team"], "axis");
+					wait .1;
+					self notify("menuresponse", "changeclass", "class3");
+					
+					self.isZombie=1;
+					self maps\mp\gametypes\_SpawnPoints::SpawnPlayer();					
+					maps\mp\gametypes\_spawn::doSpawn();
+					iprintln( self.name + " has switched to Zombies" );					
+				}
+			}			
+		}
+		if( response == "autoassign" || response == "allies" || response == "axis" || response == "spectator" )
+		{			
+				//self closepopupMenu();
+				//self closeInGameMenu();
+				self closeMenus();
+			
+				self iprintln( "menu response: " + response );
+				self suicide();
+				//level notify( "connected", self );
+				//self maps\mp\gametypes\_spawn::doSpawn();				
+				//self maps\mp\gametypes\_spawn::doSpawn();
+				//self menuAllies();
+		}		
 	*/
 	}	
 }
