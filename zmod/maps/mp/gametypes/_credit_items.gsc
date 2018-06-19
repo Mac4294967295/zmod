@@ -15,7 +15,10 @@ tacticalinsertion(){
 	if(self.bounty >= self getCItemVal("tacticalinsertion", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("tacticalinsertion", "cost"));
 		self setCItemVal("tacticalinsertion", "in_use", 1);
+		self takeWeapon("frag_grenade_mp");
+		self SetOffhandPrimaryClass( "other" );
 		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
+		self thread maps\mp\gametypes\_spawn::monitorTI();
 	}else self iPrintlnBold("^1Not Enough ^3Cash");
 	self notify("MENUCHANGE_2");
 }
@@ -51,11 +54,11 @@ execTacticalInsertion()
 	self endon( "death" );
 	self endon( "disconnect" );
 	self endon( "zmod_tacins_set" );
-	
+
 	/*
 	self iprintln( "TacInsert" );
 	self _giveWeapon( "flare_mp", 0 );
-	self giveStartAmmo( "flare_mp" );	
+	self giveStartAmmo( "flare_mp" );
 	wait 0.2;
 	self switchToWeapon("flare_mp");
 	self thread maps\mp\perks\_perkfunctions::monitorTIUse();
@@ -75,8 +78,9 @@ giveCreditUpgrades()
 {
 	if(self getCItemVal("tacticalinsertion", "in_use") == 1 )
 	{
-		//self thread execTacticalInsertion();
-		//self maps\mp\perks\_perkfunctions::setTacticalInsertion();
+		self takeWeapon("frag_grenade_mp");
+		self SetOffhandPrimaryClass( "other" );
+		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
 	}
 	if( self getCItemVal("finalstand", "in_use") == 1 ){
 		self maps\mp\perks\_perks::givePerk("specialty_finalstand");

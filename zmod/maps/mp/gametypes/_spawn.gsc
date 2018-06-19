@@ -191,8 +191,6 @@ doHumanSetup()
 	self takeAllWeapons();
 	self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
 	self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
-	self SetOffhandPrimaryClass( "frag" );
-	self _giveWeapon("frag_grenade_mp", 1);
 	self thread monitorGrenades();
 	wait .5;
 	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
@@ -329,7 +327,11 @@ monitorGrenades()
 {
 	self endon("disconnect");
 	self endon("death");
-
+	while(level.gamestate!="playing") wait 1;
+	if(!self hasWeapon("flare_mp")){
+		self SetOffhandPrimaryClass( "frag" );
+		self _giveWeapon("frag_grenade_mp", 1);
+	}
 	while(self.isZombie==0)
 	{
 		if(self.c4array.size==0)
@@ -345,5 +347,16 @@ monitorGrenades()
 			wait .2;
 		}
 		wait .2;
+	}
+}
+
+monitorTI(){
+	self endon("disconnect");
+	self endon("death");
+	wait .7;
+	while(self hasWeapon("flare_mp")) wait .5;
+	if(level.gamestate=="playing") {
+		self SetOffhandPrimaryClass( "frag" );
+		self _giveWeapon("frag_grenade_mp", 1);
 	}
 }
