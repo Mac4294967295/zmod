@@ -1,0 +1,8 @@
+*
+!.gitignore
+!zmod/
+!zmod/**
+zmod/z_svr_bots.iwd
+zmod/scriptdata/
+zmod/logs/*
+zmod/console_mp.log*

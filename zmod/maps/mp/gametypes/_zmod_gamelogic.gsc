@@ -217,7 +217,7 @@ doIntermission()
   //level.ShowCreditShop = false;
   level thread doZombieTimer();
   CleanupKillstreaks();
-  VisionSetNaked("icbm", 5);
+  //VisionSetNaked("icbm", 5);
 }
 
 doIntermissionTimer()
@@ -311,7 +311,7 @@ doGameStarter()
   }
   wait getdvarint("scr_zmod_starting_time");
   level thread doZombieTimer();
-  VisionSetNaked("icbm", 5);
+  //VisionSetNaked("icbm", 5);
 }
 
 doStartTimer()
@@ -460,7 +460,7 @@ inGameConstants()
   {
     foreach(player in level.players)
     {
-      player VisionSetNakedForPlayer("icbm", 0);
+      //player VisionSetNakedForPlayer("icbm", 0);
       player setClientDvar("lowAmmoWarningNoAmmoColor2", 0, 0, 0, 0);
       player setClientDvar("lowAmmoWarningNoAmmoColor1", 0, 0, 0, 0);
       player setClientDvar("fx_draw", 1);
@@ -771,9 +771,9 @@ weaponInit()
   level.weaponclasses[8] = "weapon_explosives";
 }
 
-assistedKill(who)
+assistedKill(victim)
 {
-  if (level.gameState != "playing" || who.team == self.team)
+  if (level.gameState != "playing" || victim.team == self.team)
   return;
   earn = 0;
   if (self.team == "allies"){
@@ -786,11 +786,11 @@ assistedKill(who)
   self maps\mp\gametypes\_zmod_hud::justScorePopup("Assist: +$" + earn);
   self statCashAdd(earn);
 }
-killedPlayer(who, weap)
+killedPlayer(victim, weap)
 {
-	if (self.team == who.team || level.gameState != "playing")
+	if (self.team == victim.team || level.gameState != "playing")
 		return;
-	if (self.team == who.team)
+	if (self.team == victim.team)
 		return;
 	//processChallengeKill(self, who, weap);
 	if (self.isZombie != 0)
@@ -807,8 +807,8 @@ killedPlayer(who, weap)
 	}
 	else
 	{
-		who statCashAdd(50);
-		who maps\mp\gametypes\_zmod_hud::justScorePopup("Died! +$50");
+		victim statCashAdd(50);
+		victim maps\mp\gametypes\_zmod_hud::justScorePopup("Died! +$50");
 
 		earn = 50;
 		if (weap == "melee_mp")
