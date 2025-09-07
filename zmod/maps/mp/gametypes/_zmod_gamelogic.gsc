@@ -793,7 +793,7 @@ killedPlayer(victim, weap)
 	if (self.team == victim.team)
 		return;
 	//processChallengeKill(self, who, weap);
-	if (self.isZombie != 0)
+	if (self.isZombie)
 	{
 		amount = 100 + (50 * self.combo);
 

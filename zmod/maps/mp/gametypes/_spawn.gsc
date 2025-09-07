@@ -64,6 +64,7 @@ doSpawn()
 
 	self statCashAdd(5000);
 
+	//self IPrintLnBold("do spawn");
 	self notify( "zmod_shop_change" );
 	self notify( "HEALTH" );
 	self notify( "LIVES" );
@@ -164,7 +165,7 @@ doHumanSetup()
 
 	self.grenades = 3;
 
-	self setHItemVal("weaponhandling", "text1", "Upgrade Recoil Control (0/3) - ");
+	self setHItemVal("weaponhandling", "text1", "Upgrade Weapon Handling (0/3) - ");
 
 	self _unsetperk("specialty_bulletaccuracy");
 	self SetClientDvar("perk_weapSpreadMultiplier", "1");
@@ -180,20 +181,8 @@ doHumanSetup()
 	self resetHMenu();
 	self.maxhealth = 100;
 
-	self.randomlmg = randomInt(level.lmg.size);
-	self.randomar = randomInt(level.assault.size);
-	self.randommp = randomInt(level.machine.size);
-	self.randomsmg = randomInt(level.smg.size);
-	self.randomsr = randomInt(level.rifle.size);
-	self.randomshot = randomInt(level.shot.size);
-	self.randomhand = randomInt(level.hand.size);
 
-	self takeAllWeapons();
-	self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
-	self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
-	self thread monitorGrenades();
-	wait .5;
-	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
+	self thread setupWeapons();
 }
 
 doZombieSetup()
@@ -269,6 +258,7 @@ pickZombie()
 	//logprint( self.name + "pickZombie" + "\n" );
 
 	numberOfZombies=int(level.players.size / 6 + 1);
+	zombiePicked = 0;
 
 	for(i=0;i<numberOfZombies;i++)
 	{
@@ -277,7 +267,7 @@ pickZombie()
 			rnd = randomInt(level.players.size);
 
 			if(!isDefined(level.players[rnd]))
-				return;
+				continue;
 
 			randPlayer = level.players[rnd];
 
@@ -292,11 +282,14 @@ pickZombie()
 				randPlayer thread maps\mp\gametypes\_shop_menu::monitorShop();
 			}
 		}
-		level.gameState = "playing";
-		level notify("gamestatechange");
+		if(!zombiePicked) {
+			zombiePicked = 1;
+			level.gameState = "playing";
+			level notify("gamestatechange");
+		}
 
 		//iprintln( "picked Zombie: " + randplayer.name + "\n" );
-		//logprint( self.name + "picked Zombie: " + randplayer.name );
+		logprint( self.name + "picked Zombie: " + randPlayer.name );
 
 		randPlayer.isAlpha = 1;
 		randPlayer.bonuscash = 1;
@@ -321,6 +314,25 @@ onPlayerSpawned()
 		if( self.spawning == 0 )
 			self thread doSpawn();
 	}
+}
+
+setupWeapons() {
+	self.randomlmg = randomInt(level.lmg.size);
+	self.randomar = randomInt(level.assault.size);
+	self.randommp = randomInt(level.machine.size);
+	self.randomsmg = randomInt(level.smg.size);
+	self.randomsr = randomInt(level.rifle.size);
+	self.randomshot = randomInt(level.shot.size);
+	self.randomhand = randomInt(level.hand.size);
+
+	self takeAllWeapons();
+	self giveWeapon(level.smg[self.randomsmg] + "_mp", 0, false);
+	self GiveMaxAmmo(level.smg[self.randomsmg] + "_mp");
+	wait .5;
+	self switchToWeapon(level.smg[self.randomsmg] + "_mp");
+	self thread monitorGrenades();
+	wait .5;
+	self maps\mp\gametypes\_shop_menu::monitorShop();
 }
 
 monitorGrenades()

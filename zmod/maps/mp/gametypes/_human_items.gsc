@@ -275,8 +275,8 @@ doBetterdevils(){
 doGrimreaper(){
 	self endon("death");
 	if(!isUsingKillstreak()){
-		if (self.bounty >= self getHItemVal("betterdevils", "cost")){
-			self statCashSub(self getHItemVal("betterdevils", "cost"));
+		if (self.bounty >= self getHItemVal("grimreaper", "cost")){
+			self statCashSub(self getHItemVal("grimreaper", "cost"));
 			self setHItemVal("grimreaper", "in_use", 1);
 			prevweapon = self GetCurrentWeapon();
 
@@ -339,8 +339,8 @@ artillery(){
 	self endon("disconnect");
 	self endon("death");
 	if(!isUsingKillstreak()){
-		if (self.bounty >= self getHItemVal("betterdevils", "cost")){
-			self statCashSub(self getHItemVal("betterdevils", "cost"));
+		if (self.bounty >= self getHItemVal("artillery", "cost")){
+			self statCashSub(self getHItemVal("artillery", "cost"));
 			//Coordinates Selection for the Location of the Artillery Strike
 			self beginLocationSelection( "map_artillery_selector", true, ( level.mapSize / 5.625 ) );
 			self.selectingLocation = true;
@@ -393,7 +393,7 @@ artillery(){
 
 grenade(){
 	if(self getHItemVal("grenade", "print_text")=="text1"){
-			if(self.bounty >= self getHItemVal("greande", "cost")){
+			if(self.bounty >= self getHItemVal("grenade", "cost")){
 				//self setHItemVal("grenade", "in_use", 1);
 				self statCashSub(self getHItemVal("grenade", "cost"));
 
@@ -734,7 +734,6 @@ isWeaponSpecial(weapon){
 Returns whether the attachment is attachble on the current weapon
 */
 isAttachable(attachment){
-	self IPrintLnBold(self getCurrentWeapon());
 	if(isWeaponSpecial(self getCurrentWeapon())) return false;
 	if(isSubStr(self getCurrentWeapon(), attachment)) return false;
 	basename = strtok(self getCurrentWeapon(), "_");

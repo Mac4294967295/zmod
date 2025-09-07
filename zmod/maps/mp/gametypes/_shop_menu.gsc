@@ -282,6 +282,7 @@ onGamestatechange()
 	while(1)
 	{
 		level waittill( "gamestatechange" );
+		//self IPrintLnBold("gamestatechange");
 		self notify( "zmod_shop_change" );
 	}
 }
@@ -510,6 +511,7 @@ scrollShopMenu( option )
 	}
 
 	self notify ( "zmod_shop_draw" );
+	//self monitorShop();
 }
 
 clearOnDeath()
