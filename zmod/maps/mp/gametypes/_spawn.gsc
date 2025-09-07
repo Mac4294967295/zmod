@@ -42,7 +42,7 @@ doSpawn()
 	self.spawning = 0;
 
 	//Post Spawn Setups
-	if( self.isZombie == 0 )
+	if(!self.isZombie)
 	{
 		self doHumanSetup();
 		self maps\mp\gametypes\_credit_items::giveCreditUpgrades();
@@ -100,14 +100,16 @@ SetPlayerTeam( team )
 
 		if( team == "allies" )
 		{
-			self.switching_teams = true;
+			//TODO: if removing this is problematic, put it in again and remove the self.team != team check at the top
+			//self.switching_teams = true;
 			self.joining_team = "allies";
 			self.leaving_team = self.pers["team"];
 			self maps\mp\gametypes\_menus::addToTeam( "allies" );
 		}
 		else if ( team == "axis" )
 		{
-			self.switching_teams = true;
+			//TODO: if removing this is problematic, put it in again and remove the self.team != team check at the top
+			//self.switching_teams = true;
 			self.joining_team = "axis";
 			self.leaving_team = self.pers["team"];
 			self maps\mp\gametypes\_menus::addToTeam( "axis" );

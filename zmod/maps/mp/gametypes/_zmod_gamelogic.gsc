@@ -79,30 +79,30 @@ onPlayerConnect()
 	if(level.gameState == "")
 		level waittill( "gamestatechange" );
 	*/
-	//player monitorSpectator();
+	player thread monitorSpectator();
 
 	//player closepopupMenu();
 	//player closeInGameMenu();
 
 	player thread maps\mp\gametypes\_shop_menu::doShop();
 
-	if( player.spawning == 0 )
-		player thread maps\mp\gametypes\_spawn::doSpawn();
+	if(!player.spawning) {
+    player thread maps\mp\gametypes\_spawn::doSpawn();
+  }
 
     //player thread TestSpawnpoints();
 	//player thread CollectSpawnCords();
   }
 }
 
+//TODO: this is broken
 monitorSpectator()
 {
 	while(1)
 	{
-		self iprintln("Team: " + self.team);
 		if(self.team == "spectator")
 		{
-			self maps\mp\gametypes\_spawn::doSpawn();
-			self iprintln("spawn");
+			self thread maps\mp\gametypes\_spawn::doSpawn();
 		}
 		wait 1;
 	}

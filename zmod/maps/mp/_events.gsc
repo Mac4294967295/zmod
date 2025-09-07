@@ -79,6 +79,14 @@ onPlayerConnect()
 		player setAdrenaline( 0 );
 		player thread monitorCrateJacking();
 		player thread monitorObjectives();
+		player thread debug_log();
+	}
+}
+
+debug_log() {
+	for(;;) {
+		wait 2;
+		self IPrintLnBold(level.gameState);
 	}
 }
 
