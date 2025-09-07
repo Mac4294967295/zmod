@@ -257,7 +257,7 @@ doShop()
 
 		self notify ( "zmod_shop_close" );
 
-		self iprintln( "Shop Change" );
+		//self iprintln( "Shop Change" );
 
 		if( level.gameState == "intermission" )
 		{
@@ -295,7 +295,7 @@ doCreditShop()
 
 	self.shopname = "credit";
 	self.menu = 0;
-	self iprintln(self.shopname);
+	//self iprintln(self.shopname);
 
 	self.numberOfPages = self.CArray.size-1;
 	self startMenuListenEvents();
@@ -337,7 +337,7 @@ doZombieShop()
 
 	self.shopname = "zombie";
 	self.menu = 0;
-	self iprintln(self.shopname);
+	//self iprintln(self.shopname);
 
 	self.numberOfPages = self.ZArray.size-1;
 	self startMenuListenEvents();
@@ -366,7 +366,7 @@ doHumanShop()
 
 	self.shopname = "human";
 	self.menu = 0;
-	self iprintln(self.shopname);
+	//self iprintln(self.shopname);
 
 	self.numberOfPages = self.HArray.size-1;
 	self startMenuListenEvents();
@@ -393,7 +393,7 @@ selectShopOption( option )
 	if(!isDefined( option ))
 		return;
 
-	self iprintln ( "Menu Select: " + option);
+	//self iprintln ( "Menu Select: " + option);
 
 	switch( self.shopname )
 	{
@@ -448,11 +448,11 @@ monitorShop()
 	}
 
 	/*Updates text to print for when akimbo is available/unavailable*/
-	if(isAttachable("akimbo"))
+	if(isAttachable("akimbo")) {
 		self setHItemVal("akimbo", "print_text", "text1");
-	else
+	} else {
 		self setHItemVal("akimbo", "print_text", "text2");
-
+	}
 	if(self getHItemVal("sight", "in_use")==1)
 	{
 		self setHItemVal("sight", "print_text", "text2");
@@ -484,7 +484,7 @@ monitorShop()
 
 scrollShopMenu( option )
 {
-	self iprintln ( "Menu Scroll: " + option);
+	//self iprintln ( "Menu Scroll: " + option);
 
 	if( option == "+" )			//Forward
 	{

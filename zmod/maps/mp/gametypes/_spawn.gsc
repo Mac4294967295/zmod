@@ -94,7 +94,7 @@ SetPlayerTeam( team )
 {
 	if( self.team != team )
 	{
-		self iprintln( "SetPlayerTeam" );
+		//self iprintln( "SetPlayerTeam" );
 		logprint( self.name + "SetPlayerTeam" + "\n" );
 
 		if( team == "allies" )
@@ -137,7 +137,7 @@ validClass( team )
 
 SetPlayerClass()
 {
-	self iprintln( "SetPlayerClass" );
+	//self iprintln( "SetPlayerClass" );
 	logprint( self.name + "SetPlayerClass" + "\n" );
 
 	if ( self.team == "axis")
@@ -164,7 +164,7 @@ doHumanSetup()
 
 	self.grenades = 3;
 
-	self setHItemVal("recoilcontrol", "text1", "Upgrade Recoil Control (0/3) - ");
+	self setHItemVal("weaponhandling", "text1", "Upgrade Recoil Control (0/3) - ");
 
 	self _unsetperk("specialty_bulletaccuracy");
 	self SetClientDvar("perk_weapSpreadMultiplier", "1");

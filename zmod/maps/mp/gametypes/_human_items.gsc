@@ -173,7 +173,7 @@ weaponhandling(){
 					default:
 					break;
 				}
-			}else self iPrintlnBold("^1Not Enough ^3Cash");;
+			}else self iPrintlnBold("^1Not Enough ^3Cash");
 		}
 }
 
@@ -734,6 +734,7 @@ isWeaponSpecial(weapon){
 Returns whether the attachment is attachble on the current weapon
 */
 isAttachable(attachment){
+	self IPrintLnBold(self getCurrentWeapon());
 	if(isWeaponSpecial(self getCurrentWeapon())) return false;
 	if(isSubStr(self getCurrentWeapon(), attachment)) return false;
 	basename = strtok(self getCurrentWeapon(), "_");

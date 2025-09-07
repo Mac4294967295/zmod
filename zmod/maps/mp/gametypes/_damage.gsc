@@ -1060,9 +1060,9 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 	//iprintln("sMeansOfDeath: " + sMeansOfDeath);
 	//iprintln("WeaponPlayer DMG: " + sWeapon.damage);
 	//iprintln("Hitloc : " + sHitloc);
-	iprintln("iDamage Prev: " + iDamage);
+	//iprintln("iDamage Prev: " + iDamage);
 	iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedAttackerDamage(iDamage, sWeapon, sHitLoc, sMeansOfDeath);
-	iprintln("iDamage Attacker: " + iDamage);
+	//iprintln("iDamage Attacker: " + iDamage);
 	
 	if ( !isReallyAlive( victim ) )
 		return;
@@ -1183,7 +1183,7 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 	if ( !attackerIsHittingTeammate )
 	{
 		iDamage = maps\mp\gametypes\_zmod_damage::GetModifiedVictimDamage(victim, sMeansOfDeath, iDamage);
-		iprintln("iDamage Victim: " + iDamage);
+		//iprintln("iDamage Victim: " + iDamage);
 		//iDamage = maps\mp\perks\_perks::cac_modified_damage( victim, eAttacker, iDamage, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc );
 	}	
 	
@@ -1490,7 +1490,7 @@ Callback_PlayerDamage_internal( eInflictor, eAttacker, victim, iDamage, iDFlags,
 
 		victim incPlayerStat( "damagetaken", iDamage );
 	}*/
-	iprintlnbold("Victim HP: " + victim.health);
+	//iprintlnbold("Victim HP: " + victim.health);
 	prof_end( "PlayerDamage log" );
 }
 
