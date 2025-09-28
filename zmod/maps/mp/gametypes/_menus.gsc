@@ -484,24 +484,6 @@ menuAxis()
 menuSpectator()
 {
 	self closeMenus();
-	
-	if( isDefined( self.pers["team"] ) && self.pers["team"] == "spectator" )
-		return;
-
-	if( isAlive( self ) )
-	{
-		assert( isDefined( self.pers["team"] ) );
-		self.switching_teams = true;
-		self.joining_team = "spectator";
-		self.leaving_team = self.pers["team"];
-		self suicide();
-	}
-
-	self addToTeam( "spectator" );
-	self.pers["class"] = undefined;
-	self.class = undefined;
-
-	self thread maps\mp\gametypes\_playerlogic::spawnSpectator();
 }
 
 

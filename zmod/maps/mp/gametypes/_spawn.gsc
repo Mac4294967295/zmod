@@ -21,13 +21,17 @@ doSpawn()
 	{
 		if(self getCItemVal("life", "in_use") > 0 && self.isZombie == 0 && self.isAlpha == 0)
 		{
-			self.bounty = 0;
 			self.bonuscash = 1;
 			self setCItemVal("life", "in_use", self getCItemVal("life", "in_use") - 1);
 			self SpawnPlayer( "allies" );
 		}
 		else
 		{
+			if (!self.isZombie) {
+				self.kills = 0;
+				self.bounty = 0;
+				self.credit_kills = self.kills;
+			}
 			self SpawnPlayer( "axis" );
 		}
 	}
@@ -62,7 +66,7 @@ doSpawn()
 		self.bonuscash = 0;
 	}
 
-	self statCashAdd(5000);
+	//self statCashAdd(5000); // Starting cash for testing
 
 	//self IPrintLnBold("do spawn");
 	self notify( "zmod_shop_change" );
@@ -229,13 +233,18 @@ monitorPlayerWeapons()
 	{
 		wait 0.5;
 		/*Takes all weapons from zombie which Zombies cant have (i.e.: Picking up weapons from ground)*/
-		if( self getCurrentWeapon() != "usp_tactical_mp" && self getCurrentWeapon() != "riotshield_mp" && self.isZombie != 0 && isAlive( self ) && self getCurrentWeapon() != "stinger_mp" )
-		{
+		if(
+			self getCurrentWeapon() != "usp_tactical_mp" 
+			&& self getCurrentWeapon() != "riotshield_mp"
+			&& self.isZombie 
+			&& isAlive( self ) 
+			&& self getCurrentWeapon() != "stinger_mp" 
+		) {
 			self takeAllWeapons();
 			self giveWeapon("usp_tactical_mp", 0, false);
 			self setWeaponAmmoClip("usp_tactical_mp", 0);
 			self setWeaponAmmoStock("usp_tactical_mp", 0);
-			wait .2;
+			wait .4;
 			self switchToWeapon("usp_tactical_mp");
 
 			if(self getZItemVal("riotshield", "in_use")==1)

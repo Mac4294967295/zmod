@@ -32,7 +32,7 @@ while True:
         lines[i]="\tinitPlayerData("+lines[i][0:len(lines[i])-1]+");\n"
         print(lines[i])
 
-    output = open("stats\\_statsinit.gsc", "w")
+    output = open("scripts\\_statsinit.gsc", "w")
     output.write("#include scripts\stats;\n\n")
     output.write("initializeStats(){\n")
     for line in lines:

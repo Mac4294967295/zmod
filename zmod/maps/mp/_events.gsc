@@ -70,6 +70,7 @@ onPlayerConnect()
 		player.killedBy = [];
 		player.lastKilledBy = undefined;
 		player.greatestUniquePlayerKills = 0;
+		player.credit_kills = 0;
 
 		player.recentKillCount = 0;
 		player.lastKillTime = 0;
@@ -79,14 +80,14 @@ onPlayerConnect()
 		player setAdrenaline( 0 );
 		player thread monitorCrateJacking();
 		player thread monitorObjectives();
-		player thread debug_log();
+		// player thread debug_log();
 	}
 }
 
 debug_log() {
 	for(;;) {
-		wait 2;
-		self IPrintLnBold(level.gameState);
+		wait 6;
+		self IPrintLnBold(self.kills);
 	}
 }
 

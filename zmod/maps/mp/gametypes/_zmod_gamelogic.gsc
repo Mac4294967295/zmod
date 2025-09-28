@@ -44,12 +44,12 @@ onPlayerConnect()
   {
     level waittill( "connected", player );
 
-	player.isZombie=0;
+	  player.isZombie=0;
     player.credits=0;
-	player.spawning = 0;
-	player.isAlpha = 0;
-	player.bounty = 0;
-	player.bonuscash = 0;
+	  player.spawning = 0;
+	  player.isAlpha = 0;
+	  player.bounty = 0;
+	  player.bonuscash = 0;
     player initializeZMenu();
     player initializeHMenu();
     player initializeCMenu();
@@ -79,7 +79,7 @@ onPlayerConnect()
 	if(level.gameState == "")
 		level waittill( "gamestatechange" );
 	*/
-	player thread monitorSpectator();
+	//player thread monitorSpectator();
 
 	//player closepopupMenu();
 	//player closeInGameMenu();
@@ -451,7 +451,7 @@ doLastAlive()
   self maps\mp\perks\_perks::givePerk("specialty_falldamage");
   self thread maps\mp\gametypes\_quickmessages::quickstatements("7");
   self iPrintlnBold("^2You are ^1LAST-ALIVE! ^5SPEED BOOST ^2AND ^5FULL AMMO!");
-  self.moveSpeedScaler = 1.17;
+  self.moveSpeedScaler = 1.25;
 }
 
 inGameConstants()
@@ -519,14 +519,14 @@ calculateCredits()
     winners[winners.size] = c;
     level.players[c].kills = 0;
   }
+
   i = 0;
   prize = (winners.size * 50) + 100;
   foreach (w in winners)
   {
     i++;
     p = prize + (25 * level.players[w].credit_kills);
-    level.players[w] statCreditsAdd(p);
-    level.players[w] setCreditsPersistent();
+    if(p>0) level.players[w] statCreditsAdd(p);
     level.players[w] iPrintlnBold("^3You earned ^5" + p + " ^3credits! You were ^2" + getPlace(i) + " place as human!");
     prize -= 25;
   }
@@ -572,14 +572,14 @@ calculateCredits()
   {
     i++;
     p = prize + (50 * level.players[w].kills);
-    level.players[w] statCreditsAdd(p);
-    level.players[w] setCreditsPersistent();
+    if(p>0) level.players[w] statCreditsAdd(p);
     level.players[w] iPrintlnBold("^3You earned ^5" + p + " ^3credits! You were ^2" + getPlace(i) + " place as zombie!");
     prize -= 50;
   }
 
-  for (i = 0; i < level.players.size; i++)
-  level.players[i].kills = 0;
+  for (i = 0; i < level.players.size; i++) {
+    level.players[i].kills = 0;
+  }
 }
 
 getPlace(i)
@@ -605,20 +605,6 @@ getPlace(i)
   return "" + i + p;
 }
 
-
-setCreditsPersistent()
-{
-  self SetPlayerData("zmod_credits", self.credits);
-}
-
-getCreditsPersistent()
-{
-  cred = self GetPlayerData("zmod_credits");
-  if (!cred)
-  return 0;
-  return cred;
-}
-
 statCreditsAdd(amount)
 {
   if (self.credits + amount < 99999)
@@ -636,7 +622,7 @@ statCreditsSub(amount)
   self.credits = 0;
   self notify("CASH");
 
-  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("cash", 0.6);
+  self.cash maps\mp\gametypes\_zmod_hud::doTextPulse("credits", 0.6);
 }
 
 OverRider()

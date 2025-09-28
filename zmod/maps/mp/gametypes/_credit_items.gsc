@@ -3,49 +3,49 @@
 #include maps\mp\gametypes\_shop_menu;
 
 life(){
-	if(self.bounty >= self getCItemVal("life", "cost")){
+	if(self.credits >= self getCItemVal("life", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("life", "cost"));
 		self setCItemVal("life", "in_use", self getCItemVal("life", "in_use")+1);
-	}else self iPrintlnBold("^1Not Enough ^3Cash");
+	}else self iPrintlnBold("^1Not Enough ^3Credits");
 	self notify("MENUCHANGE_2");
 	self notify("LIVES");
 }
 
 tacticalinsertion(){
-	if(self.bounty >= self getCItemVal("tacticalinsertion", "cost")){
+	if(self.credits >= self getCItemVal("tacticalinsertion", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("tacticalinsertion", "cost"));
 		self setCItemVal("tacticalinsertion", "in_use", 1);
 		self takeWeapon("frag_grenade_mp");
 		self SetOffhandPrimaryClass( "other" );
 		self maps\mp\perks\_perkfunctions::setTacticalInsertion();
 		self thread maps\mp\gametypes\_spawn::monitorTI();
-	}else self iPrintlnBold("^1Not Enough ^3Cash");
+	}else self iPrintlnBold("^1Not Enough ^3Credits");
 	self notify("MENUCHANGE_2");
 }
 
 finalstand(){
-	if(self.bounty >= self getCItemVal("finalstand", "cost")){
+	if(self.credits >= self getCItemVal("finalstand", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("finalstand", "cost"));
 		self setCItemVal("finalstand", "in_use", 1);
 		self maps\mp\perks\_perks::givePerk("specialty_finalstand");
-	}else self iPrintlnBold("^1Not Enough ^3Cash");
+	}else self iPrintlnBold("^1Not Enough ^3Credits");
 	self notify("MENUCHANGE_2");
 }
 
 antialpha(){
-	if(self.bounty >= self getCItemVal("antialpha", "cost")){
+	if(self.credits >= self getCItemVal("antialpha", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("antialpha", "cost"));
 		self setCItemVal("antialpha", "in_use", 1);
-	}else self iPrintlnBold("^1Not Enough ^3Cash");
+	}else self iPrintlnBold("^1Not Enough ^3Credits");
 	self notify("MENUCHANGE_2");
 }
 
 cash(){
-	if(self.bounty >= self getCItemVal("cash", "cost")){
+	if(self.credits >= self getCItemVal("cash", "cost")){
 		self maps\mp\gametypes\_zmod_gamelogic::statCreditsSub(self getCItemVal("cash", "cost"));
 		self setCItemVal("cash", "in_use", 1);
 		self.bounty=200;
-	}else self iPrintlnBold("^1Not Enough ^3Cash");
+	}else self iPrintlnBold("^1Not Enough ^3Credits");
 	self notify("MENUCHANGE_2");
 }
 

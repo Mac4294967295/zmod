@@ -283,7 +283,6 @@ doCash()
 	while(1)
 	{
 		self waittill("CASH");
-		
 		//level waittill_any( "joined_team", "player_spawned", "changed_kit" );
 		if( isAlive( self ) )
 		{
@@ -313,7 +312,7 @@ monitorGamestate()
 	{
 		level waittill ( "gamestatechange" );
 		
-		if( level.gameState == "playing" )
+		// if( level.gameState == "playing" )
 			self notify( "CASH" );
 	}
 }

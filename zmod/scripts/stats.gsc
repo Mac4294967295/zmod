@@ -7,7 +7,7 @@ init(){
 	precacheMenu(game["menu_stats"]);
 	level thread onPlayerConnect();
 	level.stats = [];
-	stats\_statsinit::initializeStats();
+	scripts\_statsinit::initializeStats();
 	//logstats();
 	level thread periodicalLog();
 	logstats();
