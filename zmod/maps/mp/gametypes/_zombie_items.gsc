@@ -72,14 +72,14 @@ ninja(){
 }
 
 movespeed(){
-	if(self getZItemVal("movespeed", "in_use")<3){ //allows a max of 5 movespeed upgrades
+	if(self getZItemVal("movespeed", "in_use")<5){ //allows a max of 5 movespeed upgrades
 			if(self.bounty >= self getZItemVal("movespeed", "cost")){
 				statCashSub(self getZItemVal("movespeed", "cost"));
 				self setZItemVal("movespeed", "in_use", getZItemVal("movespeed", "in_use")+1);
 				self.moveSpeedScaler += 0.05;
 				self maps\mp\gametypes\_weapons::updateMoveSpeedScale( "primary" );
 				self iPrintlnBold("^2Speed Bought!");
-				if(self getZItemVal("movespeed", "in_use")==3){
+				if(self getZItemVal("movespeed", "in_use")==5){
 					self setZItemVal("movespeed", "print_text", "text2");
 				}
 			}else self iPrintlnBold("^1Not Enough ^3Cash");
@@ -147,7 +147,7 @@ zriotshield(){
 
 giveZUpgrades(){ //gives the player the upgrades which he acquired through the shop + default perks (on respawn)
 
-	self.maxhealth = 200+self getZItemVal("health", "in_use")*50;
+	self.maxhealth = 100+self getZItemVal("health", "in_use")*50;
 	self.health = self.maxhealth;
 	self notify("HEALTH");
 
@@ -218,7 +218,6 @@ monitorZWeaponAmmo(weapon)
 		self setZItemVal(weapon, "in_use", self getWeaponAmmoClip(weapon+"_mp") + self getWeaponAmmoStock(weapon+"_mp"));
 		self waittill ("weapon_fired");
 		wait 0.1;
-		self notify("MENUCHANGE_2");
 	}
 	self setZItemVal(weapon, "in_use", 0);
 	self takeWeapon(weapon+"_mp");
@@ -232,9 +231,11 @@ monitorThrowingKnife()
 	self endon("death");
 	while(self getZItemVal("throwingknife", "in_use")>0)
 	{
+		if(self getZItemVal("throwingknife", "in_use") != self getWeaponAmmoClip("throwingknife_mp")) {
+			self notify( "zmod_shop_draw" );
+		}
 		self setZItemVal("throwingknife", "in_use", self getWeaponAmmoClip("throwingknife_mp"));
-		wait 0.1;
-		self notify("MENUCHANGE_2");
+		wait 0.3;
 	}
 	self setZItemVal("throwingknife", "print_text", "text1");
 }
