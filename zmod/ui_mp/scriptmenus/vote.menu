@@ -773,7 +773,7 @@ Site / Support: http://www.uzd-zombies.com/viewtopic.php?f=29&t=33
 			textFont 0
 			feeder 0
 			visible 1
-			material (dvarString(hud_picName5))
+			exp material (dvarString(hud_picName5))
 			visible when (dvarString(hud_ShowWinner) != "1")
 		}
 		itemDef
