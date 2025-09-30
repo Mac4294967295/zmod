@@ -139,14 +139,14 @@ onMenuResponse()
 		{
 			self closepopupMenu();
 			self closeInGameMenu();
-			self openpopupMenu(game["menu_team"]);
+			//self openpopupMenu(game["menu_team"]);
 		}
 	
 		if(response == "changeclass_marines" )
 		{
 			self closepopupMenu();
 			self closeInGameMenu();
-			self openpopupMenu( game["menu_changeclass_allies"] );
+			//self openpopupMenu( game["menu_changeclass_allies"] );
 			continue;
 		}
 
@@ -154,7 +154,7 @@ onMenuResponse()
 		{
 			self closepopupMenu();
 			self closeInGameMenu();
-			self openpopupMenu( game["menu_changeclass_axis"] );
+			//self openpopupMenu( game["menu_changeclass_axis"] );
 			continue;
 		}
 
