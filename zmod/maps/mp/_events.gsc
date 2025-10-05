@@ -87,7 +87,7 @@ onPlayerConnect()
 debug_log() {
 	for(;;) {
 		wait 6;
-		self IPrintLnBold(self.kills);
+		self IPrintLnBold(self.moveSpeedScaler);
 	}
 }
 
